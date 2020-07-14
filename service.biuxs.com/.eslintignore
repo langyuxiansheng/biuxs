@@ -1,0 +1,8 @@
+.nuxt
+.vscode
+/nuxt-dist
+/node_modules
+/client/router
+/client/base
+/client/plugins/baidu.tj.js
+/client/http/interceptor.js

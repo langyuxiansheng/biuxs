@@ -1,0 +1,254 @@
+[
+  {
+    "name": "Login",
+    "path": "/Login",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Login\\\\index.vue",
+    "chunkName": "pages/Login/index",
+    "_name": "_aeba66c6"
+  },
+  {
+    "name": "Home-Welcome",
+    "path": "/Home/Welcome",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Home\\\\Welcome\\\\index.vue",
+    "chunkName": "pages/Home/Welcome/index",
+    "_name": "_72805603"
+  },
+  {
+    "name": "Login-LoginForm",
+    "path": "/Login/LoginForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Login\\\\LoginForm\\\\index.vue",
+    "chunkName": "pages/Login/LoginForm/index",
+    "_name": "_64bf3d0a"
+  },
+  {
+    "name": "Member-Users",
+    "path": "/Member/Users",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Member\\\\Users\\\\index.vue",
+    "chunkName": "pages/Member/Users/index",
+    "_name": "_7f8a5f50"
+  },
+  {
+    "name": "Search-TypeItems",
+    "path": "/Search/TypeItems",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeItems\\\\index.vue",
+    "chunkName": "pages/Search/TypeItems/index",
+    "_name": "_371aa488"
+  },
+  {
+    "name": "Search-TypeTags",
+    "path": "/Search/TypeTags",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeTags\\\\index.vue",
+    "chunkName": "pages/Search/TypeTags/index",
+    "_name": "_24db7813"
+  },
+  {
+    "name": "System-AdminManage",
+    "path": "/System/AdminManage",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\AdminManage\\\\index.vue",
+    "chunkName": "pages/System/AdminManage/index",
+    "_name": "_2be9e161"
+  },
+  {
+    "name": "System-FilesManage",
+    "path": "/System/FilesManage",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\FilesManage\\\\index.vue",
+    "chunkName": "pages/System/FilesManage/index",
+    "_name": "_77dd418e"
+  },
+  {
+    "name": "System-LogsManage",
+    "path": "/System/LogsManage",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\LogsManage\\\\index.vue",
+    "chunkName": "pages/System/LogsManage/index",
+    "_name": "_2eda048b"
+  },
+  {
+    "name": "System-PermissionManage",
+    "path": "/System/PermissionManage",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\PermissionManage\\\\index.vue",
+    "chunkName": "pages/System/PermissionManage/index",
+    "_name": "_1cd8b6aa"
+  },
+  {
+    "name": "System-RolesManage",
+    "path": "/System/RolesManage",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\RolesManage\\\\index.vue",
+    "chunkName": "pages/System/RolesManage/index",
+    "_name": "_5debdfb3"
+  },
+  {
+    "name": "Website-Bglibs",
+    "path": "/Website/Bglibs",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Bglibs\\\\index.vue",
+    "chunkName": "pages/Website/Bglibs/index",
+    "_name": "_38a3aa58"
+  },
+  {
+    "name": "Website-IncludeLinks",
+    "path": "/Website/IncludeLinks",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\IncludeLinks\\\\index.vue",
+    "chunkName": "pages/Website/IncludeLinks/index",
+    "_name": "_285abb3a"
+  },
+  {
+    "name": "Website-Options",
+    "path": "/Website/Options",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Options\\\\index.vue",
+    "chunkName": "pages/Website/Options/index",
+    "_name": "_aa731fea"
+  },
+  {
+    "name": "Website-Settings",
+    "path": "/Website/Settings",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Settings\\\\index.vue",
+    "chunkName": "pages/Website/Settings/index",
+    "_name": "_088ecf70"
+  },
+  {
+    "name": "Website-Sites",
+    "path": "/Website/Sites",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Sites\\\\index.vue",
+    "chunkName": "pages/Website/Sites/index",
+    "_name": "_9fc0a0c6"
+  },
+  {
+    "name": "Website-Types",
+    "path": "/Website/Types",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Types\\\\index.vue",
+    "chunkName": "pages/Website/Types/index",
+    "_name": "_b01de9e0"
+  },
+  {
+    "name": "Website-WebContent",
+    "path": "/Website/WebContent",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\WebContent\\\\index.vue",
+    "chunkName": "pages/Website/WebContent/index",
+    "_name": "_a0be9734"
+  },
+  {
+    "name": "Search-TypeItems-TypeItemForm",
+    "path": "/Search/TypeItems/TypeItemForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeItems\\\\TypeItemForm\\\\index.vue",
+    "chunkName": "pages/Search/TypeItems/TypeItemForm/index",
+    "_name": "_d85db812"
+  },
+  {
+    "name": "Search-TypeTags-TypeTagForm",
+    "path": "/Search/TypeTags/TypeTagForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeTags\\\\TypeTagForm\\\\index.vue",
+    "chunkName": "pages/Search/TypeTags/TypeTagForm/index",
+    "_name": "_10b4ea9d"
+  },
+  {
+    "name": "System-AdminManage-AdminForm",
+    "path": "/System/AdminManage/AdminForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\AdminManage\\\\AdminForm\\\\index.vue",
+    "chunkName": "pages/System/AdminManage/AdminForm/index",
+    "_name": "_752b2920"
+  },
+  {
+    "name": "System-AdminManage-BindRoleForm",
+    "path": "/System/AdminManage/BindRoleForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\AdminManage\\\\BindRoleForm\\\\index.vue",
+    "chunkName": "pages/System/AdminManage/BindRoleForm/index",
+    "_name": "_145b312c"
+  },
+  {
+    "name": "System-FilesManage-FileForm",
+    "path": "/System/FilesManage/FileForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\FilesManage\\\\FileForm\\\\index.vue",
+    "chunkName": "pages/System/FilesManage/FileForm/index",
+    "_name": "_6b404079"
+  },
+  {
+    "name": "System-LogsManage-ReadLogDialog",
+    "path": "/System/LogsManage/ReadLogDialog",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\LogsManage\\\\ReadLogDialog\\\\index.vue",
+    "chunkName": "pages/System/LogsManage/ReadLogDialog/index",
+    "_name": "_5ae4075a"
+  },
+  {
+    "name": "System-PermissionManage-PermissionForm",
+    "path": "/System/PermissionManage/PermissionForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\PermissionManage\\\\PermissionForm\\\\index.vue",
+    "chunkName": "pages/System/PermissionManage/PermissionForm/index",
+    "_name": "_45e7dc10"
+  },
+  {
+    "name": "System-RolesManage-RoleForm",
+    "path": "/System/RolesManage/RoleForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\RolesManage\\\\RoleForm\\\\index.vue",
+    "chunkName": "pages/System/RolesManage/RoleForm/index",
+    "_name": "_eb405b8e"
+  },
+  {
+    "name": "Website-Bglibs-BgForm",
+    "path": "/Website/Bglibs/BgForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Bglibs\\\\BgForm\\\\index.vue",
+    "chunkName": "pages/Website/Bglibs/BgForm/index",
+    "_name": "_6dfbeb22"
+  },
+  {
+    "name": "Website-IncludeLinks-IncludeLinkForm",
+    "path": "/Website/IncludeLinks/IncludeLinkForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\IncludeLinks\\\\IncludeLinkForm\\\\index.vue",
+    "chunkName": "pages/Website/IncludeLinks/IncludeLinkForm/index",
+    "_name": "_20bd4bd4"
+  },
+  {
+    "name": "Website-Options-OptionForm",
+    "path": "/Website/Options/OptionForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Options\\\\OptionForm\\\\index.vue",
+    "chunkName": "pages/Website/Options/OptionForm/index",
+    "_name": "_ba863b1c"
+  },
+  {
+    "name": "Website-Sites-SiteForm",
+    "path": "/Website/Sites/SiteForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Sites\\\\SiteForm\\\\index.vue",
+    "chunkName": "pages/Website/Sites/SiteForm/index",
+    "_name": "_94136a9c"
+  },
+  {
+    "name": "Website-Types-TypeForm",
+    "path": "/Website/Types/TypeForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Types\\\\TypeForm\\\\index.vue",
+    "chunkName": "pages/Website/Types/TypeForm/index",
+    "_name": "_422183dc"
+  },
+  {
+    "name": "Website-WebContent-ContentForm",
+    "path": "/Website/WebContent/ContentForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\WebContent\\\\ContentForm\\\\index.vue",
+    "chunkName": "pages/Website/WebContent/ContentForm/index",
+    "_name": "_e061a4de"
+  },
+  {
+    "name": "Search-TypeTags-TypeTagForm-UploadLogo",
+    "path": "/Search/TypeTags/TypeTagForm/UploadLogo",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeTags\\\\TypeTagForm\\\\UploadLogo\\\\index.vue",
+    "chunkName": "pages/Search/TypeTags/TypeTagForm/UploadLogo/index",
+    "_name": "_3715c3b1"
+  },
+  {
+    "name": "Website-IncludeLinks-IncludeLinkForm-UploadLogo",
+    "path": "/Website/IncludeLinks/IncludeLinkForm/UploadLogo",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\IncludeLinks\\\\IncludeLinkForm\\\\UploadLogo\\\\index.vue",
+    "chunkName": "pages/Website/IncludeLinks/IncludeLinkForm/UploadLogo/index",
+    "_name": "_5ebb0a68"
+  },
+  {
+    "name": "Website-Sites-SiteForm-UploadLogo",
+    "path": "/Website/Sites/SiteForm/UploadLogo",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\Sites\\\\SiteForm\\\\UploadLogo\\\\index.vue",
+    "chunkName": "pages/Website/Sites/SiteForm/UploadLogo/index",
+    "_name": "_93f2a774"
+  },
+  {
+    "name": "System-RolesManage-Settings-id",
+    "path": "/System/RolesManage/Settings/:id?",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\System\\\\RolesManage\\\\Settings\\\\_id.vue",
+    "chunkName": "pages/System/RolesManage/Settings/_id",
+    "_name": "_51ed9b38"
+  }
+]

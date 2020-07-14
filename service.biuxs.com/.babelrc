@@ -1,0 +1,17 @@
+{
+    "presets": [
+        "es2015",
+        "stage-2"
+    ],
+    "plugins": [
+        "transform-runtime",
+        ["minify-mangle-names", {
+            "keepFnName": true,
+            "keepClassName": true
+        }],  //简化变量名称
+        ["transform-remove-console", { "exclude": [ "error", "warn"] }]
+    ],
+    "ignore":["./src/puclic"],    //忽略文件
+    "minified": true,   //压缩
+    "comments": false   //去除注释
+}
