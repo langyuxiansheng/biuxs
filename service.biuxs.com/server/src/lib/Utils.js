@@ -45,7 +45,7 @@ const Utils = {
     /**
      * 取随机数
      */
-    getRandomNum(min = 10000000, max = 99999999) {
+    getRandomNum(min = 1, max = 100) {
         let range = min - max;
         let rand = Math.random();
         return Math.abs(min + Math.round(rand * range));
@@ -271,15 +271,6 @@ const Utils = {
     getUC(val) {
         if (!val) throw Error(`字符串不存在 val${val}`);
         return (val).toLocaleUpperCase();
-    },
-
-    /**
-     * js生成随机数
-     * @param {*} lower
-     * @param {*} upper
-     */
-    random(lower, upper) {
-        return Math.floor(Math.random() * (upper - lower)) + lower;
     },
 
     /**

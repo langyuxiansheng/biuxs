@@ -3,6 +3,7 @@ module.exports = {
     mode: 'spa', //非单页   //universal
     buildDir: 'nuxt-dist', //打包输出文件夹
     srcDir: 'client/', //设置 Nuxt.js 应用的源码目录
+    telemetry: false,
     head: {
         title: pkg.title,
         meta: [

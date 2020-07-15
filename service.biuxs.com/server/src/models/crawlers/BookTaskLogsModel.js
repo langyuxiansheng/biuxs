@@ -1,5 +1,5 @@
 /**
- * ip池数据模型
+ * 采集任务日志数据模型
  * @param {*} sequelize
  * @param {*} dataTypes
  * 此模型仅限关系型数据库使用
@@ -9,73 +9,42 @@ const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
     return sequelize.define('IPBase', {
 
-        ipId: {
+        logId: {
             type: dataTypes.STRING(),
             allowNull: false,
             primaryKey: true,
             defaultValue: () => getTimeStampUUID(),
-            comment: 'ID'
+            comment: '任务ID'
         },
 
-        ip: {
+        name: {
             type: dataTypes.STRING(),
             allowNull: true,
-            comment: 'ip'
-        },
-
-        port: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '端口'
-        },
-
-        address: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '地址'
+            comment: '任务名称'
         },
 
         type: {
-            type: dataTypes.STRING(),
+            type: dataTypes.INTEGER(3),
             allowNull: true,
-            comment: '类型'
+            comment: '任务采集类型 1分类 2书籍 3章节 4内容'
         },
 
-        from: {
+        url: {
             type: dataTypes.STRING(),
             allowNull: true,
-            comment: '来自'
+            comment: '采集地址'
         },
 
-        fromHref: {
-            type: dataTypes.STRING(),
+        content: {
+            type: dataTypes.TEXT('long'),
             allowNull: true,
-            comment: '来源地址'
-        },
-
-        responseTime: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '响应时间',
-            defaultValue: () => '未知'
-        },
-
-        protocol: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '请求类型 http https'
-        },
-
-        validateTime: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '最后一次的验证时间'
+            comment: '日志内容'
         },
 
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,
-            comment: '状态( 1可用 2不可用 3未知 4无效)'
+            comment: '状态 1成功 2失败'
         },
 
         remark: {
@@ -109,7 +78,7 @@ module.exports = (sequelize, dataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'biu_ip_base',
+        tableName: 'biu_book_type_tasks',
         timestamps: false //是否需要增加createdAt、updatedAt、deletedAt字段
     });
 };

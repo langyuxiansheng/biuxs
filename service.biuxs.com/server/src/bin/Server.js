@@ -13,7 +13,7 @@ const controllers = require(':controllers/index'); //路由入口
 const secureSignature = require(':middleware/secureSignature'); //请求签名验证
 const userAuthorities = require(':middleware/userAuthorities'); //用户身份验证
 const ErrorRoutesCatch = require(':middleware/ErrorRoutesCatch'); //全局错误捕获
-const WeiboHotKeywords = require(':crawlers/WeiboHotKeywords'); //微博热搜词爬虫
+const IPProxyCrawler = require(':crawlers/IPProxyCrawler'); //IP代理爬虫
 const { accessLogger } = require(':lib/logger4'); //日志系统
 const app = new Koa2();
 const host = process.env.HOST || config.host || '127.0.0.1';
@@ -81,8 +81,8 @@ module.exports = class Server {
             console.log(`===================服=务=器=启=动=完=成======================`);
         });
         if (config.crawler.isOpen) {
-            const wbhk = new WeiboHotKeywords();
-            wbhk.start();
+            const ipc = new IPProxyCrawler();
+            ipc.start();
         }
     }
 };
