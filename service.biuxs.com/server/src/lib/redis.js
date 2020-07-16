@@ -5,12 +5,9 @@ const Redis = require('ioredis');
 const rediskey = {
     GET_WEBSITE_TYPES: 'GET_WEBSITE_TYPES', //'获取网站分类列表'
     GET_HOME_DATA: 'GET_HOME_DATA', //获取首页的数据（无需token）
-    GET_USER_BOOKMARK_HOME_DATA: 'GET_USER_BOOKMARK_HOME_DATA_', //获取用户首页的书签数据（需token）
-    GET_LINKS_BY_TYPE: 'GET_LINKS_BY_TYPE_', //根据分类的拼音名获取分类及其下面的链接（无需token）
-    GET_SEARCH_HOT_KEYWORDS: 'GET_SEARCH_HOT_KEYWORDS_', //热搜词（无需token）
-    GET_COMPANY_BLACKLIST: 'GET_COMPANY_BLACKLIST_', //查询黑名单公司（无需token）
     GET_EMAIL_VALIDATE_CODE: 'GET_EMAIL_VALIDATE_CODE_', //获取邮件验证码无需token）
-    GET_BACKGROUND_LIBS: 'GET_BACKGROUND_LIBS' //获取背景图库无需token）
+    GET_BOOK_TYPES: 'GET_BOOK_TYPES', //'获取小说网站分类列表'
+    IS_VALIDATE_PROXY_IP: 'IS_VALIDATE_PROXY_IP' //是否正在验证ip 避免异步方法重复运行
 };
 class RedisStore {
     constructor() {

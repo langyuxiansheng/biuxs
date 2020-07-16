@@ -2,11 +2,13 @@
  * 代理IP采集爬虫
  */
 const http = require('superagent');
-// const utils = require(':lib/Utils');
+const utils = require(':lib/Utils');
+const result = require(':lib/Result');
+const redis = require(':lib/redis');
 require('superagent-proxy')(http);
 require('superagent-charset')(http);
 const cheerio = require('cheerio');
-// const schedule = require('node-schedule');
+const schedule = require('node-schedule');
 const userAgents = require(':lib/userAgents');
 const { MODELS_PATH, getRandomNum, getYearMonthDayAndHMI } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
@@ -16,6 +18,7 @@ module.exports = class IPProxyCrawler {
         IPBaseModel.sync().then((res) => {
             console.log(`IPBaseModel 同步成功`, res);
         });
+        this.count = 0;
     }
 
     start() {
@@ -25,16 +28,14 @@ module.exports = class IPProxyCrawler {
         * 因此，如果你希望在每小时的固定分钟运行，就一定要设置minute！！！
         */
         //通过数组在多个时刻运行
-        //rule.minute = [10,20,30];
-        // const time = utils.getRandomNum(0, 59);
-        // this.RULE = this.__getScheduleJobRule(time, time);
-        // schedule.scheduleJob(this.RULE, () => {
-        //     console.log('定时抓取新浪微博的热搜词:' + new Date());
-        //     this.getSinaWeibo();
-        //     this.RULE = this.__getScheduleJobRule(time, time);
-        // });
-
-        this.getIPProxy(1);
+        const time = utils.getRandomNum(0, 59);
+        this.RULE = this.__getScheduleJobRule(time, time);
+        schedule.scheduleJob(this.RULE, () => {
+            console.log('定时抓取IP地址:' + new Date());
+            this.getIPProxy(1);
+            this.count = 0;
+            this.RULE = this.__getScheduleJobRule(time, time);
+        });
     }
 
     /**
@@ -42,18 +43,18 @@ module.exports = class IPProxyCrawler {
     * @param {*} min
     * @param {*} sec
     */
-    // __getScheduleJobRule(min = 2, sec = 4) {
-    //     let rule = new schedule.RecurrenceRule();
-    //     rule.hour = [];
-    //     for (let h = 0; h < 24; h++) {
-    //         if (h % 2) {
-    //             rule.hour.push(h);
-    //         }
-    //     }
-    //     rule.second = sec;
-    //     rule.minute = min;
-    //     return rule;
-    // }
+    __getScheduleJobRule(min = 2, sec = 4) {
+        let rule = new schedule.RecurrenceRule();
+        rule.hour = [];
+        for (let h = 0; h < 24; h++) {
+            if (h % 2) {
+                rule.hour.push(h);
+            }
+        }
+        rule.second = sec;
+        rule.minute = min;
+        return rule;
+    }
 
     /**
      * 获取请求头
@@ -70,6 +71,14 @@ module.exports = class IPProxyCrawler {
             'User-Agent': userAgents,
             'Host': host
         };
+    }
+
+    /**
+     * 手动启动
+     */
+    manualStart(page) {
+        this.count = 0;
+        this.getIPProxy(page);
     }
 
     /**
@@ -171,7 +180,6 @@ module.exports = class IPProxyCrawler {
             const datas = await IPBaseModel.findAll({
                 where: { isDelete: false }
             });
-            let delIPIds = [];
             if (datas && datas.length) { //查询数据库已有的数据
                 for (let i in datas) {
                     //大于24小时的全部从IP池移除
@@ -182,12 +190,11 @@ module.exports = class IPProxyCrawler {
                     }
                 }
             }
-            if (delIPIds.length && datas.length >= 50) { //删除存留一周的数据 保存50条ip
-                await IPBaseModel.destroy({ where: { ipId: delIPIds } });
-            }
             if (list && list.length) {
                 await IPBaseModel.bulkCreate(list); //创建或者更新
-                console.log(`本次保存IP: ${list.length} 条`);
+                const length = list.length;
+                this.count += length;
+                console.log(`本次保存IP: ${length} 条,本地共计保存: ${this.count} 条`);
             }
             return true;
         } catch (error) {
@@ -206,15 +213,18 @@ module.exports = class IPProxyCrawler {
             const protocol = data.protocol.split(',')[0];
             const ip = `${protocol}://${data.ip}:${data.port}`.toLowerCase();
             console.log(`正则测试IP: ${ip} 是否可用?`);
-            const { status } = await http.get('https://www.baidu.com/').charset('utf-8').proxy(ip).timeout(1000 * 5).buffer(true);//10s内没有返回则视为ip无效
+            const { status } = await http.get('https://www.baidu.com/').charset('utf-8').proxy(ip).timeout(1000 * 6).buffer(true);//10s内没有返回则视为ip无效
             if (status == 200) { //响应成功则视为IP可用
                 console.log(`IP: ${ip} 可用!`);
                 IPBaseModel.update({ status: 1, validateTime: getYearMonthDayAndHMI() }, { where: { ipId: data.ipId } }); //删除无效的ip
+                return { data, active: true }; //否则视为IP有效
+            } else {
+                console.log(`IP响应状态: ${status}`);
             }
             return { data, active: false }; //否则视为IP无效
         } catch (error) {
             console.log(`IP: ${data.ip} 无效!`, error);
-            await IPBaseModel.update({ status: 2, validateTime: getYearMonthDayAndHMI() }, { where: { ipId: data.ipId } }); //删除无效的ip
+            await IPBaseModel.destroy({ where: { ipId: data.ipId } }); //删除无效的ip
             return { data, active: false, error };
         }
     }
@@ -225,18 +235,27 @@ module.exports = class IPProxyCrawler {
      */
     async validateProxyIP(status = 3) {
         try {
+            const isPadding = await redis.getData(redis.key.IS_VALIDATE_PROXY_IP);
+            if (isPadding) return result.failed('验证任务正在进行中!');
             //获取ip池
             const list = await IPBaseModel.findAll({ where: { isDelete: false, status } });
+            await redis.setData(redis.key.IS_VALIDATE_PROXY_IP, true);
             if (list && list.length) {
                 const ips = list.map((item) => this.testIP(item));
                 Promise.all(ips).then((res) => {
-                    console.log(`验证完成: 本地处理 ${res.length} 条!`);
+                    console.log(`验证完成: 本地处理 ${res.length} 条! ,可用 ${res.filter((item) => item.active).length}`);
+                    redis.delData(redis.key.IS_VALIDATE_PROXY_IP);
                 });
+            } else {
+                console.log(`无可验证IP!`);
+                redis.delData(redis.key.IS_VALIDATE_PROXY_IP);
             }
+            return result.success('验证任务已创建', list);
         } catch (error) {
             console.log(`validateProxyIP 出错!`, error);
+            redis.delData(redis.key.IS_VALIDATE_PROXY_IP);
+            return result.failed('验证出错!', null, error);
         }
-        return null;
     }
 
     /**

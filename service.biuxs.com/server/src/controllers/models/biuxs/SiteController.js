@@ -2,7 +2,7 @@
  *  site
  */
 const KoaRouter = require('koa-router');
-const SiteService = require(':services/biunav/SiteService');
+const SiteService = require(':services/biuxs/SiteService');
 const controller = new KoaRouter({ prefix: '/site' });
 const service = new SiteService();
 
