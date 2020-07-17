@@ -194,7 +194,7 @@ module.exports = class IPProxyCrawler {
                 await IPBaseModel.bulkCreate(list); //创建或者更新
                 const length = list.length;
                 this.count += length;
-                console.log(`本次保存IP: ${length} 条,本地共计保存: ${this.count} 条`);
+                console.log(`本次保存IP: ${length} 条,本次共计保存: ${this.count} 条`);
             }
             return true;
         } catch (error) {
@@ -213,18 +213,16 @@ module.exports = class IPProxyCrawler {
             const protocol = data.protocol.split(',')[0];
             const ip = `${protocol}://${data.ip}:${data.port}`.toLowerCase();
             console.log(`正则测试IP: ${ip} 是否可用?`);
-            const { status } = await http.get('https://www.baidu.com/').charset('utf-8').proxy(ip).timeout(1000 * 6).buffer(true);//10s内没有返回则视为ip无效
+            const testURL = `${protocol}://www.baidu.com`;
+            const { status } = await http.get(testURL).charset('utf-8').proxy(ip).timeout(1000 * 10).buffer(true);//10s内没有返回则视为ip无效
             if (status == 200) { //响应成功则视为IP可用
-                console.log(`IP: ${ip} 可用!`);
-                IPBaseModel.update({ status: 1, validateTime: getYearMonthDayAndHMI() }, { where: { ipId: data.ipId } }); //删除无效的ip
+                console.log(`IP: ${ip} 可用!,测试地址: ${testURL}`);
                 return { data, active: true }; //否则视为IP有效
-            } else {
-                console.log(`IP响应状态: ${status}`);
             }
+            console.log(`IP响应状态: ${status}`);
             return { data, active: false }; //否则视为IP无效
         } catch (error) {
             console.log(`IP: ${data.ip} 无效!`, error);
-            await IPBaseModel.destroy({ where: { ipId: data.ipId } }); //删除无效的ip
             return { data, active: false, error };
         }
     }
@@ -243,8 +241,30 @@ module.exports = class IPProxyCrawler {
             if (list && list.length) {
                 const ips = list.map((item) => this.testIP(item));
                 Promise.all(ips).then((res) => {
-                    console.log(`验证完成: 本地处理 ${res.length} 条! ,可用 ${res.filter((item) => item.active).length}`);
+                    //处理有效ip
+                    const effectiveIps = res.filter(item => item.active).map((item) => item.data.ipId);
+                    //更新完全无效的ip
+                    const invalidIpS = res.filter(item => !item.active).map((item) => item.data.ipId);
+                    const effLength = effectiveIps.length;
+                    const invLength = invalidIpS.length;
+                    if (effLength) {
+                        IPBaseModel.upsert({
+                            status: 1,
+                            validateTime: getYearMonthDayAndHMI()
+                        }, { where: { ipId: effectiveIps } });//批量更新
+                    }
+                    if (invLength) { //批量删除无效的ip
+                        if (status == 1) {
+                            IPBaseModel.upsert({
+                                status: 2,
+                                validateTime: getYearMonthDayAndHMI()
+                            }, { where: { ipId: effectiveIps } });//批量更新
+                        } else {
+                            IPBaseModel.destroy({ where: { ipId: invalidIpS } });
+                        }
+                    }
                     redis.delData(redis.key.IS_VALIDATE_PROXY_IP);
+                    console.log(`验证完成: 本次处理 ${res.length} 条,可用 ${effLength} 条,无效: ${invLength} 条!`);
                 });
             } else {
                 console.log(`无可验证IP!`);
