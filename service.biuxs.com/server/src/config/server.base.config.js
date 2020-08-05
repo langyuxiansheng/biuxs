@@ -2,6 +2,7 @@ const path = require('path'); //路径模块
 
 /**
  * 主配置
+ * @description https://www.cnblogs.com/yanguobin/p/11446967.html mac install redis
  */
 module.exports = {
     superAdminRoleId: '76FECC8FBBE58239A4220B1B2CB08773', //超级管理员的角色id, 54088
@@ -62,12 +63,12 @@ module.exports = {
             name: 'BiuDB', //ORM中使用的名称 建议和key一样的名称
             type: 'sequelize', //orm类型 类型可选sequelize redis等
             config: {
-                username: 'root', // 数据库用户名(测试)
-                password: 'root', // 数据库密码(测试)
+                username: 'biuxs_db', // 数据库用户名(测试)
+                password: '5Fd8JP8YJ64Nzkae', // 数据库密码(测试)
                 database: 'biuxs_db', // 数据库名称(测试)
                 options: { //配置项
                     dialect: 'mysql', // 数据库类型
-                    host: 'localhost', // 服务器地址
+                    host: '114.55.95.232', // 服务器地址
                     port: 3306, // 数据库端口号
                     dialectOptions: { // MySQL > 5.5，其它数据库删除此项
                         charset: 'utf8mb4',
