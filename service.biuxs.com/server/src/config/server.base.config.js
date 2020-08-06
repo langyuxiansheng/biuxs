@@ -103,7 +103,7 @@ module.exports = {
         /^\/Member/, //会员中心
         /^\/Search/, //搜索配置
         //api部分
-        /^\/v1\/api\/common\/getImgValidate/, //图片验证码
+        /^\/v1\/api\/common\/utils\/getImgValidate/, //图片验证码
         /^\/v1\/api\/common\/getEmailValidateCode/, //邮件验证码
         /^\/v1\/api\/common\/sendEmail/, //邮件
         /^\/v1\/api\/common\/userLoginForSysAdmin/, //登录接口

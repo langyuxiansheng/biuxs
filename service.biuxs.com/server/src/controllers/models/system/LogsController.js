@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const LogsService = require(':services/system/LogsService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/logs' });
 const service = new LogsService();
 
 //获取系统日志

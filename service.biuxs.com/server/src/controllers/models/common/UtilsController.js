@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const UtilsService = require(':services/common/UtilsService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/utils' });
 const service = new UtilsService();
 //获取图片验证码
 controller.get('/getImgValidate', async(ctx) => {

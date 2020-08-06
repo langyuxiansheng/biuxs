@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const RolesService = require(':services/system/RolesService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/roles' });
 const service = new RolesService();
 
 //添加角色

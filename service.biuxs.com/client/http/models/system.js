@@ -6,7 +6,7 @@ export default {
      * @param {*} data
      */
     getSysAdminList: {
-        url: `${API_SERVER}/system/getSysAdminList`,
+        url: `${API_SERVER}/system/admin/getSysAdminList`,
         method: 'get'
     },
 
@@ -15,7 +15,7 @@ export default {
      * @param {*} param0
      */
     addSysAdmin: {
-        url: `${API_SERVER}/system/addSysAdmin`,
+        url: `${API_SERVER}/system/admin/addSysAdmin`,
         method: 'post'
     },
 
@@ -24,7 +24,7 @@ export default {
      * @param {*} data
      */
     delSysAdminByIds: {
-        url: `${API_SERVER}/system/delSysAdminByIds`,
+        url: `${API_SERVER}/system/admin/delSysAdminByIds`,
         method: 'delete'
     },
 
@@ -33,7 +33,7 @@ export default {
      * @param {*} data
      */
     updateSysAdmin: {
-        url: `${API_SERVER}/system/updateSysAdmin`,
+        url: `${API_SERVER}/system/admin/updateSysAdmin`,
         method: 'put'
     },
 
@@ -42,7 +42,7 @@ export default {
      * @param {*} data
      */
     getSysRoleList: {
-        url: `${API_SERVER}/system/getSysRoleList`,
+        url: `${API_SERVER}/system/roles/getSysRoleList`,
         method: 'get'
     },
 
@@ -51,7 +51,7 @@ export default {
      * @param {*} param0
      */
     addSysRole: {
-        url: `${API_SERVER}/system/addSysRole`,
+        url: `${API_SERVER}/system/roles/addSysRole`,
         method: 'post'
     },
 
@@ -60,7 +60,7 @@ export default {
      * @param {*} data
      */
     delSysRoleByIds: {
-        url: `${API_SERVER}/system/delSysRoleByIds`,
+        url: `${API_SERVER}/system/roles/delSysRoleByIds`,
         method: 'delete'
     },
 
@@ -69,7 +69,7 @@ export default {
      * @param {*} data
      */
     updateSysRole: {
-        url: `${API_SERVER}/system/updateSysRole`,
+        url: `${API_SERVER}/system/roles/updateSysRole`,
         method: 'put'
     },
 
@@ -78,7 +78,7 @@ export default {
      * @param {*} data
      */
     getSysPermissionList: {
-        url: `${API_SERVER}/system/getSysPermissionList`,
+        url: `${API_SERVER}/system/prem/getSysPermissionList`,
         method: 'get'
     },
 
@@ -87,7 +87,7 @@ export default {
      * @param {*} param0
      */
     addSysPermission: {
-        url: `${API_SERVER}/system/addSysPermission`,
+        url: `${API_SERVER}/system/prem/addSysPermission`,
         method: 'post'
     },
 
@@ -96,7 +96,7 @@ export default {
      * @param {*} data
      */
     delSysPermissionByIds: {
-        url: `${API_SERVER}/system/delSysPermissionByIds`,
+        url: `${API_SERVER}/system/prem/delSysPermissionByIds`,
         method: 'delete'
     },
 
@@ -105,7 +105,7 @@ export default {
      * @param {*} data
      */
     updateSysPermission: {
-        url: `${API_SERVER}/system/updateSysPermission`,
+        url: `${API_SERVER}/system/prem/updateSysPermission`,
         method: 'put'
     },
 
@@ -114,7 +114,7 @@ export default {
      * @param {*} param0
      */
     getSysPermissionListToTree: {
-        url: `${API_SERVER}/system/getSysPermissionListToTree`,
+        url: `${API_SERVER}/system/prem/getSysPermissionListToTree`,
         method: 'get'
     },
 
@@ -123,7 +123,7 @@ export default {
      * @param {*} param0
      */
     getSysRolePermissionListToTree: {
-        url: `${API_SERVER}/system/getSysRolePermissionListToTree`,
+        url: `${API_SERVER}/system/prem/getSysRolePermissionListToTree`,
         method: 'get'
     },
 
@@ -132,7 +132,7 @@ export default {
      * @param {*} data
      */
     setSysRolePermission: {
-        url: `${API_SERVER}/system/setSysRolePermission`,
+        url: `${API_SERVER}/system/prem/setSysRolePermission`,
         method: 'put'
     },
 
@@ -141,7 +141,7 @@ export default {
      * @param {*} data
      */
     bindSysAdminRole: {
-        url: `${API_SERVER}/system/bindSysAdminRole`,
+        url: `${API_SERVER}/system/prem/bindSysAdminRole`,
         method: 'put'
     },
 
@@ -150,7 +150,7 @@ export default {
      * @param {*} data
      */
     clearSysRoleAllPermission: {
-        url: `${API_SERVER}/system/clearSysRoleAllPermission`,
+        url: `${API_SERVER}/system/prem/clearSysRoleAllPermission`,
         method: 'delete'
     },
 
@@ -159,7 +159,7 @@ export default {
      * @param {*} param0
      */
     getSysAdminBaseInfo: {
-        url: `${API_SERVER}/system/getSysAdminBaseInfo`,
+        url: `${API_SERVER}/system/admin/getSysAdminBaseInfo`,
         method: 'get'
     },
 
@@ -167,7 +167,7 @@ export default {
      * 获取角色的菜单列表
      */
     getSysRoleMenusToTree: {
-        url: `${API_SERVER}/system/getSysRoleMenusToTree`,
+        url: `${API_SERVER}/system/admin/getSysRoleMenusToTree`,
         method: 'get'
     },
 
@@ -176,7 +176,7 @@ export default {
      * @param {*} data
      */
     updateSysPassword: {
-        url: `${API_SERVER}/system/updateSysPassword`,
+        url: `${API_SERVER}/system/admin/updateSysPassword`,
         method: 'put'
     },
 
@@ -185,7 +185,7 @@ export default {
      * @param {*} data
      */
     getFiles: {
-        url: `${API_SERVER}/common/getFiles`,
+        url: `${API_SERVER}/common/files/getFiles`,
         method: 'get'
     },
 
@@ -194,7 +194,7 @@ export default {
      * @param {*} data
      */
     deleteFiles: {
-        url: `${API_SERVER}/common/deleteFiles`,
+        url: `${API_SERVER}/common/files/deleteFiles`,
         method: 'delete'
     },
 
@@ -202,7 +202,7 @@ export default {
      * 读取文件
      */
     readeFileContent: {
-        url: `${API_SERVER}/common/readeFileContent`,
+        url: `${API_SERVER}/common/files/readeFileContent`,
         method: 'get'
     },
 
@@ -211,7 +211,7 @@ export default {
      * @param {*} data
      */
     getSysLogList: {
-        url: `${API_SERVER}/system/getSysLogList`,
+        url: `${API_SERVER}/system/logs/getSysLogList`,
         method: 'get'
     },
 
@@ -219,7 +219,7 @@ export default {
      * 获取系统日志的内容
      */
     getSysLogContent: {
-        url: `${API_SERVER}/system/getSysLogContent`,
+        url: `${API_SERVER}/system/logs/getSysLogContent`,
         method: 'get'
     },
 
@@ -227,7 +227,7 @@ export default {
      * 删除系统日志
      */
     delSysLogByPaths: {
-        url: `${API_SERVER}/system/delSysLogByPaths`,
+        url: `${API_SERVER}/system/logs/delSysLogByPaths`,
         method: 'delete'
     }
 };

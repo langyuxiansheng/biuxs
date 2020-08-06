@@ -6,7 +6,7 @@ export default {
      * @param {*} data
      */
     getImgValidate: {
-        url: `${API_SERVER}/common/getImgValidate`,
+        url: `${API_SERVER}/common/utils/getImgValidate`,
         method: 'get'
     },
 
@@ -15,7 +15,7 @@ export default {
      * @param {*} data
      */
     userLoginForSysAdmin: {
-        url: `${API_SERVER}/common/userLoginForSysAdmin`,
+        url: `${API_SERVER}/common/login/userLoginForSysAdmin`,
         method: 'post'
     },
 
@@ -24,7 +24,7 @@ export default {
      * @param {*} data
      */
     uploadFile: {
-        url: `${API_SERVER}/common/uploadFile`,
+        url: `${API_SERVER}/common/files/uploadFile`,
         method: 'post'
     }
 };
