@@ -92,10 +92,10 @@ module.exports = class BookBaseCrawler {
                         params: '/list/1_[page].html', //参数
                         charset: 'utf-8', //编码
                         timeout: 1000 * 10, //超时
-                        listSelector: '#header .nav ul', //列表选择器
+                        listSelector: '#content .item-con', //列表选择器
                         itemSelector: 'li', //列表选择器
-                        name: 'a', //分类名选择
-                        href: 'a' //分类链接
+                        name: '.s2 a:nth-child(1)', //书名名选择
+                        href: '.s2 a:first-child' //详情链接
                     },
                     {
                         title: '修真小说', //分类标题
@@ -104,10 +104,10 @@ module.exports = class BookBaseCrawler {
                         params: '/list/2_[page].html', //参数
                         charset: 'utf-8', //编码
                         timeout: 1000 * 10, //超时
-                        listSelector: '#header .nav ul', //列表选择器
+                        listSelector: '#content .item-con', //列表选择器
                         itemSelector: 'li', //列表选择器
-                        name: 'a', //分类名选择
-                        href: 'a' //分类链接
+                        name: '.s2 a:nth-child(0)', //书名名选择
+                        href: '.s2 a:first-child' //详情链接
                     },
                     {
                         title: '言情小说', //分类标题
@@ -116,46 +116,17 @@ module.exports = class BookBaseCrawler {
                         params: '/list/2_[page].html', //参数
                         charset: 'utf-8', //编码
                         timeout: 1000 * 10, //超时
-                        listSelector: '#header .nav ul', //列表选择器
+                        listSelector: '#content .item-con', //列表选择器
                         itemSelector: 'li', //列表选择器
-                        name: 'a', //分类名选择
-                        href: 'a' //分类链接
+                        name: '.s2 a:nth-child(1)', //书名名选择
+                        href: '.s2 a:first-child' //详情链接
                     }
                 ]
             };
 
             //创建异步同时抓取多个分类
             const crawlers = crawlerConfig.types.map((config) => {
-                return new Promise(async(resolve, reject) => {
-                    try {
-                        const headers = this.__getRequestHeaders(config.host); //获取请求头
-                        const params = config.params.replace('[page]', page); //替换url中的分页参数
-                        const baseURL = `${config.protocol}${config.host}${params}`;
-                        console.info(`============================================抓取开始 BEGIN================================================`);
-                        const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(config.timeout).charset(config.charset).buffer(true);
-                        const list = [];
-                        if (status == 200) {
-                            const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
-                            $(config.type.listSelector).find(config.type.itemSelector).each((index, el) => {
-                                list.push({
-                                    title: config.title, //分类标题
-                                    pingyin: tr.slugify(name).replace(/-/g, ''), //拼音
-                                    name: $(el).find(config.type.name).text().trim(), //获取分类名
-                                    url: $(el).find(config.type.href).attr('href').trim() //获取分类链接
-                                });
-                            });
-                            if (list.length) {
-                                console.log(list);
-                                resolve(list);
-                                // this.saveData(list);
-                            }
-                        }
-                        console.info(`=============================================抓取结束 END=================================================`);
-                    } catch (error) {
-                        console.log(`${crawlerConfig.title}-${config.title}-${config.baseURL}抓取错误!`, error);
-                        reject(error);
-                    }
-                });
+                return this.getBookTypeBase(config);
             });
             Promise.all(crawlers).then((res) => {
                 console.log(`抓取完成!`, res);
@@ -171,31 +142,36 @@ module.exports = class BookBaseCrawler {
     * @param {*} config 配置项
     * @param {*} page 开始页数
     */
-    async getBookTypeBase(config, page) {
+    async getBookTypeBase(config, page = 1) {
+        const headers = this.__getRequestHeaders(config.host); //获取请求头
+        const params = config.params.replace('[page]', page); //替换url中的分页参数
+        const baseURL = `${config.protocol}${config.host}${params}`;
         try {
-            const headers = this.__getRequestHeaders(config.host); //获取请求头
-            const params = config.params.replace('[page]', page); //替换url中的分页参数
-            const baseURL = `${config.protocol}${config.host}${params}`;
-            console.info(`============================================抓取开始 ${config.baseURL}-${config.title} BEGIN================================================`);
+            console.info(`============================================抓取开始 ${baseURL}-${config.title} BEGIN================================================`);
             const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(config.timeout).charset(config.charset).buffer(true);
             const list = [];
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
-                $(config.type.listSelector).find(config.type.itemSelector).each((index, el) => {
+                $(config.listSelector).find(config.itemSelector).each((index, el) => {
+                    console.log($(el).find(config.name));
                     list.push({
-                        name: $(el).find(config.type.name).text().trim(), //获取分类名
-                        url: $(el).find(config.type.href).attr('href').trim() //获取分类链接
+                        title: config.title, //分类标题
+                        pingyin: tr.slugify(config.title).replace(/-/g, ''), //拼音
+                        name: $(el).find(config.name).text().trim(), //获取书籍名
+                        url: $(el).find(config.href).attr('href').trim() //获取分类链接
                     });
                 });
-                if (list.length) {
-                    console.log(list);
-                    redis.setData(`${config.baseURL}_${page}`);
-                    // this.saveData(list);
-                }
             }
-            console.info(`=============================================抓取结束 ${config.baseURL}-${config.title} END=================================================`);
+            console.info(`=============================================抓取结束 ${baseURL}-${config.title} END=================================================`);
+            if (list.length) {
+                console.log(list);
+                redis.setData(`${baseURL}_${page}`, list);
+                page++;
+                this.getBookTypeBase(config, page);
+                // this.saveData(list);
+            }
         } catch (error) {
-            console.log(`${config.baseURL}-${config.title}抓取错误!`, error);
+            console.log(`${baseURL}-${config.title}抓取错误!`, error);
             return null;
         }
     }
