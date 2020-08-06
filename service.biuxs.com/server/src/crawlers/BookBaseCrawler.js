@@ -12,11 +12,11 @@ const schedule = require('node-schedule');
 const userAgents = require(':lib/userAgents');
 const { MODELS_PATH } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
-const BookTypeTasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/BookTypeTasksModel`);
+const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
-        BookTypeTasksModel.sync().then((res) => {
-            console.log(`UserBaseModel 同步成功`, res);
+        TasksModel.sync().then((res) => {
+            console.log(`TasksModel 同步成功`, res);
         });
     }
 
@@ -94,8 +94,8 @@ module.exports = class BookBaseCrawler {
                         timeout: 1000 * 10, //超时
                         listSelector: '#content .item-con', //列表选择器
                         itemSelector: 'li', //列表选择器
-                        name: '.s2 a:nth-child(1)', //书名名选择
-                        href: '.s2 a:first-child' //详情链接
+                        name: '.s2 > a:nth-child(1)', //书名名选择
+                        href: '.s2 > a:nth-child(1)' //详情链接
                     },
                     {
                         title: '修真小说', //分类标题
@@ -106,8 +106,8 @@ module.exports = class BookBaseCrawler {
                         timeout: 1000 * 10, //超时
                         listSelector: '#content .item-con', //列表选择器
                         itemSelector: 'li', //列表选择器
-                        name: '.s2 a:nth-child(0)', //书名名选择
-                        href: '.s2 a:first-child' //详情链接
+                        name: '.s2 > a:nth-child(1)', //书名名选择
+                        href: '.s2 > a:nth-child(1)' //详情链接
                     },
                     {
                         title: '言情小说', //分类标题
@@ -118,8 +118,8 @@ module.exports = class BookBaseCrawler {
                         timeout: 1000 * 10, //超时
                         listSelector: '#content .item-con', //列表选择器
                         itemSelector: 'li', //列表选择器
-                        name: '.s2 a:nth-child(1)', //书名名选择
-                        href: '.s2 a:first-child' //详情链接
+                        name: '.s2 > a:nth-child(1)', //书名名选择
+                        href: '.s2 > a:nth-child(1)' //详情链接
                     }
                 ]
             };
@@ -153,7 +153,6 @@ module.exports = class BookBaseCrawler {
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
                 $(config.listSelector).find(config.itemSelector).each((index, el) => {
-                    console.log($(el).find(config.name));
                     list.push({
                         title: config.title, //分类标题
                         pingyin: tr.slugify(config.title).replace(/-/g, ''), //拼音
@@ -165,10 +164,9 @@ module.exports = class BookBaseCrawler {
             console.info(`=============================================抓取结束 ${baseURL}-${config.title} END=================================================`);
             if (list.length) {
                 console.log(list);
-                redis.setData(`${baseURL}_${page}`, list);
+                await this.saveData(config, list);
                 page++;
                 this.getBookTypeBase(config, page);
-                // this.saveData(list);
             }
         } catch (error) {
             console.log(`${baseURL}-${config.title}抓取错误!`, error);
@@ -180,22 +178,27 @@ module.exports = class BookBaseCrawler {
      * 保存数据
      * @param {*} list
      */
-    async saveData(list) {
+    async saveData(config, list) {
         try {
-            //查询否存在
-            const datas = await redis.getData(`${redis.key.GET_SEARCH_HOT_KEYWORDS}SINAWEIBO`);
-            if (datas) {
-                for (const i in datas) {
-                    for (const j in list) {
-                        if (datas[i].text === list[j].text) { //检测是否重复
-                            console.log(`关键字:${datas[i].text} 已存在`);
+            //查询ip否存在
+            const datas = await TasksModel.findAll({
+                where: { title: config.title, status: 1, isDelete: false }
+            });
+            if (datas && datas.length) { //查询数据库已有的数据
+                for (let i in datas) {
+                    //大于24小时的全部从IP池移除
+                    for (let j in list) {
+                        if (datas[i].ip === list[j].ip) { //检测ip是否重复
                             list.splice(j, 1); //删除数组中的重复数据
                         }
                     }
                 }
-                await redis.setData(`${redis.key.GET_SEARCH_HOT_KEYWORDS}SINAWEIBO`, datas.concat(list), 60 * 60 * 12);
-            } else {
-                await redis.setData(`${redis.key.GET_SEARCH_HOT_KEYWORDS}SINAWEIBO`, list, 60 * 60 * 12);
+            }
+            if (list && list.length) {
+                await TasksModel.bulkCreate(list); //创建或者更新
+                const length = list.length;
+                this.count += length;
+                console.log(`本次保存IP: ${length} 条,本次共计保存: ${this.count} 条`);
             }
             return true;
         } catch (error) {

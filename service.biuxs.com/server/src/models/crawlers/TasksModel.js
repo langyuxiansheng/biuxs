@@ -6,7 +6,7 @@
  */
 const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
-    return sequelize.define('IPBase', {
+    return sequelize.define('Tasks', {
 
         taskId: {
             type: dataTypes.STRING(),
@@ -49,7 +49,7 @@ module.exports = (sequelize, dataTypes) => {
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,
-            comment: '状态'
+            comment: '状态(1未开始 2未完成 3已完成)'
         },
 
         remark: {
@@ -83,7 +83,7 @@ module.exports = (sequelize, dataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'biu_book_type_tasks',
+        tableName: 'biu_tasks',
         timestamps: false //是否需要增加createdAt、updatedAt、deletedAt字段
     });
 };
