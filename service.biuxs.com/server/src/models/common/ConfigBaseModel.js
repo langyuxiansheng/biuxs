@@ -8,72 +8,61 @@ const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
     return sequelize.define('ConfigBase', {
 
-        //文件ID
-        logId: {
+        configId: {
             type: dataTypes.STRING(),
             allowNull: false,
             primaryKey: true,
             defaultValue: () => getTimeStampUUID(),
-            comment: '任务ID'
+            comment: '配置项ID'
         },
 
-        //文件名
-        fileName: {
+        name: {
             type: dataTypes.STRING(100),
-            allowNull: true
+            allowNull: true,
+            comment: '配置项名'
         },
 
-        //文件别名
-        aliasName: {
+        code: {
             type: dataTypes.STRING(100),
-            allowNull: true
+            allowNull: true,
+            comment: '配置项唯一标识符'
         },
 
-        //上传人ID
+        conf: {
+            type: dataTypes.TEXT(),
+            allowNull: true,
+            get() {
+                const v = this.getDataValue('conf');
+                try {
+                    return JSON.parse(v);
+                } catch (error) {
+                    console.error(error);
+                    return null;
+                }
+            },
+            set(val) {
+                const v = typeof val === 'object' ? JSON.stringify(val) : val;
+                this.setDataValue('conf', v);
+            },
+            comment: '配置项内容 JSON字符串'
+        },
+
         userId: {
             type: dataTypes.STRING(50),
-            allowNull: true
+            allowNull: true,
+            comment: '设置人ID'
         },
 
-        //上传人名称
         userName: {
             type: dataTypes.STRING(100),
-            allowNull: true
+            allowNull: true,
+            comment: '设置人名称'
         },
 
-        //文件大小
-        size: {
-            type: dataTypes.BIGINT(20),
-            allowNull: true
-        },
-
-        //文件类型
-        type: {
-            type: dataTypes.STRING(100),
-            allowNull: true
-        },
-
-        //文件后缀
-        suffix: {
-            type: dataTypes.STRING(30),
-            allowNull: true
-        },
-
-        //文件存放的路径
-        path: {
-            type: dataTypes.STRING(200),
-            allowNull: true
-        },
-
-        fileMD5: { //文件指纹
-            type: dataTypes.STRING(40),
-            allowNull: true
-        },
-
-        //文件状态
         status: {
             type: dataTypes.INTEGER(2),
-            allowNull: true
+            allowNull: true,
+            comment: '状态 0停用 1正常'
         },
 
         //备注
