@@ -20,9 +20,9 @@ module.exports = class {
      * 添加系统权限
      * @param {*} user
      */
-    async addSysPermission(data, userInfo) {
+    async addSysPermission(data, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         const { title, type, path, name, parentId } = data;
         if (type == 1 && (!title || !path || !name)) {
             return result.paramsLack();
@@ -52,9 +52,9 @@ module.exports = class {
      * 获取系统权限菜单列表
      * @param {*} param0
      */
-    async getSysPermissionList({ title, page, limit }, userInfo) {
+    async getSysPermissionList({ title, page, limit }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         let queryData = {
             where: { isDelete: false },
             order: [
@@ -86,9 +86,9 @@ module.exports = class {
      * 删除系统权限菜单
      * @param {*} param0
      */
-    async delSysPermissionByIds({ ids, isDelete }, userInfo) {
+    async delSysPermissionByIds({ ids, isDelete }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!ids || !isDelete || !Array.isArray(ids)) return result.paramsLack();
         try {
             //批量软删除
@@ -115,9 +115,9 @@ module.exports = class {
      * 编辑系统权限菜单
      * @param {*} data
      */
-    async updateSysPermission(data, userInfo) {
+    async updateSysPermission(data, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!data.permissionId) return result.paramsLack();
         try {
             await PermissionModel.update(data, { where: { permissionId: data.permissionId } });
@@ -132,9 +132,9 @@ module.exports = class {
      * 获取树状权限列表
      * @param {*} param0
      */
-    async getSysPermissionListToTree({ title, page, limit }, userInfo) {
+    async getSysPermissionListToTree({ title, page, limit }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         let queryData = {
             where: { isDelete: false },
             order: [
@@ -193,9 +193,9 @@ module.exports = class {
      * 设置系统角色的权限
      * @param {*} data
      */
-    async setSysRolePermission(data, userInfo) {
+    async setSysRolePermission(data, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!data.roleId || !Array.isArray(data.list)) return result.paramsLack();
         const { list, roleId } = data;
         try {
@@ -220,9 +220,9 @@ module.exports = class {
      * 清除角色的所有权限
      * @param {*} data
      */
-    async clearSysRoleAllPermission({ roleId }, userInfo) {
+    async clearSysRoleAllPermission({ roleId }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!roleId) return result.paramsLack();
         try {
             //从中间表删除角色权限

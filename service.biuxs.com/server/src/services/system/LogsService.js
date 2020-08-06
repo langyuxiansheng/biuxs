@@ -10,9 +10,9 @@ module.exports = class {
      * 获取系统日志列表
      * @param {*} param0
      */
-    async getSysLogList(userInfo) {
+    async getSysLogList(user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         try {
             const res = await getLogsFileList(path.join(SRC_PATH, '/logs'));
             return result.success(null, { list: res });
@@ -27,9 +27,9 @@ module.exports = class {
      * @param {*} param0
      * @param {*} param1
      */
-    async getSysLogContent({ logPath }, userInfo) {
+    async getSysLogContent({ logPath }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         try {
             const { code, data } = await readerFile(path.join(SRC_PATH, logPath), 'utf-8');
             if (code == 200) {
@@ -47,9 +47,9 @@ module.exports = class {
      * @param {*} param0
      * @description 只能清空内容不能直接删除文件,否则没释放资源的情况下会报错
      */
-    async delSysLogByPaths({ paths, isDelete }, userInfo) {
+    async delSysLogByPaths({ paths, isDelete }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!paths || !isDelete || !Array.isArray(paths)) return result.paramsLack();
         try {
             const deleteFiles = paths.map((logPath) => { //批量删除

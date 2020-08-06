@@ -13,9 +13,9 @@ module.exports = class {
      * 添加管理平台
      * @param {*} param0
      */
-    async addSysAdmin({ adminName, account, password, avatar }, userInfo) {
+    async addSysAdmin({ adminName, account, password, avatar }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!account || !password) return result.paramsLack();
         try {
             //查询账号是否存在
@@ -36,9 +36,9 @@ module.exports = class {
      * 获取系统管理员列表
      * @param {*} param0
      */
-    async getSysAdminList({ account, page, limit }, userInfo) {
+    async getSysAdminList({ account, page, limit }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         let queryData = {
             where: { isDelete: false },
             order: [
@@ -70,9 +70,9 @@ module.exports = class {
      * 删除系统管理员
      * @param {*} param0
      */
-    async delSysAdminByIds({ ids, isDelete }, userInfo) {
+    async delSysAdminByIds({ ids, isDelete }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!ids || !isDelete || !Array.isArray(ids)) return result.paramsLack();
         try {
             //批量软删除
@@ -89,9 +89,9 @@ module.exports = class {
      * 编辑系统管理员
      * @param {*} data
      */
-    async updateSysAdmin(data, userInfo) {
+    async updateSysAdmin(data, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!data.adminId) return result.paramsLack();
         try {
             await AdminBaseModel.update(data, { where: { adminId: data.adminId } });
@@ -106,9 +106,9 @@ module.exports = class {
      * 绑定管理员的角色
      * @param {*} data
      */
-    async bindSysAdminRole({ adminId, roleId, roleName }, userInfo) {
+    async bindSysAdminRole({ adminId, roleId, roleName }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         if (!adminId || !roleId || !roleName) return result.paramsLack();
         try {
             const bindData = { roleId, roleName };

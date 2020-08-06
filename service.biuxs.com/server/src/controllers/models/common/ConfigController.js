@@ -2,38 +2,33 @@
  *  公共信息入口
  */
 const KoaRouter = require('koa-router');
-const FilesService = require(':services/common/FilesService');
+const ConfigService = require(':services/common/ConfigService');
 const controller = new KoaRouter({ prefix: '/config' });
-const service = new FilesService();
+const service = new ConfigService();
 
-//文件上传接口(单文件)
+//添加配置项
 controller.post('/uploadFile', async(ctx) => {
-    ctx.body = await service.uploadFile({ state: ctx.state, files: ctx.request.files, body: ctx.request.body });
+    ctx.body = await service.addConfig(ctx.request.body, ctx.state.user);
 });
 
-//文件上传接口(多文件)
-controller.post('/uploadFiles', async(ctx) => {
-    ctx.body = await service.uploadFiles({ state: ctx.state, files: ctx.request.files, body: ctx.request.body });
+//获取配置项列表
+controller.get('/getConfigList', async(ctx) => {
+    ctx.body = await service.getConfigList(ctx.request.query, ctx.state.user);
 });
 
-//文件删除接口(多文件)
-controller.delete('/deleteFiles', async(ctx) => {
-    ctx.body = await service.deleteFiles({ state: ctx.state, body: ctx.request.body });
+//根据唯一标识符获取配置项
+controller.get('/getConfigByCode/:code', async(ctx) => {
+    ctx.body = await service.getConfigByCode(ctx.request.params, ctx.state.user);
 });
 
-//获取文件列表接口
-controller.get('/getFiles', async(ctx) => {
-    ctx.body = await service.getFiles({ state: ctx.state, query: ctx.request.query });
+//编辑配置项
+controller.delete('/updateConfig', async(ctx) => {
+    ctx.body = await service.updateConfig(ctx.request.body, ctx.state.user);
 });
 
-//获取文件列表接口
-controller.get('/getFileById/:fileId', async(ctx) => {
-    ctx.body = await service.getFileById(ctx.params);
-});
-
-//获取文件列表接口
-controller.get('/readeFileContent', async(ctx) => {
-    ctx.body = await service.readeFileContent(ctx.request.query);
+//删除配置项
+controller.delete('/delConfigByIds', async(ctx) => {
+    ctx.body = await service.delConfigByIds(ctx.request.body, ctx.state.user);
 });
 
 module.exports = controller;
