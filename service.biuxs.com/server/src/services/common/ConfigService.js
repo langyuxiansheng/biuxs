@@ -24,16 +24,17 @@ module.exports = class {
             conf: 'object'
         })) return result.paramsLack();
         try {
-            const { code } = data;
+            const { code, name } = data;
             //查询昵称是否存在
             const count = await ConfigBaseModel.count({
                 where: { code, isDelete: false }
             });
             if (count > 0) return result.failed(`配置项【${name}】已存在!`);
-            data['userId'] = user.userId;
-            data['userName'] = user.userName;
+            data.status = 1;
+            data.userId = user.userId;
+            data.userName = user.userName;
             await ConfigBaseModel.create(data);
-            redis.delData(code);
+            redis.delData(`${user.userId}_${code}`);
             return result.success();
         } catch (error) {
             console.error(error);
@@ -78,18 +79,21 @@ module.exports = class {
      *  根据唯一标识符获取配置项
      * @param {*} param0
      */
-    async getConfigByCode(code, user) {
+    async getConfigByCode({ code }, user) {
         if (!code) return result.paramsLack();
-        let queryData = {
-            where: { code, isDelete: false },
-            order: [ ['createdTime', 'DESC'] ],
-            attributes: { exclude: ['isDelete'] }
-        };
         try {
+            const conf = await redis.getData(`${user.userId}_${code}`);
+            if (conf) return result.success(null, conf);
+            let queryData = {
+                where: { code, isDelete: false },
+                order: [ ['createdTime', 'DESC'] ],
+                attributes: { exclude: ['isDelete'] }
+            };
             if (!isSuperAdmin(user)) {
                 queryData.where.userId = user.userId;
             }
             const data = await ConfigBaseModel.findOne(queryData);
+            redis.setData(`${user.userId}_${code}`, data);
             return result.success(null, data);
         } catch (error) {
             console.error(error);

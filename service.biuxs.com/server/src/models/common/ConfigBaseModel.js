@@ -44,7 +44,7 @@ module.exports = (sequelize, dataTypes) => {
                 const v = typeof val === 'object' ? JSON.stringify(val) : val;
                 this.setDataValue('conf', v);
             },
-            comment: '配置项内容 JSON字符串'
+            comment: '配置项内容对象字符串'
         },
 
         userId: {

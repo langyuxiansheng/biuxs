@@ -2,6 +2,7 @@
  * 书籍的基本信息采集爬虫
  */
 const http = require('superagent');
+const tr = require('transliteration'); //分类拼音
 const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
 require('superagent-proxy')(http);
@@ -83,42 +84,119 @@ module.exports = class BookBaseCrawler {
         try {
             const crawlerConfig = {
                 title: '全本小说网', //站点名
-                protocol: 'https://', //协议
-                host: 'www.quanben.net', //采集的域名
-                params: '/list/2_[page].html', //参数
-                charset: 'utf-8', //编码
-                timeout: 1000 * 10, //超时
-                type: { //分类的采集器配置
-                    listSelector: '#header .nav ul', //列表选择器
-                    itemSelector: 'li', //列表选择器
-                    name: 'a', //分类名选择
-                    href: 'a' //分类链接
-                }
+                types: [//分类的采集器配置
+                    {
+                        title: '玄幻小说', //分类标题
+                        protocol: 'https://', //协议
+                        host: 'www.quanben.net', //采集的域名
+                        params: '/list/1_[page].html', //参数
+                        charset: 'utf-8', //编码
+                        timeout: 1000 * 10, //超时
+                        listSelector: '#header .nav ul', //列表选择器
+                        itemSelector: 'li', //列表选择器
+                        name: 'a', //分类名选择
+                        href: 'a' //分类链接
+                    },
+                    {
+                        title: '修真小说', //分类标题
+                        protocol: 'https://', //协议
+                        host: 'www.quanben.net', //采集的域名
+                        params: '/list/2_[page].html', //参数
+                        charset: 'utf-8', //编码
+                        timeout: 1000 * 10, //超时
+                        listSelector: '#header .nav ul', //列表选择器
+                        itemSelector: 'li', //列表选择器
+                        name: 'a', //分类名选择
+                        href: 'a' //分类链接
+                    },
+                    {
+                        title: '言情小说', //分类标题
+                        protocol: 'https://', //协议
+                        host: 'www.quanben.net', //采集的域名
+                        params: '/list/2_[page].html', //参数
+                        charset: 'utf-8', //编码
+                        timeout: 1000 * 10, //超时
+                        listSelector: '#header .nav ul', //列表选择器
+                        itemSelector: 'li', //列表选择器
+                        name: 'a', //分类名选择
+                        href: 'a' //分类链接
+                    }
+                ]
             };
-            const headers = this.__getRequestHeaders(crawlerConfig.host); //获取请求头
-            const params = crawlerConfig.params.replace('[page]', page); //替换url中的分页参数
-            const baseURL = `${crawlerConfig.protocol}${crawlerConfig.host}${params}`;
-            console.info(`============================================抓取开始 BEGIN================================================`);
-            const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(crawlerConfig.timeout).charset(crawlerConfig.charset).buffer(true);
+
+            //创建异步同时抓取多个分类
+            const crawlers = crawlerConfig.types.map((config) => {
+                return new Promise(async(resolve, reject) => {
+                    try {
+                        const headers = this.__getRequestHeaders(config.host); //获取请求头
+                        const params = config.params.replace('[page]', page); //替换url中的分页参数
+                        const baseURL = `${config.protocol}${config.host}${params}`;
+                        console.info(`============================================抓取开始 BEGIN================================================`);
+                        const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(config.timeout).charset(config.charset).buffer(true);
+                        const list = [];
+                        if (status == 200) {
+                            const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
+                            $(config.type.listSelector).find(config.type.itemSelector).each((index, el) => {
+                                list.push({
+                                    title: config.title, //分类标题
+                                    pingyin: tr.slugify(name).replace(/-/g, ''), //拼音
+                                    name: $(el).find(config.type.name).text().trim(), //获取分类名
+                                    url: $(el).find(config.type.href).attr('href').trim() //获取分类链接
+                                });
+                            });
+                            if (list.length) {
+                                console.log(list);
+                                resolve(list);
+                                // this.saveData(list);
+                            }
+                        }
+                        console.info(`=============================================抓取结束 END=================================================`);
+                    } catch (error) {
+                        console.log(`${crawlerConfig.title}-${config.title}-${config.baseURL}抓取错误!`, error);
+                        reject(error);
+                    }
+                });
+            });
+            Promise.all(crawlers).then((res) => {
+                console.log(`抓取完成!`, res);
+            });
+        } catch (error) {
+            console.log(`抓取错误!`, error);
+            return error;
+        }
+    }
+
+    /**
+    * 分类抓取
+    * @param {*} config 配置项
+    * @param {*} page 开始页数
+    */
+    async getBookTypeBase(config, page) {
+        try {
+            const headers = this.__getRequestHeaders(config.host); //获取请求头
+            const params = config.params.replace('[page]', page); //替换url中的分页参数
+            const baseURL = `${config.protocol}${config.host}${params}`;
+            console.info(`============================================抓取开始 ${config.baseURL}-${config.title} BEGIN================================================`);
+            const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(config.timeout).charset(config.charset).buffer(true);
             const list = [];
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
-                $(crawlerConfig.type.listSelector).find(crawlerConfig.type.itemSelector).each((index, el) => {
+                $(config.type.listSelector).find(config.type.itemSelector).each((index, el) => {
                     list.push({
-                        name: $(el).find(crawlerConfig.type.name).text().trim(), //获取分类名
-                        url: $(el).find(crawlerConfig.type.href).attr('href').trim() //获取分类链接
+                        name: $(el).find(config.type.name).text().trim(), //获取分类名
+                        url: $(el).find(config.type.href).attr('href').trim() //获取分类链接
                     });
                 });
                 if (list.length) {
                     console.log(list);
-                    this.saveData(list);
+                    redis.setData(`${config.baseURL}_${page}`);
+                    // this.saveData(list);
                 }
             }
-            console.info(`=============================================抓取结束 END=================================================`);
-            return list;
+            console.info(`=============================================抓取结束 ${config.baseURL}-${config.title} END=================================================`);
         } catch (error) {
-            console.log(`抓取错误!`, error);
-            return error;
+            console.log(`${config.baseURL}-${config.title}抓取错误!`, error);
+            return null;
         }
     }
 

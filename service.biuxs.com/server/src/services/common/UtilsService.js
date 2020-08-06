@@ -25,7 +25,7 @@ module.exports = class {
             session[config.imgCodeCookieKey] = text; //系统时间5分钟
             //设置验证码
             await redis.setData(`${config.imgCodeCookieKey}_${headers.origin}`, { origin: headers.origin, code: text }, 60 * 5); //设置为5分钟有效
-            return result.success(null, { img: data });
+            return result.success(null, { img: data, text });
         } catch (error) {
             return result.failed(error);
         }

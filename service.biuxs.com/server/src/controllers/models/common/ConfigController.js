@@ -7,7 +7,7 @@ const controller = new KoaRouter({ prefix: '/config' });
 const service = new ConfigService();
 
 //添加配置项
-controller.post('/uploadFile', async(ctx) => {
+controller.post('/addConfig', async(ctx) => {
     ctx.body = await service.addConfig(ctx.request.body, ctx.state.user);
 });
 
@@ -18,11 +18,11 @@ controller.get('/getConfigList', async(ctx) => {
 
 //根据唯一标识符获取配置项
 controller.get('/getConfigByCode/:code', async(ctx) => {
-    ctx.body = await service.getConfigByCode(ctx.request.params, ctx.state.user);
+    ctx.body = await service.getConfigByCode(ctx.params, ctx.state.user);
 });
 
 //编辑配置项
-controller.delete('/updateConfig', async(ctx) => {
+controller.put('/updateConfig', async(ctx) => {
     ctx.body = await service.updateConfig(ctx.request.body, ctx.state.user);
 });
 
