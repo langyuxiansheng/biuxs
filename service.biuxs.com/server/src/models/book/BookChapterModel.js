@@ -40,12 +40,6 @@ module.exports = (sequelize, dataTypes) => {
             comment: '书籍ID'
         },
 
-        articleId: {
-            type: dataTypes.STRING(),
-            allowNull: false,
-            comment: '文章内容ID'
-        },
-
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,

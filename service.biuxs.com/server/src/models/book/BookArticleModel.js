@@ -4,7 +4,6 @@
  * @param {*} dataTypes
  * 此模型仅限关系型数据库使用
  */
-const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
     return sequelize.define('BookArticle', {
 
@@ -12,8 +11,7 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING(),
             allowNull: false,
             primaryKey: true,
-            defaultValue: () => getTimeStampUUID(),
-            comment: '文章ID'
+            comment: '文章ID => 同章节id'
         },
 
         title: {
