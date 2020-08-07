@@ -49,7 +49,7 @@ module.exports = (sequelize, dataTypes) => {
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,
-            comment: '状态(1未开始 2未完成 3已完成)'
+            comment: '状态(1未开始 2进行中 3未完成 4已完成)'
         },
 
         remark: {

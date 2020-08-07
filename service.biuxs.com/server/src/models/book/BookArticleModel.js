@@ -1,25 +1,37 @@
 /**
- * 书籍标签基础表数据模型
+ * 书籍文章数据模型
  * @param {*} sequelize
  * @param {*} dataTypes
  * 此模型仅限关系型数据库使用
  */
 const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
-    return sequelize.define('BookTags', {
+    return sequelize.define('BookArticle', {
 
-        tagId: {
+        articleId: {
             type: dataTypes.STRING(),
             allowNull: false,
             primaryKey: true,
             defaultValue: () => getTimeStampUUID(),
-            comment: '标签ID'
+            comment: '文章ID'
         },
 
-        name: {
+        title: {
             type: dataTypes.STRING(),
             allowNull: true,
-            comment: '标签名称'
+            comment: '文章标题'
+        },
+
+        content: {
+            type: dataTypes.TEXT('long'),
+            allowNull: true,
+            comment: '章节内容'
+        },
+
+        letterCount: {
+            type: dataTypes.INTEGER(),
+            allowNull: true,
+            comment: '本章节总字数'
         },
 
         status: {
@@ -58,6 +70,6 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'biu_book_tags'
+        tableName: 'biu_book_article'
     });
 };

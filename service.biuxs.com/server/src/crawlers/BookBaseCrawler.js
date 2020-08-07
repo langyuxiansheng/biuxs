@@ -3,7 +3,7 @@
  */
 const http = require('superagent');
 const tr = require('transliteration'); //分类拼音
-const redis = require(':lib/redis'); //redis
+// const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
 require('superagent-proxy')(http);
 require('superagent-charset')(http);
@@ -121,7 +121,10 @@ module.exports = class BookBaseCrawler {
                         name: '.s2 > a:nth-child(1)', //书名名选择
                         href: '.s2 > a:nth-child(1)' //详情链接
                     }
-                ]
+                ],
+                info: { //详情采集配置
+
+                }
             };
 
             //创建异步同时抓取多个分类
@@ -153,11 +156,12 @@ module.exports = class BookBaseCrawler {
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
                 $(config.listSelector).find(config.itemSelector).each((index, el) => {
+                    const url = $(el).find(config.href).attr('href').trim(); //获取分类链接
                     list.push({
                         title: config.title, //分类标题
                         pingyin: tr.slugify(config.title).replace(/-/g, ''), //拼音
                         name: $(el).find(config.name).text().trim(), //获取书籍名
-                        url: $(el).find(config.href).attr('href').trim() //获取分类链接
+                        url: url
                     });
                 });
             }
@@ -180,7 +184,6 @@ module.exports = class BookBaseCrawler {
      */
     async saveData(config, list) {
         try {
-            //查询ip否存在
             const datas = await TasksModel.findAll({
                 where: { title: config.title, status: 1, isDelete: false }
             });

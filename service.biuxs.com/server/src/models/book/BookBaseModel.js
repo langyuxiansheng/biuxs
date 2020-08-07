@@ -6,7 +6,7 @@
  */
 const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
-    return sequelize.define('BooksBase', {
+    return sequelize.define('BookBase', {
 
         bookId: {
             type: dataTypes.STRING(),
@@ -16,7 +16,7 @@ module.exports = (sequelize, dataTypes) => {
             comment: '书本ID'
         },
 
-        name: {
+        title: {
             type: dataTypes.STRING(),
             allowNull: true,
             comment: '书本名称'
@@ -46,12 +46,6 @@ module.exports = (sequelize, dataTypes) => {
             comment: '作者名'
         },
 
-        newestChapter: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '最新章节'
-        },
-
         readCount: {
             type: dataTypes.INTEGER(),
             allowNull: true,
@@ -62,6 +56,12 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING(),
             allowNull: true,
             comment: '分类名称'
+        },
+
+        tags: {
+            type: dataTypes.STRING(),
+            allowNull: true,
+            comment: '小说标签'
         },
 
         sourceName: {
@@ -82,16 +82,10 @@ module.exports = (sequelize, dataTypes) => {
             comment: '图片本地名'
         },
 
-        sourceImage: {
-            type: dataTypes.STRING(),
-            allowNull: true,
-            comment: '原图片地址'
-        },
-
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,
-            comment: '状态'
+            comment: '状态 1完本 2连载 3已下架'
         },
 
         remark: {
@@ -124,6 +118,6 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'biu_books_base'
+        tableName: 'biu_book_base'
     });
 };

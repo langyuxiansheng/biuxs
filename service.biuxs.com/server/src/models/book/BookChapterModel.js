@@ -1,30 +1,55 @@
 /**
- * 书籍与标签中间表数据模型
+ * 书籍章节数据模型
  * @param {*} sequelize
  * @param {*} dataTypes
  * 此模型仅限关系型数据库使用
  */
+const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
-    return sequelize.define('BookRelTag', {
+    return sequelize.define('BookChapter', {
 
-        tagId: {
+        chapterId: {
             type: dataTypes.STRING(),
             allowNull: false,
             primaryKey: true,
-            comment: '分类ID'
+            defaultValue: () => getTimeStampUUID(),
+            comment: '章节ID'
+        },
+
+        title: {
+            type: dataTypes.STRING(),
+            allowNull: true,
+            comment: '章节名称'
+        },
+
+        content: {
+            type: dataTypes.TEXT('long'),
+            allowNull: true,
+            comment: '章节内容'
+        },
+
+        url: {
+            type: dataTypes.STRING(),
+            allowNull: true,
+            comment: 'URL'
         },
 
         bookId: {
             type: dataTypes.STRING(),
             allowNull: false,
-            primaryKey: true,
-            comment: '书籍id'
+            comment: '书籍ID'
+        },
+
+        articleId: {
+            type: dataTypes.STRING(),
+            allowNull: false,
+            comment: '文章内容ID'
         },
 
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,
-            comment: '状态'
+            comment: '状态 1已完成内容抓取  2未完成内容抓取 3抓取内容失败'
         },
 
         remark: {
@@ -57,6 +82,6 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'biu_book_rel_tag'
+        tableName: 'biu_book_chapter'
     });
 };
