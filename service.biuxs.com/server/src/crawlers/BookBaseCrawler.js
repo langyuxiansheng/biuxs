@@ -15,6 +15,7 @@ const { BiuDB } = require(':lib/sequelize');
 const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
+        this.count = 0;
         TasksModel.sync().then((res) => {
             console.log(`TasksModel 同步成功`, res);
         });
@@ -83,43 +84,32 @@ module.exports = class BookBaseCrawler {
     async getBookTypes(page = 1) {
         try {
             const crawlerConfig = {
-                title: '全本小说网', //站点名
-                types: [//分类的采集器配置
+                base: {
+                    title: '全本小说网', //站点名
+                    protocol: 'https://', //协议
+                    host: 'www.quanben.net', //采集的域名
+                    charset: 'utf-8', //编码
+                    timeout: 1000 * 10, //超时
+                    listSelector: '#content .item-con', //列表选择器
+                    itemSelector: 'li', //列表选择器
+                    name: '.s2 > a:nth-child(1)', //书名名选择
+                    href: '.s2 > a:nth-child(1)' //详情链接
+                },
+                types: [//分类的参数配置
                     {
                         title: '玄幻小说', //分类标题
-                        protocol: 'https://', //协议
-                        host: 'www.quanben.net', //采集的域名
                         params: '/list/1_[page].html', //参数
-                        charset: 'utf-8', //编码
-                        timeout: 1000 * 10, //超时
-                        listSelector: '#content .item-con', //列表选择器
-                        itemSelector: 'li', //列表选择器
-                        name: '.s2 > a:nth-child(1)', //书名名选择
-                        href: '.s2 > a:nth-child(1)' //详情链接
+                        page: 1 //开始页码
                     },
                     {
                         title: '修真小说', //分类标题
-                        protocol: 'https://', //协议
-                        host: 'www.quanben.net', //采集的域名
                         params: '/list/2_[page].html', //参数
-                        charset: 'utf-8', //编码
-                        timeout: 1000 * 10, //超时
-                        listSelector: '#content .item-con', //列表选择器
-                        itemSelector: 'li', //列表选择器
-                        name: '.s2 > a:nth-child(1)', //书名名选择
-                        href: '.s2 > a:nth-child(1)' //详情链接
+                        page: 1 //开始页码
                     },
                     {
                         title: '言情小说', //分类标题
-                        protocol: 'https://', //协议
-                        host: 'www.quanben.net', //采集的域名
                         params: '/list/2_[page].html', //参数
-                        charset: 'utf-8', //编码
-                        timeout: 1000 * 10, //超时
-                        listSelector: '#content .item-con', //列表选择器
-                        itemSelector: 'li', //列表选择器
-                        name: '.s2 > a:nth-child(1)', //书名名选择
-                        href: '.s2 > a:nth-child(1)' //详情链接
+                        page: 1 //开始页码
                     }
                 ],
                 info: { //详情采集配置
@@ -140,7 +130,7 @@ module.exports = class BookBaseCrawler {
 
             //创建异步同时抓取多个分类
             const crawlers = crawlerConfig.types.map((config) => {
-                return this.getBookTypeBase(config);
+                return this.getBookTypeBase(crawlerConfig.base, config);
             });
             Promise.all(crawlers).then((res) => {
                 console.log(`抓取完成!`, res);
@@ -157,27 +147,30 @@ module.exports = class BookBaseCrawler {
     * @param {*} page 开始页数
     * @description 1抓取后存入任务表,进行异步抓取
     */
-    async getBookTypeBase(config, page = 1) {
-        const headers = this.__getRequestHeaders(config.host); //获取请求头
-        const params = config.params.replace('[page]', page); //替换url中的分页参数
-        const baseURL = `${config.protocol}${config.host}${params}`;
+    async getBookTypeBase(baseConf, config, page = 1) {
+        const headers = this.__getRequestHeaders(baseConf.host); //获取请求头
+        const params = config.params.replace('[page]', config.page); //替换url中的分页参数
+        const baseURL = `${baseConf.protocol}${baseConf.host}${params}`;
         try {
-            console.info(`============================================抓取开始 ${baseURL}-${config.title} BEGIN================================================`);
-            const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(config.timeout).charset(config.charset).buffer(true);
+            console.info(`============================================抓取开始 ${baseURL}-${baseConf.title}-${config.title} BEGIN================================================`);
+            const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(baseConf.timeout).charset(baseConf.charset).buffer(true);
             const list = [];
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
-                $(config.listSelector).find(config.itemSelector).each((index, el) => {
-                    const url = $(el).find(config.href).attr('href').trim(); //获取分类链接
+                $(baseConf.listSelector).find(baseConf.itemSelector).each((index, el) => {
                     list.push({
                         title: config.title, //分类标题
                         pingyin: tr.slugify(config.title).replace(/-/g, ''), //拼音
-                        name: $(el).find(config.name).text().trim(), //获取书籍名
-                        url: url
+                        website: baseConf.title, //站点名称
+                        domain: `${baseConf.protocol}${baseConf.host}`, //域名地址
+                        name: `抓取[baseConf.title]-[${config.title}]-[${$(el).find(config.name).text().trim()}]`, //任务名称
+                        url: `${baseConf.protocol}${baseConf.host}${$(el).find(baseConf.href).attr('href').trim()}`, //获取采集地址链接
+                        type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
+                        status: 1 //状态(1未开始 2进行中 3未完成 4已完成)
                     });
                 });
             }
-            console.info(`=============================================抓取结束 ${baseURL}-${config.title} END=================================================`);
+            console.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title} END=================================================`);
             if (list.length) {
                 console.log(list);
                 await this.saveData(config, list);
@@ -206,23 +199,22 @@ module.exports = class BookBaseCrawler {
             });
             if (datas && datas.length) { //查询数据库已有的数据
                 for (let i in datas) {
-                    //大于24小时的全部从IP池移除
                     for (let j in list) {
-                        if (datas[i].ip === list[j].ip) { //检测ip是否重复
+                        if (datas[i].name === list[j].name) { //检测任务是否重复
                             list.splice(j, 1); //删除数组中的重复数据
                         }
                     }
                 }
             }
             if (list && list.length) {
-                await TasksModel.bulkCreate(list); //创建或者更新
+                await TasksModel.bulkCreate(list);
                 const length = list.length;
                 this.count += length;
-                console.log(`本次保存IP: ${length} 条,本次共计保存: ${this.count} 条`);
+                console.log(`本次保存: ${length} 条任务,本次共计保存: ${this.count} 条任务`);
             }
             return true;
         } catch (error) {
-            console.log(`ip 数据保存出错`, error);
+            console.log(`任务数据保存出错`, error);
             return false;
         }
     }
