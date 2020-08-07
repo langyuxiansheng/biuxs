@@ -22,16 +22,10 @@ module.exports = (sequelize, dataTypes) => {
             comment: '章节名称'
         },
 
-        content: {
-            type: dataTypes.TEXT('long'),
-            allowNull: true,
-            comment: '章节内容'
-        },
-
         url: {
             type: dataTypes.STRING(),
             allowNull: true,
-            comment: 'URL'
+            comment: 'URL(内容详情地址)'
         },
 
         bookId: {

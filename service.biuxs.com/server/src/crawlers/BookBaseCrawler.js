@@ -123,7 +123,18 @@ module.exports = class BookBaseCrawler {
                     }
                 ],
                 info: { //详情采集配置
-
+                    titleSelector: '', //书本名称
+                    authorSelector: '', //作者名
+                    briefSelector: '', //书本简介
+                    letterCountSelector: '', //书本总字数
+                    chapterCountSelector: '', //书本总章节数
+                    sourceUrlCountSelector: '', //书本来源地址
+                    imageSelector: '', //图片封面选择器
+                    chapterListSelector: '#content .item-con', //章节列表容器选择器
+                    itemSelector: 'li', //章节列表
+                    chapterNameSelector: 'li', //章节名称
+                    contentUrlSelector: '', //内容详情地址
+                    contentSelector: '' //内容详情
                 }
             };
 
@@ -144,6 +155,7 @@ module.exports = class BookBaseCrawler {
     * 分类抓取
     * @param {*} config 配置项
     * @param {*} page 开始页数
+    * @description 1抓取后存入任务表,进行异步抓取
     */
     async getBookTypeBase(config, page = 1) {
         const headers = this.__getRequestHeaders(config.host); //获取请求头
@@ -170,7 +182,12 @@ module.exports = class BookBaseCrawler {
                 console.log(list);
                 await this.saveData(config, list);
                 page++;
-                this.getBookTypeBase(config, page);
+                //抓取间隔
+                const time = utils.getRandomNum(500, 2000);
+                console.log(`抓取间隔 ${time} ms`);
+                setTimeout(() => {
+                    this.getBookTypeBase(config, page);
+                }, time);
             }
         } catch (error) {
             console.log(`${baseURL}-${config.title}抓取错误!`, error);
