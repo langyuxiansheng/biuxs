@@ -59,7 +59,8 @@ log4js.configure({
         application: { appenders: ['application', 'out'], level: 'WARN' },
         accessErrorLogger: { appenders: ['accessErrorLogger', 'out'], level: 'WARN' },
         accessSimpleLogger: { appenders: ['accessSimpleLogger', 'out'], level: 'WARN' },
-        sqlLog: { appenders: ['sqlLog', 'out'], level: 'info' }
+        sqlLog: { appenders: ['sqlLog', 'out'], level: 'info' },
+        logger: { appenders: ['logger', 'out'], level: 'info' }
     }
 });
 
