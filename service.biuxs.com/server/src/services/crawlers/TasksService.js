@@ -62,17 +62,17 @@ module.exports = class {
     }
 
     /**
-     * 删除爬虫系统任务
+     * 运行爬虫系统任务
      * @param {*} param0
      */
-    async delTaskByIds({ ids, isDelete }, user) {
+    async runTaskById({ taskId, isDelete }, user) {
         //非超级管理员不可获取此菜单
         if (!isSuperAdmin(user)) return result.noAuthority();
-        if (!ids || !isDelete || !Array.isArray(ids)) return result.paramsLack();
+        if (!taskId) return result.paramsLack();
         try {
             //批量软删除
-            const del = { where: { taskId: ids } };
-            await TasksModel.update({ isDelete }, del);
+            // const del = { where: { taskId: ids } };
+            // await TasksModel.update({ isDelete }, del);
             return result.success();
         } catch (error) {
             console.error(error);
