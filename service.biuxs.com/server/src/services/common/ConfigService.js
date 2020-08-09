@@ -34,7 +34,6 @@ module.exports = class {
             data.userId = user.userId;
             data.userName = user.userName;
             await ConfigBaseModel.create(data);
-            redis.delData(`${user.userId}_${code}`);
             return result.success();
         } catch (error) {
             console.error(error);
@@ -82,8 +81,6 @@ module.exports = class {
     async getConfigByCode({ code }, user) {
         if (!code) return result.paramsLack();
         try {
-            const conf = await redis.getData(`${user.userId}_${code}`);
-            if (conf) return result.success(null, conf);
             let queryData = {
                 where: { code, isDelete: false },
                 order: [ ['createdTime', 'DESC'] ],
@@ -93,7 +90,32 @@ module.exports = class {
                 queryData.where.userId = user.userId;
             }
             const data = await ConfigBaseModel.findOne(queryData);
-            redis.setData(`${user.userId}_${code}`, data);
+            return result.success(null, data);
+        } catch (error) {
+            console.error(error);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     *  根据ID符获取配置项
+     * @param {*} param0
+     */
+    async getConfigById({ configId }, user) {
+        if (!configId) return result.paramsLack();
+        try {
+            const conf = await redis.getData(configId);
+            if (conf) return result.success(null, conf);
+            let queryData = {
+                where: { configId, isDelete: false },
+                order: [ ['createdTime', 'DESC'] ],
+                attributes: { exclude: ['isDelete'] }
+            };
+            if (!isSuperAdmin(user)) {
+                queryData.where.userId = user.userId;
+            }
+            const data = await ConfigBaseModel.findOne(queryData);
+            redis.setData(data.configId, data);
             return result.success(null, data);
         } catch (error) {
             console.error(error);
@@ -106,14 +128,16 @@ module.exports = class {
      * @param {*} data
      */
     async updateConfig(data, user) {
-        //非超级管理员不可获取此菜单
-        if (!data.configId) return result.paramsLack();
+        if (!checkParams(data, {
+            configId: 'string'
+        })) return result.paramsLack();
         try {
             const update = { where: { configId: data.configId } };
             if (!isSuperAdmin(user)) {
                 update.where.userId = user.userId;
             }
             await ConfigBaseModel.update(data, update);
+            redis.delData(data.configId);
             return result.success();
         } catch (error) {
             console.error(error);
@@ -134,6 +158,13 @@ module.exports = class {
                 del.where.userId = user.userId;
             }
             await ConfigBaseModel.update({ isDelete }, del);
+            if (ids.length == 1) {
+                redis.delData(ids[0]);
+            } else {
+                for (const key in ids) {
+                    redis.delData(ids[key]);
+                }
+            }
             return result.success();
         } catch (error) {
             console.error(error);

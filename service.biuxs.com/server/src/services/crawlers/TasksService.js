@@ -70,6 +70,8 @@ module.exports = class {
         if (!isSuperAdmin(user)) return result.noAuthority();
         if (!taskId) return result.paramsLack();
         try {
+            const task = await TasksModel.findOne({ where: { taskId } });
+            console.log(task);
             //批量软删除
             // const del = { where: { taskId: ids } };
             // await TasksModel.update({ isDelete }, del);

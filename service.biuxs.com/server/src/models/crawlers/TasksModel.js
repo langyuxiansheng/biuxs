@@ -46,6 +46,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '采集地址'
         },
 
+        configId: {
+            type: dataTypes.STRING(),
+            allowNull: false,
+            comment: '配置项ID'
+        },
+
         status: {
             type: dataTypes.INTEGER(2),
             allowNull: true,
