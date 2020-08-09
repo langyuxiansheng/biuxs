@@ -4,7 +4,7 @@
 const http = require('superagent');
 // const tr = require('transliteration'); //分类拼音
 const { logger } = require(':lib/logger4'); //日志系统
-// const redis = require(':lib/redis'); //redis
+const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
 require('superagent-proxy')(http);
 require('superagent-charset')(http);
@@ -98,14 +98,18 @@ module.exports = class BookBaseCrawler {
             const tl = tasks.length;
             if (tl) {
                 logger.info(`本次执行任务:${tl}条,总任务:${count}条`);
-                tasks.map((task) => {
-                    this.getBookInfo(task);
+                Promise.all(tasks.map((task) => {
+                    return this.getBookInfo(task);
+                })).then((res) => {
+                    const success = res.filter(item => item).length;
+                    const failed = res.filter(item => !item).length;
+                    logger.info(`本次执行的任务:${res.length}条,成功:${success}条,失败:${failed}条`, JSON.stringify(tasks));
                 });
             } else {
                 logger.warn(`没有需要执行的任务列表:`, tasks);
             }
         } catch (error) {
-            logger.error(`抓取站点的分类信息出错:`, JSON.stringify(error));
+            logger.error(`任务执行出错:`, JSON.stringify(error));
         }
     }
 
@@ -115,8 +119,15 @@ module.exports = class BookBaseCrawler {
      */
     async getTaskAndConfig(task) {
         try {
+            //优先读取缓存
+            const ccb = await redis.getData(task.configId);
+            if (ccb) return await this.getBookInfo(task, ccb.conf);
+            //再次读取数据库
             const cb = await ConfigBaseModel.findOne({ where: { isDelete: false, configId: task.configId } });
-            if (cb) return await this.getBookInfo(task, cb.conf);
+            if (cb) {
+                redis.setData(task.configId, cb);
+                return await this.getBookInfo(task, cb.conf);
+            };
             logger.error(`没有相关的配置项`);
         } catch (error) {
             logger.error(`抓取站点的分类信息出错:`, JSON.stringify(error));
