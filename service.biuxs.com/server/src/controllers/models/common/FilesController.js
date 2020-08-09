@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const FilesService = require(':services/common/FilesService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/files' });
 const service = new FilesService();
 
 //文件上传接口(单文件)

@@ -42,6 +42,13 @@ log4js.configure({
             encoding: 'utf-8',
             filename: path.join(SRC_PATH + '/logs/sqlLog/', 'sqlLog.log') // 生成文件路径和文件名
         },
+        logger: {
+            type: 'dateFile',
+            pattern: '-yyyy-MM-dd.log', // 通过日期来生成文件
+            alwaysIncludePattern: true, // 文件名始终以日期区分
+            encoding: 'utf-8',
+            filename: path.join(SRC_PATH + '/logs/logger/', 'logger.log') // 生成文件路径和文件名
+        },
         out: {
             type: 'console'
         }
@@ -52,7 +59,8 @@ log4js.configure({
         application: { appenders: ['application', 'out'], level: 'WARN' },
         accessErrorLogger: { appenders: ['accessErrorLogger', 'out'], level: 'WARN' },
         accessSimpleLogger: { appenders: ['accessSimpleLogger', 'out'], level: 'WARN' },
-        sqlLog: { appenders: ['sqlLog', 'out'], level: 'info' }
+        sqlLog: { appenders: ['sqlLog', 'out'], level: 'info' },
+        logger: { appenders: ['logger', 'out'], level: 'info' }
     }
 });
 
@@ -61,5 +69,6 @@ module.exports = {
     systemLogger: log4js.getLogger('application'), //记录所有应用级别的日志
     accessErrorLogger: log4js.getLogger('accessErrorLogger'), //记录所有访问时报错的日志
     accessSimpleLogger: log4js.getLogger('accessSimpleLogger'), //记录所有简单访问时报错的日志
-    sqlLog: log4js.getLogger('sqlLog') //记录所有SQL的日志
+    sqlLog: log4js.getLogger('sqlLog'), //记录所有SQL的日志
+    logger: log4js.getLogger('logger') //默认的日志模块
 };

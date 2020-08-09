@@ -13,4 +13,8 @@ controller.post('/validateProxyIP', async(ctx) => {
 controller.get('/manualStart', async(ctx) => {
     ctx.body = await service.manualStart(ctx.request.query);
 });
+
+controller.get('/manualTest', async(ctx) => {
+    ctx.body = await service.manualTest(ctx.request.query);
+});
 module.exports = controller;

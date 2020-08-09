@@ -5,7 +5,7 @@ const result = require(':lib/Result');
 const config = require(':config/server.base.config'); //配置文件
 const redis = require(':lib/redis'); //redis
 const { MODELS_PATH, getLC, signJWT, deepCloneObject, getUCMd5, getTimeStampUUID } = require(':lib/Utils');
-const { systemLogger } = require(':lib/logger4');
+const { logger } = require(':lib/logger4');
 const { BiuDB } = require(':lib/sequelize');
 const AdminBaseModel = BiuDB.import(`${MODELS_PATH}/system/AdminBaseModel`);
 module.exports = class {
@@ -42,8 +42,8 @@ module.exports = class {
             delete info['password']; //移除密码字段
             return result.success(null, { jwt, user: info });
         } catch (error) {
-            systemLogger.error(`管理员登录`, `LoginService.userLoginForSysAdmin`, error);
-            return result.failed();
+            logger.error(`管理员登录`, `LoginService.userLoginForSysAdmin`, JSON.stringify(error));
+            return result.failed(`登录出错!`, null, error);
         }
     }
 };

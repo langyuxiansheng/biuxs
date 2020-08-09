@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const LoginService = require(':services/common/LoginService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/login' });
 const service = new LoginService();
 
 //系统管理员登录

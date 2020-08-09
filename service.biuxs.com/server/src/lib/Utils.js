@@ -184,6 +184,22 @@ const Utils = {
     },
 
     /**
+     * 数组去重
+     * @param {*} arr 数组
+     * @param {*} key   key
+     */
+    uniqeByKeys(arr, key) {
+        let hash = {};
+        return arr.reduce((cur, next) => {
+            if (!hash[next[key]]) {
+                hash[next[key]] = true;
+                cur.push(next);
+            }
+            return cur;
+        }, []); //设置cur默认类型为数组，并且初始值为空的数组
+    },
+
+    /**
      * 获取json长度
      * @param {*} jsonData
      */

@@ -313,9 +313,9 @@ module.exports = class {
      * 管理员获取会员用户列表
      * @param {*} param0
      */
-    async getUserBaseList({ email, page, limit }, userInfo) {
+    async getUserBaseList({ email, page, limit }, user) {
         //非超级管理员不可获取此菜单
-        if (!isSuperAdmin(userInfo)) return result.noAuthority();
+        if (!isSuperAdmin(user)) return result.noAuthority();
         let queryData = {
             where: { isDelete: false },
             order: [

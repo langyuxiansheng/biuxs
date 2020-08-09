@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const PermissionService = require(':services/system/PermissionService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/prem' });
 const service = new PermissionService();
 
 //添加权限菜单

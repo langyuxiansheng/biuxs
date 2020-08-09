@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const UserService = require(':services/member/UserService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/user' });
 const service = new UserService();
 
 //用户注册

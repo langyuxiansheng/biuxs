@@ -3,7 +3,7 @@
  */
 const KoaRouter = require('koa-router');
 const AdminService = require(':services/system/AdminService');
-const controller = new KoaRouter();
+const controller = new KoaRouter({ prefix: '/admin' });
 const service = new AdminService();
 
 //添加

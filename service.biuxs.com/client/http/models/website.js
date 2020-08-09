@@ -6,7 +6,7 @@ export default {
      * @param {*} data
      */
     addWebsiteType: {
-        url: `${API_SERVER}/website/addWebsiteType`,
+        url: `${API_SERVER}/website/site/addWebsiteType`,
         method: 'post'
     },
 

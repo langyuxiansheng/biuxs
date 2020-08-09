@@ -103,15 +103,15 @@ module.exports = {
         /^\/Member/, //会员中心
         /^\/Search/, //搜索配置
         //api部分
-        /^\/v1\/api\/common\/getImgValidate/, //图片验证码
-        /^\/v1\/api\/common\/getEmailValidateCode/, //邮件验证码
-        /^\/v1\/api\/common\/sendEmail/, //邮件
-        /^\/v1\/api\/common\/userLoginForSysAdmin/, //登录接口
-        /^\/v1\/api\/member\/userRegister/, //用户注册接口
-        /^\/v1\/api\/member\/sendUserRegisterEmailCode/, //用户注册发送邮件验证码接口
-        /^\/v1\/api\/member\/userLogin/, //用户登录接口
-        /^\/v1\/api\/member\/userResetPwd/, //重置密码接口
-        /^\/v1\/api\/member\/sendUserResetPwdEmailCode/, //重置密码发送邮件验证码接口
+        /^\/v1\/api\/common\/utils\/getImgValidate/, //图片验证码
+        /^\/v1\/api\/common\/utils\/getEmailValidateCode/, //邮件验证码
+        /^\/v1\/api\/common\/utils\/sendEmail/, //邮件
+        /^\/v1\/api\/common\/login\/userLoginForSysAdmin/, //登录接口
+        // /^\/v1\/api\/member\/utils\/userRegister/, //用户注册接口
+        // /^\/v1\/api\/member\/sendUserRegisterEmailCode/, //用户注册发送邮件验证码接口
+        // /^\/v1\/api\/member\/userLogin/, //用户登录接口
+        // /^\/v1\/api\/member\/userResetPwd/, //重置密码接口
+        // /^\/v1\/api\/member\/sendUserResetPwdEmailCode/, //重置密码发送邮件验证码接口
         /^\/v1\/api\/biunav\/site/, //site接口面认证
         //====================爬虫接口==========================
         /^\/v1\/api\/crawlers\/getWebSiteBase/, //爬虫系统(抓取网站基础信息)

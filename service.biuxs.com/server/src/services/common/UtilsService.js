@@ -6,6 +6,7 @@ const emailTool = require(':lib/Email');
 const result = require(':lib/Result');
 const config = require(':config/server.base.config'); //配置文件
 const redis = require(':lib/redis'); //redis
+const { logger } = require(':lib/logger4'); //日志系统
 const { getYearMonthDay, getRandomNum, getTimeStamp } = require(':lib/Utils');
 module.exports = class {
     async getImgValidate({ size = 4, w = 100, h = 30 }, { session, request }) {
@@ -25,8 +26,10 @@ module.exports = class {
             session[config.imgCodeCookieKey] = text; //系统时间5分钟
             //设置验证码
             await redis.setData(`${config.imgCodeCookieKey}_${headers.origin}`, { origin: headers.origin, code: text }, 60 * 5); //设置为5分钟有效
-            return result.success(null, { img: data });
+            logger.info(`设置验证码:${text}`);
+            return result.success(null, { img: data, text });
         } catch (error) {
+            logger.error(`设置验证码出错:`, JSON.stringify(error));
             return result.failed(error);
         }
     }

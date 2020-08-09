@@ -289,9 +289,6 @@ module.exports = class IPProxyCrawler {
             const index = Number.parseInt(getRandomNum(0, ips.length));
             //从ip池里随机抽取一个ip
             return ips[index];
-            // const data = ips[index];
-            // const res = await this.testIP(data);
-            // if (res && res.active) return data;
         } catch (error) {
             console.log(`IP抽取失败! 方法:getRandomIPByPools`, error);
         }
