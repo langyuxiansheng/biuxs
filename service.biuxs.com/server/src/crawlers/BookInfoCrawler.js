@@ -2,7 +2,7 @@
  * 书籍的详情信息采集爬虫
  */
 const http = require('superagent');
-// const tr = require('transliteration'); //分类拼音
+const tr = require('transliteration'); //分类拼音
 const { logger } = require(':lib/logger4'); //日志系统
 const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
@@ -19,10 +19,13 @@ const BookBaseModel = BiuDB.import(`${MODELS_PATH}/book/BookBaseModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
         this.count = 0;
+        // BookBaseModel.sync().then((res) => {
+        //     console.log(`BookBaseModel 同步成功`, res);
+        // });
     }
 
     init() {
-
+        this.getTasks({});
     }
 
     start() {
@@ -78,9 +81,9 @@ module.exports = class BookBaseCrawler {
 
     /**
      * 获取任务列表
-     * @param {*} param0
+     * @param {*} param0 page 第1页，每次5条
      */
-    async getTasks({ page = 1, limit = 10 }) {
+    async getTasks({ page = 1, limit = 5 }) {
         let queryData = {
             where: { isDelete: false, status: 1 },
             order: [
@@ -94,22 +97,22 @@ module.exports = class BookBaseCrawler {
             queryData.limit = Number(limit); //每页限制返回的数据条数
         };
         try {
-            const { tasks, count } = await TasksModel.findAndCountAll(queryData);
-            const taskCount = tasks.length;
+            const { rows, count } = await TasksModel.findAndCountAll(queryData);
+            const taskCount = rows.length;
             if (taskCount) {
                 logger.info(`本次执行任务:${taskCount}条,总任务:${count}条`);
-                Promise.all(tasks.map((task) => {
-                    return this.getBookInfo(task);
+                Promise.all(rows.map((task) => {
+                    return this.getTaskAndConfig(task);
                 })).then((res) => {
                     const success = res.filter(item => item).length;
                     const failed = res.filter(item => !item).length;
-                    logger.info(`本次执行的任务:${res.length}条,成功:${success}条,失败:${failed}条`, JSON.stringify(tasks));
+                    logger.info(`本次执行的任务:${res.length}条,成功:${success}条,失败:${failed}条`, JSON.stringify(rows));
                 });
             } else {
-                logger.warn(`没有需要执行的任务列表:`, tasks);
+                logger.warn(`没有需要执行的任务列表:`, rows);
             }
         } catch (error) {
-            logger.error(`任务执行出错:`, JSON.stringify(error));
+            logger.error(`任务执行出错:${JSON.stringify(error)}`);
         }
     }
 
@@ -140,6 +143,7 @@ module.exports = class BookBaseCrawler {
     * @param {*} baseURL
     * @param {*} param1
     * @description 这里需要采集书籍的基本信息和章节信息 不包含章节的内容
+    * 1.脏数据类最后在来统一剔除，如内容中包含"内容简介："等文字
     */
     async getBookInfo(task, { base, info }) {
         const headers = this.__getRequestHeaders(base.host); //获取请求头
@@ -150,19 +154,20 @@ module.exports = class BookBaseCrawler {
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
                 //抓取书籍的详情
-                const title = $(info.titleSelector).trim(); //书本名称
-                const author = $(info.authorSelector).trim(); //作者名
-                const brief = $(info.briefSelector).trim(); //书本简介
-                const type = $(info.briefSelector).trim(); //书本分类
+                const title = $(info.titleSelector).text().trim(); //书本名称
+                const author = $(info.authorSelector).text().trim(); //作者名
+                const brief = $(info.briefSelector).text().trim(); //书本简介
+                const image = $(info.imageSelector).attr('src') || null;//图片地址
+                const type = task.name.split(']-[')[1]; //书本分类
+                const pinyin = tr.slugify(type).replace(/-/g, ''); //书本分类拼音
                 const letterCount = 0; //总字数
                 const chapterCount = 0; //总章节数
                 const readCount = 0; //阅读总数
-                const tags = null; //小说标签
+                const tags = type; //小说标签
                 const status = 2; //状态 1完本 2连载 3已下架(默认都为)
                 const sourceName = base.title; //来源名称
                 const sourceUrl = task.url; //来源名称
-                const image = null;//图片地址
-                book = { title, author, brief, type, letterCount, chapterCount, readCount, tags, status, sourceName, sourceUrl, image };
+                book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, sourceName, sourceUrl, image };
                 console.log(book);
                 this.saveData(book);
             }
@@ -190,7 +195,7 @@ module.exports = class BookBaseCrawler {
                 logger.info(`本次保存书籍:${book.title}`);
             }
         } catch (error) {
-            logger.error(`保存书籍出错:${book.title}出错,`, JSON.stringify(error));
+            logger.error(`保存书籍出错:${book.title}出错,${JSON.stringify(error)}`);
         }
     }
 };

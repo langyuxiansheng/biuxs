@@ -4,8 +4,8 @@
 const result = require(':lib/Result');
 // const IPProxyCrawler = require(':crawlers/IPProxyCrawler');
 // const ipc = new IPProxyCrawler();
-// const BookBaseCrawler = require(':crawlers/BookBaseCrawler');
-// const bbc = new BookBaseCrawler();
+const BookInfoCrawler = require(':crawlers/BookInfoCrawler');
+const bic = new BookInfoCrawler();
 const { SOP, BiuDB } = require(':lib/sequelize');
 const { MODELS_PATH, isSuperAdmin } = require(':lib/Utils');
 const { logger } = require(':lib/logger4');
@@ -65,16 +65,31 @@ module.exports = class {
      * 运行爬虫系统任务
      * @param {*} param0
      */
-    async runTaskById({ taskId, isDelete }, user) {
+    async runTaskById({ taskId }, user) {
         //非超级管理员不可获取此菜单
         if (!isSuperAdmin(user)) return result.noAuthority();
         if (!taskId) return result.paramsLack();
         try {
             const task = await TasksModel.findOne({ where: { taskId } });
-            console.log(task);
-            //批量软删除
-            // const del = { where: { taskId: ids } };
-            // await TasksModel.update({ isDelete }, del);
+            if (task && task.type == 1) {
+                console.log(task);
+                const book = await bic.getTaskAndConfig(task);
+                return result.success(null, book);
+            }
+            return result.success();
+        } catch (error) {
+            logger.error(`运行爬虫系统任务出错:${JSON.stringify(error)}`);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 手动抓取测试
+     * @param {*} param0
+     */
+    async manualTest({ page }) {
+        try {
+            bic.init();
             return result.success();
         } catch (error) {
             console.error(error);
