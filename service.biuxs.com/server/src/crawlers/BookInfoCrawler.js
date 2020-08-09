@@ -95,9 +95,9 @@ module.exports = class BookBaseCrawler {
         };
         try {
             const { tasks, count } = await TasksModel.findAndCountAll(queryData);
-            const tl = tasks.length;
-            if (tl) {
-                logger.info(`本次执行任务:${tl}条,总任务:${count}条`);
+            const taskCount = tasks.length;
+            if (taskCount) {
+                logger.info(`本次执行任务:${taskCount}条,总任务:${count}条`);
                 Promise.all(tasks.map((task) => {
                     return this.getBookInfo(task);
                 })).then((res) => {
