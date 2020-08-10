@@ -148,6 +148,7 @@ module.exports = class BookBaseCrawler {
     async getBookInfo(task, { base, info }) {
         const headers = this.__getRequestHeaders(base.host); //获取请求头
         try {
+            TasksModel.update({ status: 2 }, { where: { taskId: task.taskId } });
             logger.info(`============================================抓取开始 ${task.name}-${task.url} BEGIN================================================`);
             const { status, text } = await http.get(`${task.url}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
             let book = null;
@@ -169,11 +170,12 @@ module.exports = class BookBaseCrawler {
                 const sourceUrl = task.url; //来源名称
                 book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, sourceName, sourceUrl, image };
                 console.log(book);
-                this.saveData(book);
+                this.saveData(book, task);
             }
             logger.info(`============================================抓取结束 ${task.name}-${task.url} END================================================`);
             return book;
         } catch (error) {
+            TasksModel.update({ status: 3 }, { where: { taskId: task.taskId } });
             logger.error(`${task.name}-${task.url}抓取错误!`, JSON.stringify(error));
             return null;
         }
@@ -183,7 +185,7 @@ module.exports = class BookBaseCrawler {
      * 保存数据
      * @param {*} list
      */
-    async saveData(book) {
+    async saveData(book, task) {
         try {
             const count = await BookBaseModel.count({
                 where: { title: book.title, author: book.author, isDelete: false }
@@ -192,6 +194,7 @@ module.exports = class BookBaseCrawler {
                 logger.info(`书籍:${book.title}已存在`);
             } else {
                 BookBaseModel.create(book);
+                TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
                 logger.info(`本次保存书籍:${book.title}`);
             }
         } catch (error) {
