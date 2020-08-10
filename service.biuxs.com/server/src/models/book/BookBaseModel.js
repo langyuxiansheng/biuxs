@@ -58,6 +58,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '分类名称'
         },
 
+        pinyin: {
+            type: dataTypes.STRING(),
+            allowNull: true,
+            comment: '分类名称拼音'
+        },
+
         tags: {
             type: dataTypes.STRING(),
             allowNull: true,

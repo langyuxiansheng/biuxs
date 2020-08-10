@@ -21,4 +21,14 @@ controller.delete('/delTaskByIds', async(ctx) => {
     ctx.body = await service.delTaskByIds(ctx.request.body, ctx.state.user);
 });
 
+//运行爬虫系统任务
+controller.post('/runTaskById', async(ctx) => {
+    ctx.body = await service.runTaskById(ctx.request.body, ctx.state.user);
+});
+
+//运行爬虫系统任务测试
+controller.get('/manualTest', async(ctx) => {
+    ctx.body = await service.manualTest(ctx.request.query);
+});
+
 module.exports = controller;
