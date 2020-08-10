@@ -17,12 +17,19 @@ const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
 const ConfigBaseModel = BiuDB.import(`${MODELS_PATH}/common/ConfigBaseModel`);
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/book/BookBaseModel`);
 const BookChapterModel = BiuDB.import(`${MODELS_PATH}/book/BookChapterModel`);
+const BookArticleModel = BiuDB.import(`${MODELS_PATH}/book/BookArticleModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
         this.count = 0;
         // BookBaseModel.sync().then((res) => {
         //     console.log(`BookBaseModel 同步成功`, res);
         // });
+        BookChapterModel.sync().then((res) => {
+            console.log(`BookChapterModel 同步成功`, res);
+        });
+        BookArticleModel.sync().then((res) => {
+            console.log(`BookArticleModel 同步成功`, res);
+        });
     }
 
     init() {
@@ -82,9 +89,9 @@ module.exports = class BookBaseCrawler {
 
     /**
      * 获取任务列表
-     * @param {*} param0 page 第1页，每次5条
+     * @param {*} param0 page 第1页，每次2条
      */
-    async getTasks({ page = 1, limit = 5 }) {
+    async getTasks({ page = 1, limit = 2 }) {
         let queryData = {
             where: { isDelete: false, status: 1 },
             order: [
@@ -176,17 +183,18 @@ module.exports = class BookBaseCrawler {
                     console.log(bookId);
                     const chapterList = [];
                     $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
+                        const t = $(el).find(info.chapterNameSelector).text().split('章');
                         chapterList.push({
                             bookId,
-                            title: $(el).find(info.chapterNameSelector).text().trim(), //获取章节标题
+                            title: t.length > 1 ? `第${index + 1}章 ${t[1].trim()}` : $(el).find(info.chapterNameSelector).text(), //获取章节标题   new RegExp(`[第(.*?)章|第(.*?)回|第(.*?)集|第(.*?)卷|第(.*?)部|第(.*?)篇|第(.*?)节|第(.*?)季]`, 'g')
                             url: $(el).find(info.contentUrlSelector).attr('href').trim(), //获取章节内容采集地址链接
                             type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
                             status: 2, //状态 1已完成内容抓取  2未完成内容抓取 3抓取内容失败
-                            remark: ``
+                            remark: `初次抓取章节`
                         });
                     });
                     if (chapterList.length) {
-                        this.saveBookChapterData(chapterList, bookId);
+                        this.saveBookChapterData(chapterList, bookId, task);
                     } else {
                         logger.info(`未抓取到相关章节!,${task.url}`);
                     }
@@ -205,7 +213,7 @@ module.exports = class BookBaseCrawler {
      * 保存数据
      * @param {*} list
      */
-    async saveBookInfoData(book, task) {
+    async saveBookInfoData(book) {
         let bookId = null;
         try {
             const count = await BookBaseModel.count({
@@ -215,7 +223,6 @@ module.exports = class BookBaseCrawler {
                 logger.info(`书籍:${book.title}已存在`);
             } else {
                 const res = await BookBaseModel.create(book);
-                TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
                 logger.info(`本次保存书籍:${book.title}`);
                 bookId = res && res.bookId;
             }
@@ -229,7 +236,7 @@ module.exports = class BookBaseCrawler {
      * 保存章节数据
      * @param {*} list
      */
-    async saveBookChapterData(list, bookId) {
+    async saveBookChapterData(list, bookId, task) {
         try {
             const datas = await BookChapterModel.findAll({
                 where: { bookId, isDelete: false }
@@ -246,6 +253,8 @@ module.exports = class BookBaseCrawler {
             if (list && list.length) {
                 const res = await BookChapterModel.bulkCreate(list);
                 logger.info(`本次保存: ${res.length} 条章节`);
+                //只有完成了章节抓取的才算完成了任务
+                TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
             }
             return true;
         } catch (error) {
