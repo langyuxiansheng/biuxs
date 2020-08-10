@@ -186,7 +186,8 @@ module.exports = class BookBaseCrawler {
                         const t = $(el).find(info.chapterNameSelector).text().split('章');
                         chapterList.push({
                             bookId,
-                            title: t.length > 1 ? `第${index + 1}章 ${t[1].trim()}` : $(el).find(info.chapterNameSelector).text(), //获取章节标题   new RegExp(`[第(.*?)章|第(.*?)回|第(.*?)集|第(.*?)卷|第(.*?)部|第(.*?)篇|第(.*?)节|第(.*?)季]`, 'g')
+                            index: index + 1,
+                            title: t.length > 1 ? t[1].trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题   new RegExp(`[第(.*?)章|第(.*?)回|第(.*?)集|第(.*?)卷|第(.*?)部|第(.*?)篇|第(.*?)节|第(.*?)季]`, 'g')
                             url: $(el).find(info.contentUrlSelector).attr('href').trim(), //获取章节内容采集地址链接
                             type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
                             status: 2, //状态 1已完成内容抓取  2未完成内容抓取 3抓取内容失败
