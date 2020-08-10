@@ -123,7 +123,8 @@ module.exports = class BookBaseCrawler {
                         name: `抓取[${baseConf.title}]-[${config.title}]-[${$(el).find(baseConf.name).text().trim()}]`, //任务名称
                         url: `${baseConf.protocol}${baseConf.host}${$(el).find(baseConf.href).attr('href').trim()}`, //获取采集地址链接
                         type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
-                        status: 1 //状态(1未开始 2进行中 3未完成 4已完成)
+                        status: 1, //状态(1未开始 2进行中 3未完成 4已完成)
+                        remark: `建立抓取任务 ${baseURL}-${baseConf.title}-${config.title}`
                     });
                 });
             }

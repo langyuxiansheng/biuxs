@@ -16,6 +16,7 @@ const { BiuDB } = require(':lib/sequelize');
 const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
 const ConfigBaseModel = BiuDB.import(`${MODELS_PATH}/common/ConfigBaseModel`);
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/book/BookBaseModel`);
+const BookChapterModel = BiuDB.import(`${MODELS_PATH}/book/BookChapterModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
         this.count = 0;
@@ -157,7 +158,7 @@ module.exports = class BookBaseCrawler {
                 //抓取书籍的详情
                 const title = $(info.titleSelector).text().trim(); //书本名称
                 const author = $(info.authorSelector).text().trim(); //作者名
-                const brief = $(info.briefSelector).text().trim(); //书本简介
+                const brief = $(info.briefSelector).text().replace(new RegExp('内容简介：'), '').trim(); //书本简介
                 const image = $(info.imageSelector).attr('src') || null;//图片地址
                 const type = task.name.split(']-[')[1]; //书本分类
                 const pinyin = tr.slugify(type).replace(/-/g, ''); //书本分类拼音
@@ -167,10 +168,29 @@ module.exports = class BookBaseCrawler {
                 const tags = type; //小说标签
                 const status = 2; //状态 1完本 2连载 3已下架(默认都为)
                 const sourceName = base.title; //来源名称
-                const sourceUrl = task.url; //来源名称
-                book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, sourceName, sourceUrl, image };
-                console.log(book);
-                this.saveData(book, task);
+                const sourceUrl = task.url; //来源地址
+                const remark = `初次抓取${task.name}-${task.url}`;
+                book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, sourceName, sourceUrl, image, remark };
+                const bookId = await this.saveBookInfoData(book, task);
+                if (bookId) { //如果书籍是新抓取的就进行章节抓取
+                    console.log(bookId);
+                    const chapterList = [];
+                    $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
+                        chapterList.push({
+                            bookId,
+                            title: $(el).find(info.chapterNameSelector).text().trim(), //获取章节标题
+                            url: $(el).find(info.contentUrlSelector).attr('href').trim(), //获取章节内容采集地址链接
+                            type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
+                            status: 2, //状态 1已完成内容抓取  2未完成内容抓取 3抓取内容失败
+                            remark: ``
+                        });
+                    });
+                    if (chapterList.length) {
+                        this.saveBookChapterData(chapterList, bookId);
+                    } else {
+                        logger.info(`未抓取到相关章节!,${task.url}`);
+                    }
+                }
             }
             logger.info(`============================================抓取结束 ${task.name}-${task.url} END================================================`);
             return book;
@@ -185,7 +205,8 @@ module.exports = class BookBaseCrawler {
      * 保存数据
      * @param {*} list
      */
-    async saveData(book, task) {
+    async saveBookInfoData(book, task) {
+        let bookId = null;
         try {
             const count = await BookBaseModel.count({
                 where: { title: book.title, author: book.author, isDelete: false }
@@ -193,12 +214,43 @@ module.exports = class BookBaseCrawler {
             if (count) { //查询数据库已有的数据
                 logger.info(`书籍:${book.title}已存在`);
             } else {
-                BookBaseModel.create(book);
+                const res = await BookBaseModel.create(book);
                 TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
                 logger.info(`本次保存书籍:${book.title}`);
+                bookId = res && res.bookId;
             }
         } catch (error) {
             logger.error(`保存书籍出错:${book.title}出错,${JSON.stringify(error)}`);
+        }
+        return bookId;
+    }
+
+    /**
+     * 保存章节数据
+     * @param {*} list
+     */
+    async saveBookChapterData(list, bookId) {
+        try {
+            const datas = await BookChapterModel.findAll({
+                where: { bookId, isDelete: false }
+            });
+            if (datas && datas.length) { //查询数据库已有的数据
+                for (let i in datas) {
+                    for (let j in list) {
+                        if (datas[i].title === list[j].title) { //检测任务是否重复
+                            list.splice(j, 1); //删除数组中的重复数据
+                        }
+                    }
+                }
+            }
+            if (list && list.length) {
+                const res = await BookChapterModel.bulkCreate(list);
+                logger.info(`本次保存: ${res.length} 条章节`);
+            }
+            return true;
+        } catch (error) {
+            logger.error(`章节数据保存出错:${JSON.stringify(error)}`);
+            return false;
         }
     }
 };
