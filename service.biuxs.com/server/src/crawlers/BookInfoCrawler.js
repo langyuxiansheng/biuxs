@@ -215,10 +215,9 @@ module.exports = class BookBaseCrawler {
 
     /**
     * 获取章节的详情内容信息
-    * @param {*} baseURL
-    * @param {*} param1
-    * @description 这里需要采集书籍的基本信息和章节信息 不包含章节的内容
-    * 1.脏数据类最后在来统一剔除，如内容中包含"内容简介："等文字
+    * @param {*} chapter 章节对象
+    * @param {*} { base, info } 配置信息
+    * @description 这里需要采集章节的内容部分
     */
     async getChapterArticle(chapter, { base, info }) {
         const headers = this.__getRequestHeaders(base.host); //获取请求头
