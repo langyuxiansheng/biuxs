@@ -116,14 +116,16 @@ module.exports = class BookBaseCrawler {
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
                 $(baseConf.listSelector).find(baseConf.itemSelector).each((index, el) => {
+                    const url = $(el).find(baseConf.href).attr('href').trim();
                     list.push({
                         configId: config.configId,
                         website: baseConf.title, //站点名称
                         domain: `${baseConf.protocol}${baseConf.host}`, //域名地址
                         name: `抓取[${baseConf.title}]-[${config.title}]-[${$(el).find(baseConf.name).text().trim()}]`, //任务名称
-                        url: `${baseConf.protocol}${baseConf.host}${$(el).find(baseConf.href).attr('href').trim()}`, //获取采集地址链接
+                        url: url && url.indexOf('http') != -1 ? url : `${baseConf.protocol}${baseConf.host}${url}`, //获取采集地址链接
                         type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
-                        status: 1 //状态(1未开始 2进行中 3未完成 4已完成)
+                        status: 1, //状态(1未开始 2进行中 3未完成 4已完成)
+                        remark: `建立抓取任务 ${baseURL}-${baseConf.title}-${config.title}`
                     });
                 });
             }
