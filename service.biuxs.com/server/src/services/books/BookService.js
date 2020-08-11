@@ -52,7 +52,7 @@ module.exports = class {
             await BiuDB.transaction(async(t) => {
                 const del = { where: { bookId: ids } };
                 //同步删除书籍 章节 和章节内容表
-                await BookBaseModel.destroy(del, { transaction: t, aa });
+                await BookBaseModel.destroy(del, { transaction: t });
                 await BookChapterModel.destroy(del, { transaction: t });
                 return BookArticleModel.destroy(del, { transaction: t });
             });
