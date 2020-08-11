@@ -47,7 +47,7 @@ module.exports = class BookBaseCrawler {
         const time = utils.getRandomNum(0, 59);
         this.RULE = this.__getScheduleJobRule(time, time);
         schedule.scheduleJob(this.RULE, () => {
-            console.log('定时抓取新浪微博的热搜词:' + new Date());
+            console.log('定时抓取:' + new Date());
             this.RULE = this.__getScheduleJobRule(time, time);
         });
     }
