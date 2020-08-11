@@ -227,14 +227,15 @@ module.exports = class BookBaseCrawler {
             const { status, text } = await http.get(`${chapter.url}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
-                const articleId = chapter.chapterId;
+                const articleId = chapter.chapterId; //内容id同章节id
+                const bookId = chapter.bookId; //书籍id
                 //抓取章节的内容详情
                 const title = chapter.title; //书本名称
                 const content = $(info.contentSelector).text().trim();
                 const letterCount = content && content.length; //总字数
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
-                article = await this.saveChapterArticleData({ articleId, title, letterCount, status, remark });
+                article = await this.saveChapterArticleData({ articleId, title, letterCount, status, bookId, remark });
             }
             taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
         } catch (error) {

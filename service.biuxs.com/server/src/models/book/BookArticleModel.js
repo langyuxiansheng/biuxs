@@ -38,6 +38,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '状态'
         },
 
+        bookId: {
+            type: dataTypes.STRING(),
+            allowNull: false,
+            comment: '书籍ID 方便统计与删除'
+        },
+
         remark: {
             type: dataTypes.STRING(255),
             allowNull: true,
