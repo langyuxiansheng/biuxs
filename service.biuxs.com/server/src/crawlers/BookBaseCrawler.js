@@ -44,7 +44,7 @@ module.exports = class BookBaseCrawler {
                 taskLog.error(`没有相关的配置项`);
             }
         } catch (error) {
-            taskLog.error(`抓取站点的分类信息出错:`, JSON.stringify(error));
+            taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
         }
     }
 
@@ -143,7 +143,7 @@ module.exports = class BookBaseCrawler {
             taskLog.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title} END=================================================`);
             return list;
         } catch (error) {
-            taskLog.error(`${baseURL}-${baseConf.title}-${config.title}抓取错误!`, JSON.stringify(error));
+            taskLog.error(`${baseURL}-${baseConf.title}-${config.title}抓取错误!`, new Error(error));
             return null;
         }
     }

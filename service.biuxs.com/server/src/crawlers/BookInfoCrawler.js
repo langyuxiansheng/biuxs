@@ -15,9 +15,9 @@ const { MODELS_PATH } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
 const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
 const ConfigBaseModel = BiuDB.import(`${MODELS_PATH}/common/ConfigBaseModel`);
-const BookBaseModel = BiuDB.import(`${MODELS_PATH}/book/BookBaseModel`);
-const BookChapterModel = BiuDB.import(`${MODELS_PATH}/book/BookChapterModel`);
-const BookArticleModel = BiuDB.import(`${MODELS_PATH}/book/BookArticleModel`);
+const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
+const BookChapterModel = BiuDB.import(`${MODELS_PATH}/books/BookChapterModel`);
+const BookArticleModel = BiuDB.import(`${MODELS_PATH}/books/BookArticleModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
         this.count = 0;
@@ -120,7 +120,7 @@ module.exports = class BookBaseCrawler {
                 taskLog.warn(`没有需要执行的任务列表:`, rows);
             }
         } catch (error) {
-            taskLog.error(`任务执行出错:${JSON.stringify(error)}`);
+            taskLog.error(`任务执行出错:${new Error(error)}`);
         }
     }
 
@@ -141,7 +141,7 @@ module.exports = class BookBaseCrawler {
             };
             taskLog.error(`没有相关的配置项`);
         } catch (error) {
-            taskLog.error(`抓取站点的分类信息出错:`, JSON.stringify(error));
+            taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
         }
         return null;
     }
@@ -208,7 +208,7 @@ module.exports = class BookBaseCrawler {
             return book;
         } catch (error) {
             TasksModel.update({ status: 3 }, { where: { taskId: task.taskId } });
-            taskLog.error(`${task.name}-${task.url}抓取错误!`, JSON.stringify(error));
+            taskLog.error(`${task.name}-${task.url}抓取错误!`, new Error(error));
             return null;
         }
     }
@@ -239,7 +239,7 @@ module.exports = class BookBaseCrawler {
             }
             taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
         } catch (error) {
-            taskLog.error(`${chapter.title}-${chapter.url}抓取错误!`, JSON.stringify(error));
+            taskLog.error(`${chapter.title}-${chapter.url}抓取错误!`, new Error(error));
         }
         return article;
     }
@@ -262,7 +262,7 @@ module.exports = class BookBaseCrawler {
                 bookId = res && res.bookId;
             }
         } catch (error) {
-            taskLog.error(`保存书籍出错:${book.title}出错,${JSON.stringify(error)}`);
+            taskLog.error(`保存书籍出错:${book.title}出错,${new Error(error)}`);
         }
         return bookId;
     }
@@ -293,7 +293,7 @@ module.exports = class BookBaseCrawler {
             }
             return true;
         } catch (error) {
-            taskLog.error(`章节数据保存出错:${JSON.stringify(error)}`);
+            taskLog.error(`章节数据保存出错:${new Error(error)}`);
             return false;
         }
     }
@@ -311,7 +311,7 @@ module.exports = class BookBaseCrawler {
             }
             return res;
         } catch (error) {
-            taskLog.error(`章节内容数据保存出错:${JSON.stringify(error)}`);
+            taskLog.error(`章节内容数据保存出错:${new Error(error)}`);
             return null;
         }
     }

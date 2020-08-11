@@ -39,7 +39,7 @@ module.exports = class {
             const { rows, count } = await TasksModel.findAndCountAll(queryData);
             return result.success(null, { list: rows, total: count });
         } catch (error) {
-            logger.error(`获取爬虫系统任务列表失败:`, JSON.stringify(error));
+            logger.error(`获取爬虫系统任务列表失败:`, new Error(error));
             return result.failed(error);
         }
     }
@@ -78,7 +78,7 @@ module.exports = class {
             }
             return result.success();
         } catch (error) {
-            logger.error(`运行爬虫系统任务出错:${JSON.stringify(error)}`);
+            logger.error(`运行爬虫系统任务出错:${new Error(error)}`);
             return result.failed(error);
         }
     }

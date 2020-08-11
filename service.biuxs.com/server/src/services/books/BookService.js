@@ -5,9 +5,9 @@ const result = require(':lib/Result');
 const { logger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, isSuperAdmin } = require(':lib/Utils');
 const { SOP, BiuDB } = require(':lib/sequelize');
-const BookBaseModel = BiuDB.import(`${MODELS_PATH}/book/BookBaseModel`);
-const BookChapterModel = BiuDB.import(`${MODELS_PATH}/book/BookChapterModel`);
-const BookArticleModel = BiuDB.import(`${MODELS_PATH}/book/BookArticleModel`);
+const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
+const BookChapterModel = BiuDB.import(`${MODELS_PATH}/books/BookChapterModel`);
+const BookArticleModel = BiuDB.import(`${MODELS_PATH}/books/BookArticleModel`);
 module.exports = class {
     /**
      * 管理员获取书籍列表
@@ -35,7 +35,7 @@ module.exports = class {
             const { rows, count } = await BookBaseModel.findAndCountAll(queryData);
             return result.success(null, { list: rows, total: count });
         } catch (error) {
-            logger.error(`管理员获取书籍列表出错:${JSON.stringify(error)}`);
+            logger.error(`管理员获取书籍列表出错:${new Error(error)}`);
             return result.failed(error);
         }
     }
@@ -49,17 +49,16 @@ module.exports = class {
         if (!isSuperAdmin(user)) return result.noAuthority();
         if (!ids || !isDelete || !Array.isArray(ids)) return result.paramsLack();
         try {
-            //批量软删除
-            const del = { where: { bookId: ids } };
             await BiuDB.transaction(async(t) => {
+                const del = { where: { bookId: ids } };
                 //同步删除书籍 章节 和章节内容表
-                await BookBaseModel.destroy(del, { transaction: t });
+                await BookBaseModel.destroy(del, { transaction: t, aa });
                 await BookChapterModel.destroy(del, { transaction: t });
                 return BookArticleModel.destroy(del, { transaction: t });
             });
             return result.success();
         } catch (error) {
-            logger.error(`管理员删除书籍出错:${JSON.stringify(error)}`);
+            logger.error(`管理员删除书籍出错:${new Error(error)}`);
             return result.failed(error);
         }
     }
@@ -75,7 +74,7 @@ module.exports = class {
             await BookBaseModel.update(data, { where: { bookId: data.bookId } });
             return result.success(null);
         } catch (error) {
-            logger.error(`管理员修改书籍出错:${JSON.stringify(error)}`);
+            logger.error(`管理员修改书籍出错:${new Error(error)}`);
             return result.failed(error);
         }
     }

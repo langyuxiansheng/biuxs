@@ -2,7 +2,7 @@
  * 书籍管理
  */
 const KoaRouter = require('koa-router');
-const BookService = require(':services/book/BookService');
+const BookService = require(':services/books/BookService');
 const controller = new KoaRouter({ prefix: '/book' });
 const service = new BookService();
 

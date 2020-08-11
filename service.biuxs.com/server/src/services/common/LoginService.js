@@ -42,7 +42,7 @@ module.exports = class {
             delete info['password']; //移除密码字段
             return result.success(null, { jwt, user: info });
         } catch (error) {
-            logger.error(`管理员登录`, `LoginService.userLoginForSysAdmin`, JSON.stringify(error));
+            logger.error(`管理员登录`, `LoginService.userLoginForSysAdmin`, new Error(error));
             return result.failed(`登录出错!`, null, error);
         }
     }
