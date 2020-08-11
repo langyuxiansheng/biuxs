@@ -2,6 +2,7 @@
  * 错误捕获
  */
 const result = require(':lib/Result');
+const { systemLogger } = require(':lib/logger4'); //日志系统
 module.exports = (ctx, next) => {
     return next().catch((err) => {
         const status = err.status;
@@ -12,5 +13,6 @@ module.exports = (ctx, next) => {
         } else {
             ctx.body = result.failed(null, String(err));
         }
+        systemLogger.error(err);
     });
 };
