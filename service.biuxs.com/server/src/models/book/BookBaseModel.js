@@ -94,6 +94,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '状态 1完本 2连载 3已下架'
         },
 
+        configId: {
+            type: dataTypes.STRING(),
+            allowNull: false,
+            comment: '配置项ID'
+        },
+
         remark: {
             type: dataTypes.STRING(255),
             allowNull: true,

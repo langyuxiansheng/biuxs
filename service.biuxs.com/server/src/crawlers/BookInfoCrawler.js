@@ -21,9 +21,9 @@ const BookArticleModel = BiuDB.import(`${MODELS_PATH}/book/BookArticleModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
         this.count = 0;
-        // BookBaseModel.sync().then((res) => {
-        //     console.log(`BookBaseModel 同步成功`, res);
-        // });
+        BookBaseModel.sync().then((res) => {
+            console.log(`BookBaseModel 同步成功`, res);
+        });
         BookChapterModel.sync().then((res) => {
             console.log(`BookChapterModel 同步成功`, res);
         });
@@ -173,24 +173,27 @@ module.exports = class BookBaseCrawler {
                 const chapterCount = 0; //总章节数
                 const readCount = 0; //阅读总数
                 const tags = type; //小说标签
+                const configId = task.configId;
                 const status = 2; //状态 1完本 2连载 3已下架(默认都为)
                 const sourceName = base.title; //来源名称
                 const sourceUrl = task.url; //来源地址
                 const remark = `初次抓取${task.name}-${task.url}`;
-                book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, sourceName, sourceUrl, image, remark };
+                book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, configId, sourceName, sourceUrl, image, remark };
                 const bookId = await this.saveBookInfoData(book, task);
                 if (bookId) { //如果书籍是新抓取的就进行章节抓取
                     console.log(bookId);
                     const chapterList = [];
                     $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
                         const t = $(el).find(info.chapterNameSelector).text().split('章');
+                        const url = $(el).find(info.contentUrlSelector).attr('href').trim();
                         chapterList.push({
                             bookId,
+                            configId,
                             index: index + 1,
-                            title: t.length > 1 ? t[1].trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题   new RegExp(`[第(.*?)章|第(.*?)回|第(.*?)集|第(.*?)卷|第(.*?)部|第(.*?)篇|第(.*?)节|第(.*?)季]`, 'g')
-                            url: $(el).find(info.contentUrlSelector).attr('href').trim(), //获取章节内容采集地址链接
+                            title: t.length > 1 ? t[1].trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题
+                            url: url && url.indexOf('http') != -1 ? url : `${base.protocol}${base.host}${url}`, //获取章节内容采集地址链接
                             type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
-                            status: 2, //状态 1已完成内容抓取  2未完成内容抓取 3抓取内容失败
+                            status: 1, //状态 1未完成内容抓取  2已完成内容抓取 3抓取内容失败
                             remark: `初次抓取章节`
                         });
                     });
@@ -208,6 +211,37 @@ module.exports = class BookBaseCrawler {
             logger.error(`${task.name}-${task.url}抓取错误!`, JSON.stringify(error));
             return null;
         }
+    }
+
+    /**
+    * 获取章节的详情内容信息
+    * @param {*} baseURL
+    * @param {*} param1
+    * @description 这里需要采集书籍的基本信息和章节信息 不包含章节的内容
+    * 1.脏数据类最后在来统一剔除，如内容中包含"内容简介："等文字
+    */
+    async getChapterArticle(chapter, { base, info }) {
+        const headers = this.__getRequestHeaders(base.host); //获取请求头
+        let article = null;
+        try {
+            logger.info(`============================================抓取开始 ${chapter.title}-${chapter.url} BEGIN================================================`);
+            const { status, text } = await http.get(`${chapter.url}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
+            if (status == 200) {
+                const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
+                const articleId = chapter.chapterId;
+                //抓取章节的内容详情
+                const title = chapter.title; //书本名称
+                const content = $(info.contentSelector).text().trim();
+                const letterCount = content && content.length; //总字数
+                const status = 1; //状态 1正常(默认都为)
+                const remark = `初次抓取${title}-${chapter.url}`;
+                article = await this.saveChapterArticleData({ articleId, title, letterCount, status, remark });
+            }
+            logger.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
+        } catch (error) {
+            logger.error(`${chapter.title}-${chapter.url}抓取错误!`, JSON.stringify(error));
+        }
+        return article;
     }
 
     /**
@@ -261,6 +295,24 @@ module.exports = class BookBaseCrawler {
         } catch (error) {
             logger.error(`章节数据保存出错:${JSON.stringify(error)}`);
             return false;
+        }
+    }
+
+    /**
+     * 保存内容数据
+     * @param {*} content
+     */
+    async saveChapterArticleData(article) {
+        try {
+            const res = await BookArticleModel.create(article);
+            if (res && res.articleId) {
+                logger.info(`本次保存: ${article}-${article.content}`);
+                await BookChapterModel.update({ status: 2 }, { where: { chapterId: res.articleId } });
+            }
+            return res;
+        } catch (error) {
+            logger.error(`章节内容数据保存出错:${JSON.stringify(error)}`);
+            return null;
         }
     }
 };

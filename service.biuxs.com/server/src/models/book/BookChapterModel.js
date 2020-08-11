@@ -46,6 +46,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '状态 1已完成内容抓取  2未完成内容抓取 3抓取内容失败'
         },
 
+        configId: {
+            type: dataTypes.STRING(),
+            allowNull: false,
+            comment: '配置项ID'
+        },
+
         remark: {
             type: dataTypes.STRING(255),
             allowNull: true,
