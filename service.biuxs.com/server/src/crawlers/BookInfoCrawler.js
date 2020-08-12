@@ -110,7 +110,7 @@ module.exports = class BookBaseCrawler {
             if (taskCount) {
                 taskLog.info(`本次执行任务:${taskCount}条,总任务:${count}条`);
                 Promise.all(rows.map((task) => {
-                    return this.getTaskAndConfig(task);
+                    return this.runTask(task);
                 })).then((res) => {
                     const success = res.filter(item => item).length;
                     const failed = res.filter(item => !item).length;
@@ -125,25 +125,56 @@ module.exports = class BookBaseCrawler {
     }
 
     /**
-     * 获取任务信息和配置信息
+     * 运行基础任务抓取书籍的基本信息
      * @param page
      */
-    async getTaskAndConfig(task) {
+    async runTask(task) {
         try {
-            //优先读取缓存
-            const ccb = await redis.getData(task.configId);
-            if (ccb) return await this.getBookInfo(task, ccb.conf);
-            //再次读取数据库
-            const cb = await ConfigBaseModel.findOne({ where: { isDelete: false, configId: task.configId } });
-            if (cb) {
-                redis.setData(task.configId, cb);
-                return await this.getBookInfo(task, cb.conf);
-            };
+            const config = await this.getConfigById(task);
+            if (config) return await this.getBookInfo(task, config.conf);
             taskLog.error(`没有相关的配置项`);
         } catch (error) {
             taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
         }
         return null;
+    }
+
+    /**
+     * 运行抓取章节内容任务
+     * @param page
+     */
+    async runArticleTask(chapter) {
+        try {
+            const config = await this.getConfigById(chapter);
+            if (config) return await this.getChapterArticle(chapter, config.conf);
+            taskLog.error(`没有相关的配置项`);
+        } catch (error) {
+            taskLog.error(`抓取章节内容出错:`, new Error(error));
+        }
+        return null;
+    }
+
+    /**
+     * 获取配置项
+     * @param page
+     */
+    async getConfigById({ configId }) {
+        let config = null;
+        try {
+            //优先读取缓存
+            config = await redis.getData(configId);
+            if (config) return config;
+            //再次读取数据库
+            config = await ConfigBaseModel.findOne({ where: { isDelete: false, configId } });
+            if (config) {
+                redis.setData(configId, config);
+                return config;
+            };
+            taskLog.error(`没有相关的配置项`);
+        } catch (error) {
+            taskLog.error(`获取配置项出错:`, new Error(error));
+        }
+        return config;
     }
 
     /**
@@ -235,7 +266,7 @@ module.exports = class BookBaseCrawler {
                 const letterCount = content && content.length; //总字数
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
-                article = await this.saveChapterArticleData({ articleId, title, letterCount, status, bookId, remark });
+                article = await this.saveChapterArticleData({ articleId, title, content, letterCount, status, bookId, remark });
             }
             taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
         } catch (error) {

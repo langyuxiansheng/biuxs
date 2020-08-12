@@ -8,6 +8,8 @@ const { SOP, BiuDB } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
 const BookChapterModel = BiuDB.import(`${MODELS_PATH}/books/BookChapterModel`);
 const BookArticleModel = BiuDB.import(`${MODELS_PATH}/books/BookArticleModel`);
+const BookInfoCrawler = require(':crawlers/BookInfoCrawler');
+const bic = new BookInfoCrawler();
 module.exports = class {
     /**
      * 管理员获取书籍列表
@@ -139,6 +141,29 @@ module.exports = class {
             return result.success(null);
         } catch (error) {
             logger.error(`管理员修改书籍章节出错:${new Error(error)}`);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 管理员获取书籍章节内容
+     * @param {*} param0
+     */
+    async getBookArticleByAdmin({ chapterId }, user) {
+        //非超级管理员不可获取此菜单
+        if (!isSuperAdmin(user)) return result.noAuthority();
+        if (!chapterId) return result.paramsLack();
+        let queryData = { where: { articleId: chapterId, isDelete: false } };
+        try {
+            let article = await BookArticleModel.findOne(queryData);
+            //数据库没有就现成抓取
+            if (!article) {
+                const chapter = await BookChapterModel.findOne({ where: { chapterId, isDelete: false } });
+                article = await bic.runArticleTask(chapter);
+            }
+            return result.success(null, article);
+        } catch (error) {
+            logger.error(`管理员获取书籍章节内容出错:${new Error(error)}`);
             return result.failed(error);
         }
     }
