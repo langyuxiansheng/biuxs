@@ -229,7 +229,7 @@ module.exports = class BookBaseCrawler {
                         });
                     });
                     if (chapterList.length) {
-                        this.saveBookChapterData(chapterList, bookId, task);
+                        await this.saveBookChapterData(chapterList, bookId, task);
                     } else {
                         taskLog.info(`未抓取到相关章节!,${task.url}`);
                     }
