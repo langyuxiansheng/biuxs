@@ -31,7 +31,6 @@ module.exports = class {
             queryData.limit = Number(limit); //每页限制返回的数据条数
         };
         try {
-            //查询账号是否存在
             const { rows, count } = await BookBaseModel.findAndCountAll(queryData);
             return result.success(null, { list: rows, total: count });
         } catch (error) {
@@ -75,6 +74,71 @@ module.exports = class {
             return result.success(null);
         } catch (error) {
             logger.error(`管理员修改书籍出错:${new Error(error)}`);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 管理员获取书籍章节列表
+     * @param {*} param0
+     */
+    async getBookChapterListByAdmin({ bookId, title, page, limit }, user) {
+        //非超级管理员不可获取此菜单
+        if (!isSuperAdmin(user)) return result.noAuthority();
+        if (!bookId) return result.paramsLack();
+        let queryData = {
+            where: { bookId, isDelete: false },
+            order: [['index', 'ASC']],
+            attributes: { exclude: ['isDelete'] }
+        };
+        if (title) queryData.where['title'] = { [SOP.like]: `%${title}%` };
+        //分页
+        if (page && limit) {
+            queryData.offset = Number((page - 1) * limit); //开始的数据索引
+            queryData.limit = Number(limit); //每页限制返回的数据条数
+        };
+        try {
+            const { rows, count } = await BookChapterModel.findAndCountAll(queryData);
+            return result.success(null, { list: rows, total: count });
+        } catch (error) {
+            logger.error(`管理员获取书籍章节列表出错:${new Error(error)}`);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 管理员删除书籍章节
+     * @param {*} param0
+     */
+    async delBookChapterAdminByIds({ ids, isDelete }, user) {
+        //非超级管理员不可获取此菜单
+        if (!isSuperAdmin(user)) return result.noAuthority();
+        if (!ids || !isDelete || !Array.isArray(ids)) return result.paramsLack();
+        try {
+            await BiuDB.transaction(async(t) => {
+                //同步删除章节 和章节内容表
+                await BookChapterModel.destroy({ where: { chapterId: ids } }, { transaction: t });
+                return BookArticleModel.destroy({ where: { articleId: ids } }, { transaction: t });
+            });
+            return result.success();
+        } catch (error) {
+            logger.error(`管理员删除书籍章节出错:${new Error(error)}`);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 管理员修改书籍章节
+     * @param {*} data
+     */
+    async updateBookChapterAdmin(data, user) {
+        if (!isSuperAdmin(user)) return result.noAuthority();
+        if (!data.chapterId) return result.paramsLack();
+        try {
+            await BookChapterModel.update(data, { where: { chapterId: data.chapterId } });
+            return result.success(null);
+        } catch (error) {
+            logger.error(`管理员修改书籍章节出错:${new Error(error)}`);
             return result.failed(error);
         }
     }

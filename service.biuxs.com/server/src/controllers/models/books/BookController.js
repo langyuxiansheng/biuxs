@@ -21,4 +21,19 @@ controller.put('/updateBookAdmin', async(ctx) => {
     ctx.body = await service.updateBookAdmin(ctx.request.body, ctx.state.user);
 });
 
+//管理员获取书籍章节列表
+controller.get('/getBookChapterListByAdmin', async(ctx) => {
+    ctx.body = await service.getBookChapterListByAdmin(ctx.request.query, ctx.state.user);
+});
+
+//管理员删除书籍章节
+controller.delete('/delBookChapterAdminByIds', async(ctx) => {
+    ctx.body = await service.delBookChapterAdminByIds(ctx.request.body, ctx.state.user);
+});
+
+//管理员修改书籍章节
+controller.put('/updateBookChapterAdmin', async(ctx) => {
+    ctx.body = await service.updateBookChapterAdmin(ctx.request.body, ctx.state.user);
+});
+
 module.exports = controller;
