@@ -8,6 +8,7 @@ import CardContainer from './CardContainer';
 import ImgDialog from './ImgDialog';
 import DialogContainer from './DialogContainer';
 import AppTables from './AppTables';
+import AppTable from './AppTable'; //(新表)
 import AppTreeTable from './AppTreeTable';
 //预览文件
 import ReadFileDialog from './ReadFileDialog';
@@ -20,6 +21,7 @@ export default {
     ImgDialog,
     DialogContainer,
     AppTables,
+    AppTable,
     AppTreeTable,
     ReadFileDialog,
     UploadFile,

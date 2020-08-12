@@ -25,6 +25,7 @@
     "cross-env": "^5.2.0",
     "dayjs": "^1.8.22",
     "element-ui": "^2.4.11",
+    "file-saver": "^2.0.2",
     "ioredis": "^4.14.1",
     "ip": "^1.1.5",
     "js-cookie": "^2.2.0",
@@ -57,7 +58,8 @@
     "vue-directive-image-previewer": "^2.2.1",
     "vue-i18n": "^8.10.0",
     "vuex-persist": "^2.2.0",
-    "wangeditor": "^3.1.1"
+    "wangeditor": "^3.1.1",
+    "xlsx": "^0.16.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
