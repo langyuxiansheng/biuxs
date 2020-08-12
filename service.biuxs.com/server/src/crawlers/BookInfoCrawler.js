@@ -193,7 +193,7 @@ module.exports = class BookBaseCrawler {
                             title: t.length > 1 ? t[1].trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题
                             url: url && url.indexOf('http') != -1 ? url : `${base.protocol}${base.host}${url}`, //获取章节内容采集地址链接
                             type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
-                            status: 1, //状态 1未完成内容抓取  2已完成内容抓取 3抓取内容失败
+                            status: 2, //1已完成内容抓取  2未完成内容抓取 3抓取内容失败
                             remark: `初次抓取章节`
                         });
                     });
@@ -288,6 +288,9 @@ module.exports = class BookBaseCrawler {
             if (list && list.length) {
                 const res = await BookChapterModel.bulkCreate(list);
                 taskLog.info(`本次保存: ${res.length} 条章节`);
+                //同步更新书籍基本信息的章节总数
+                const chapterCount = await BookChapterModel.count({ bookId, isDelete: false });
+                BookBaseModel.update({ chapterCount });
                 //只有完成了章节抓取的才算完成了任务
                 TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
             }
@@ -307,7 +310,7 @@ module.exports = class BookBaseCrawler {
             const res = await BookArticleModel.create(article);
             if (res && res.articleId) {
                 taskLog.info(`本次保存: ${article}-${article.content}`);
-                await BookChapterModel.update({ status: 2 }, { where: { chapterId: res.articleId } });
+                await BookChapterModel.update({ status: 1 }, { where: { chapterId: res.articleId } });
             }
             return res;
         } catch (error) {

@@ -17,11 +17,8 @@
                     批量删除
                 </el-button>
             </el-form-item>
-            <el-form-item label="书名">
-                <el-input v-model="table.params.title" placeholder="请输入书名" />
-            </el-form-item>
-            <el-form-item label="作者">
-                <el-input v-model="table.params.author" placeholder="请输入作者名" />
+            <el-form-item label="章节名">
+                <el-input v-model="table.params.title" placeholder="请输入章节名" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="init()">
@@ -37,17 +34,12 @@
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
                 </template>
-                <template v-else-if="data.col.key == 'title'">
-                    <nuxt-link class="app-link-btn" :to="`/Books/BookList/ChapterList/${data.row.bookId}`">
-                        {{ data.row[data.col.key] }}
-                    </nuxt-link>
-                </template>
                 <template v-else-if="['createdTime','updatedTime'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
                 </template>
                 <template v-else-if="data.col.key === 'status'">
                     <el-tag :type="$appFilters.formatTagType(data.row[data.col.key])">
-                        {{ data.row[data.col.key] | formatBookStatus }}
+                        {{ data.row[data.col.key] | formatBookChapterStatus }}
                     </el-tag>
                 </template>
                 <template v-else>
@@ -59,7 +51,7 @@
     </card-container>
 </template>
 <script>
-import { getBookListByAdmin, delBookAdminByIds } from '@/http';
+import { getBookChapterListByAdmin, delBookChapterAdminByIds } from '@/http';
 import pager from '@/mixins/pager';
 // import TypeItemForm from './TypeItemForm';
 export default {
@@ -70,11 +62,12 @@ export default {
     },
     // components: { TypeItemForm },
     data () {
+        const { bookId } = this.$route.params;
         return {
             table: {
                 params: { //查询参数
+                    bookId,
                     title: null,
-                    author: null,
                     page: 1, //获取第几页的数据，默认为1
                     limit: 10//每页数据条数，默认为10
                 },
@@ -83,50 +76,10 @@ export default {
                 cols: [ //表格列配置
                     {
                         key: 'title',
-                        label: '书名'
+                        label: '章节名'
                     },
                     {
-                        key: 'author',
-                        label: '作者'
-                    },
-                    {
-                        key: 'image',
-                        label: '图片'
-                    },
-                    // {
-                    //     key: 'brief',
-                    //     label: '书本简介'
-                    // },
-                    // {
-                    //     key: 'letterCount',
-                    //     label: '总字数'
-                    // },
-                    {
-                        key: 'chapterCount',
-                        label: '总章节数'
-                    },
-                    {
-                        key: 'readCount',
-                        label: '阅读总数'
-                    },
-                    {
-                        key: 'type',
-                        label: '分类'
-                    },
-                    // {
-                    //     key: 'pinyin',
-                    //     label: '拼音'
-                    // },
-                    // {
-                    //     key: 'tags',
-                    //     label: '小说标签'
-                    // },
-                    {
-                        key: 'sourceName',
-                        label: '来源名称'
-                    },
-                    {
-                        key: 'sourceUrl',
+                        key: 'url',
                         label: '来源地址'
                     },
                     {
@@ -165,7 +118,7 @@ export default {
 
         async init () {
             try {
-                const { data: { total, list } } = await this.$axios[getBookListByAdmin.method](getBookListByAdmin.url, { params: this.table.params });
+                const { data: { total, list } } = await this.$axios[getBookChapterListByAdmin.method](getBookChapterListByAdmin.url, { params: this.table.params });
                 this.table.data = list;
                 this.table.total = total;
             } catch (error) {
@@ -187,7 +140,7 @@ export default {
         /**
          * 删除
          */
-        handleDel ({ stid, ids }) {
+        handleDel ({ chapterId, ids }) {
             this.$confirm(`此操作将会删除此数据,是否继续?`, '提示', {
                 cancelButtonText: '取消',
                 confirmButtonText: '确定',
@@ -195,8 +148,8 @@ export default {
                 center: true,
                 customClass: 'bg-warning'
             }).then(async () => {
-                const { code } = await this.$axios[delBookAdminByIds.method](delBookAdminByIds.url, {
-                    data: { ids: ids || [stid], isDelete: true }
+                const { code } = await this.$axios[delBookChapterAdminByIds.method](delBookChapterAdminByIds.url, {
+                    data: { ids: ids || [chapterId], isDelete: true }
                 });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.deleted_success'));
@@ -209,7 +162,7 @@ export default {
          * 批量删除
          */
         handleSelectionChange(list) {
-            this.deleteData.ids = list.map(item => item.stid);
+            this.deleteData.ids = list.map(item => item.chapterId);
         },
 
         /**

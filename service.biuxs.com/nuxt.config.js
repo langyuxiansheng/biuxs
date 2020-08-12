@@ -13,7 +13,7 @@ module.exports = {
         ],
         link: [
             { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' },
-            { rel: 'stylesheet', href: 'https://at.alicdn.com/t/font_1622620_y1qz401ucr.css' }
+            { rel: 'stylesheet', href: 'https://at.alicdn.com/t/font_1622620_9xxvmcbpbgc.css' }
         ]
     },
     loading: { color: '#fff' },

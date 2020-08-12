@@ -35,6 +35,7 @@ const _422183dc = () => interopDefault(import('..\\client\\pages\\Website\\Types
 const _e061a4de = () => interopDefault(import('..\\client\\pages\\Website\\WebContent\\ContentForm\\index.vue' /* webpackChunkName: "pages/Website/WebContent/ContentForm/index" */))
 const _5ebb0a68 = () => interopDefault(import('..\\client\\pages\\Website\\IncludeLinks\\IncludeLinkForm\\UploadLogo\\index.vue' /* webpackChunkName: "pages/Website/IncludeLinks/IncludeLinkForm/UploadLogo/index" */))
 const _93f2a774 = () => interopDefault(import('..\\client\\pages\\Website\\Sites\\SiteForm\\UploadLogo\\index.vue' /* webpackChunkName: "pages/Website/Sites/SiteForm/UploadLogo/index" */))
+const _19a5b805 = () => interopDefault(import('..\\client\\pages\\Books\\BookList\\ChapterList\\_bookId.vue' /* webpackChunkName: "pages/Books/BookList/ChapterList/_bookId" */))
 const _51ed9b38 = () => interopDefault(import('..\\client\\pages\\System\\RolesManage\\Settings\\_id.vue' /* webpackChunkName: "pages/System/RolesManage/Settings/_id" */))
 
 // TODO: remove in Nuxt 3
@@ -181,6 +182,10 @@ export const routerOptions = {
     path: "/Website/Sites/SiteForm/UploadLogo",
     component: _93f2a774,
     name: "Website-Sites-SiteForm-UploadLogo"
+  }, {
+    path: "/Books/BookList/ChapterList/:bookId?",
+    component: _19a5b805,
+    name: "Books-BookList-ChapterList-bookId"
   }, {
     path: "/System/RolesManage/Settings/:id?",
     component: _51ed9b38,

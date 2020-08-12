@@ -31,7 +31,7 @@
                 width="55"
             />
             <template v-if="table.tableType == 1">
-                <el-table-column
+                <!-- <el-table-column
                     v-for="(col,k) in table.cols"
                     :key="k"
                     :show-overflow-tooltip="col.key !== 'operation' && !col.overflow"
@@ -42,7 +42,17 @@
                     <template slot-scope="{$index,row}">
                         <slot name="column" :data="{row,col,index:$index}" />
                     </template>
-                </el-table-column>
+                </el-table-column> -->
+                <column
+                    v-for="(c,k) in table.cols"
+                    :key="k"
+                    :col="c"
+                    :children="table.children"
+                >
+                    <template slot-scope="data">
+                        <slot name="column" :data="data" />
+                    </template>
+                </column>
             </template>
             <template v-else-if="table.tableType == 2">
                 <template v-for="(col,k) in table.cols">
@@ -79,7 +89,9 @@
 </template>
 <script>
 import util from '@/lib/util';
+import Column from './Column';
 export default {
+    components: { Column },
     props: {
         config: {
             required: false,
@@ -191,8 +203,8 @@ export default {
         * 序号
         */
         indexMethod(index) {
-            if (this.table && this.table.params && this.table.params.page && this.table.params.size) {
-                return (index + 1) + (this.table.params.page - 1) * this.table.params.size;
+            if (this.table && this.table.params && this.table.params.page && this.table.params.limit) {
+                return (index + 1) + (this.table.params.page - 1) * this.table.params.limit;
             } else {
                 return (index + 1);
             }

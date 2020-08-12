@@ -61,7 +61,7 @@ async function createApp(ssrContext, config = {}) {
   // here we inject the router and store to all child components,
   // making them available everywhere as `this.$router` and `this.$store`.
   const app = {
-    head: {"title":"笔优小说管理后台","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"禁止偷看"}],"link":[{"rel":"icon","href":"\u002Ffavicon.ico","type":"image\u002Fx-icon"},{"rel":"stylesheet","href":"https:\u002F\u002Fat.alicdn.com\u002Ft\u002Ffont_1622620_y1qz401ucr.css"}],"style":[],"script":[]},
+    head: {"title":"笔优小说管理后台","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"禁止偷看"}],"link":[{"rel":"icon","href":"\u002Ffavicon.ico","type":"image\u002Fx-icon"},{"rel":"stylesheet","href":"https:\u002F\u002Fat.alicdn.com\u002Ft\u002Ffont_1622620_9xxvmcbpbgc.css"}],"style":[],"script":[]},
 
     store,
     router,

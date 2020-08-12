@@ -38,6 +38,23 @@ export default {
     },
 
     /**
+     * 格式化书籍章节状态
+     * @param {*} value
+     */
+    formatBookChapterStatus(value) {
+        switch (value) {
+        case 1:
+            return '已完成';
+        case 2:
+            return '未完成';
+        case 3:
+            return '已失败';
+        default:
+            return '其它';
+        }
+    },
+
+    /**
      * 格式化状态
      * @param {*} value
      */
