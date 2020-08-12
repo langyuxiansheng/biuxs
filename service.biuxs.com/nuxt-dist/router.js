@@ -4,11 +4,10 @@ import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
 const _aeba66c6 = () => interopDefault(import('..\\client\\pages\\Login\\index.vue' /* webpackChunkName: "pages/Login/index" */))
+const _a1e599d6 = () => interopDefault(import('..\\client\\pages\\Books\\BookList\\index.vue' /* webpackChunkName: "pages/Books/BookList/index" */))
 const _72805603 = () => interopDefault(import('..\\client\\pages\\Home\\Welcome\\index.vue' /* webpackChunkName: "pages/Home/Welcome/index" */))
 const _64bf3d0a = () => interopDefault(import('..\\client\\pages\\Login\\LoginForm\\index.vue' /* webpackChunkName: "pages/Login/LoginForm/index" */))
 const _7f8a5f50 = () => interopDefault(import('..\\client\\pages\\Member\\Users\\index.vue' /* webpackChunkName: "pages/Member/Users/index" */))
-const _371aa488 = () => interopDefault(import('..\\client\\pages\\Search\\TypeItems\\index.vue' /* webpackChunkName: "pages/Search/TypeItems/index" */))
-const _24db7813 = () => interopDefault(import('..\\client\\pages\\Search\\TypeTags\\index.vue' /* webpackChunkName: "pages/Search/TypeTags/index" */))
 const _2be9e161 = () => interopDefault(import('..\\client\\pages\\System\\AdminManage\\index.vue' /* webpackChunkName: "pages/System/AdminManage/index" */))
 const _77dd418e = () => interopDefault(import('..\\client\\pages\\System\\FilesManage\\index.vue' /* webpackChunkName: "pages/System/FilesManage/index" */))
 const _2eda048b = () => interopDefault(import('..\\client\\pages\\System\\LogsManage\\index.vue' /* webpackChunkName: "pages/System/LogsManage/index" */))
@@ -21,8 +20,7 @@ const _088ecf70 = () => interopDefault(import('..\\client\\pages\\Website\\Setti
 const _9fc0a0c6 = () => interopDefault(import('..\\client\\pages\\Website\\Sites\\index.vue' /* webpackChunkName: "pages/Website/Sites/index" */))
 const _b01de9e0 = () => interopDefault(import('..\\client\\pages\\Website\\Types\\index.vue' /* webpackChunkName: "pages/Website/Types/index" */))
 const _a0be9734 = () => interopDefault(import('..\\client\\pages\\Website\\WebContent\\index.vue' /* webpackChunkName: "pages/Website/WebContent/index" */))
-const _d85db812 = () => interopDefault(import('..\\client\\pages\\Search\\TypeItems\\TypeItemForm\\index.vue' /* webpackChunkName: "pages/Search/TypeItems/TypeItemForm/index" */))
-const _10b4ea9d = () => interopDefault(import('..\\client\\pages\\Search\\TypeTags\\TypeTagForm\\index.vue' /* webpackChunkName: "pages/Search/TypeTags/TypeTagForm/index" */))
+const _2c848448 = () => interopDefault(import('..\\client\\pages\\Books\\BookList\\BookForm\\index.vue' /* webpackChunkName: "pages/Books/BookList/BookForm/index" */))
 const _752b2920 = () => interopDefault(import('..\\client\\pages\\System\\AdminManage\\AdminForm\\index.vue' /* webpackChunkName: "pages/System/AdminManage/AdminForm/index" */))
 const _145b312c = () => interopDefault(import('..\\client\\pages\\System\\AdminManage\\BindRoleForm\\index.vue' /* webpackChunkName: "pages/System/AdminManage/BindRoleForm/index" */))
 const _6b404079 = () => interopDefault(import('..\\client\\pages\\System\\FilesManage\\FileForm\\index.vue' /* webpackChunkName: "pages/System/FilesManage/FileForm/index" */))
@@ -35,7 +33,6 @@ const _ba863b1c = () => interopDefault(import('..\\client\\pages\\Website\\Optio
 const _94136a9c = () => interopDefault(import('..\\client\\pages\\Website\\Sites\\SiteForm\\index.vue' /* webpackChunkName: "pages/Website/Sites/SiteForm/index" */))
 const _422183dc = () => interopDefault(import('..\\client\\pages\\Website\\Types\\TypeForm\\index.vue' /* webpackChunkName: "pages/Website/Types/TypeForm/index" */))
 const _e061a4de = () => interopDefault(import('..\\client\\pages\\Website\\WebContent\\ContentForm\\index.vue' /* webpackChunkName: "pages/Website/WebContent/ContentForm/index" */))
-const _3715c3b1 = () => interopDefault(import('..\\client\\pages\\Search\\TypeTags\\TypeTagForm\\UploadLogo\\index.vue' /* webpackChunkName: "pages/Search/TypeTags/TypeTagForm/UploadLogo/index" */))
 const _5ebb0a68 = () => interopDefault(import('..\\client\\pages\\Website\\IncludeLinks\\IncludeLinkForm\\UploadLogo\\index.vue' /* webpackChunkName: "pages/Website/IncludeLinks/IncludeLinkForm/UploadLogo/index" */))
 const _93f2a774 = () => interopDefault(import('..\\client\\pages\\Website\\Sites\\SiteForm\\UploadLogo\\index.vue' /* webpackChunkName: "pages/Website/Sites/SiteForm/UploadLogo/index" */))
 const _51ed9b38 = () => interopDefault(import('..\\client\\pages\\System\\RolesManage\\Settings\\_id.vue' /* webpackChunkName: "pages/System/RolesManage/Settings/_id" */))
@@ -61,6 +58,10 @@ export const routerOptions = {
     component: _aeba66c6,
     name: "Login"
   }, {
+    path: "/Books/BookList",
+    component: _a1e599d6,
+    name: "Books-BookList"
+  }, {
     path: "/Home/Welcome",
     component: _72805603,
     name: "Home-Welcome"
@@ -72,14 +73,6 @@ export const routerOptions = {
     path: "/Member/Users",
     component: _7f8a5f50,
     name: "Member-Users"
-  }, {
-    path: "/Search/TypeItems",
-    component: _371aa488,
-    name: "Search-TypeItems"
-  }, {
-    path: "/Search/TypeTags",
-    component: _24db7813,
-    name: "Search-TypeTags"
   }, {
     path: "/System/AdminManage",
     component: _2be9e161,
@@ -129,13 +122,9 @@ export const routerOptions = {
     component: _a0be9734,
     name: "Website-WebContent"
   }, {
-    path: "/Search/TypeItems/TypeItemForm",
-    component: _d85db812,
-    name: "Search-TypeItems-TypeItemForm"
-  }, {
-    path: "/Search/TypeTags/TypeTagForm",
-    component: _10b4ea9d,
-    name: "Search-TypeTags-TypeTagForm"
+    path: "/Books/BookList/BookForm",
+    component: _2c848448,
+    name: "Books-BookList-BookForm"
   }, {
     path: "/System/AdminManage/AdminForm",
     component: _752b2920,
@@ -184,10 +173,6 @@ export const routerOptions = {
     path: "/Website/WebContent/ContentForm",
     component: _e061a4de,
     name: "Website-WebContent-ContentForm"
-  }, {
-    path: "/Search/TypeTags/TypeTagForm/UploadLogo",
-    component: _3715c3b1,
-    name: "Search-TypeTags-TypeTagForm-UploadLogo"
   }, {
     path: "/Website/IncludeLinks/IncludeLinkForm/UploadLogo",
     component: _5ebb0a68,

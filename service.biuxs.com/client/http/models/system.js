@@ -167,7 +167,7 @@ export default {
      * 获取角色的菜单列表
      */
     getSysRoleMenusToTree: {
-        url: `${API_SERVER}/system/admin/getSysRoleMenusToTree`,
+        url: `${API_SERVER}/system/prem/getSysRoleMenusToTree`,
         method: 'get'
     },
 

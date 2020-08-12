@@ -15,7 +15,6 @@ import UploadFile from './UploadFile';
 import WebsiteTypesSelect from './WebsiteTypesSelect'; //网站分类选择
 import AppVueEditor from './AppVueEditor'; //富文本编辑器
 import AppCropper from './AppCropper'; //富文本编辑器
-import SearchTypesSelect from './SearchTypesSelect'; //搜索类型
 export default {
     CardContainer,
     ImgDialog,
@@ -26,6 +25,5 @@ export default {
     UploadFile,
     WebsiteTypesSelect,
     AppVueEditor,
-    AppCropper,
-    SearchTypesSelect
+    AppCropper
 };

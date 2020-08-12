@@ -43,9 +43,9 @@
 </template>
 <script type="text/ecmascript-6">
 import util from '@/lib/util';
-import { addSearchType, updateSearchType } from '@/http';
+// import { addSearchType, updateSearchType } from '@/http';
 export default {
-    name: 'TypeItemForm',
+    name: 'BookForm',
     data () {
         const { dialogSingleFormWidth } = this.$store.state.config;
         return {
@@ -110,9 +110,9 @@ export default {
                     let res = null;
                     try {
                         if (this.type == 'add') { //添加
-                            res = await this.$axios[addSearchType.method](addSearchType.url, this.sendData);
+                            // res = await this.$axios[addSearchType.method](addSearchType.url, this.sendData);
                         } else { //编辑
-                            res = await this.$axios[updateSearchType.method](updateSearchType.url, this.sendData);
+                            // res = await this.$axios[updateSearchType.method](updateSearchType.url, this.sendData);
                         }
                     } catch (error) {
                         console.error(error);

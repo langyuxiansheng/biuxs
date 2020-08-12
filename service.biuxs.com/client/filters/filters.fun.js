@@ -21,6 +21,23 @@ export default {
     },
 
     /**
+     * 格式化书籍状态
+     * @param {*} value
+     */
+    formatBookStatus(value) {
+        switch (value) {
+        case 1:
+            return '完本';
+        case 2:
+            return '连载';
+        case 3:
+            return '已下架';
+        default:
+            return '其它';
+        }
+    },
+
+    /**
      * 格式化状态
      * @param {*} value
      */

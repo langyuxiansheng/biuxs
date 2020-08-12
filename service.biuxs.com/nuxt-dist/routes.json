@@ -7,6 +7,13 @@
     "_name": "_aeba66c6"
   },
   {
+    "name": "Books-BookList",
+    "path": "/Books/BookList",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Books\\\\BookList\\\\index.vue",
+    "chunkName": "pages/Books/BookList/index",
+    "_name": "_a1e599d6"
+  },
+  {
     "name": "Home-Welcome",
     "path": "/Home/Welcome",
     "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Home\\\\Welcome\\\\index.vue",
@@ -26,20 +33,6 @@
     "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Member\\\\Users\\\\index.vue",
     "chunkName": "pages/Member/Users/index",
     "_name": "_7f8a5f50"
-  },
-  {
-    "name": "Search-TypeItems",
-    "path": "/Search/TypeItems",
-    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeItems\\\\index.vue",
-    "chunkName": "pages/Search/TypeItems/index",
-    "_name": "_371aa488"
-  },
-  {
-    "name": "Search-TypeTags",
-    "path": "/Search/TypeTags",
-    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeTags\\\\index.vue",
-    "chunkName": "pages/Search/TypeTags/index",
-    "_name": "_24db7813"
   },
   {
     "name": "System-AdminManage",
@@ -126,18 +119,11 @@
     "_name": "_a0be9734"
   },
   {
-    "name": "Search-TypeItems-TypeItemForm",
-    "path": "/Search/TypeItems/TypeItemForm",
-    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeItems\\\\TypeItemForm\\\\index.vue",
-    "chunkName": "pages/Search/TypeItems/TypeItemForm/index",
-    "_name": "_d85db812"
-  },
-  {
-    "name": "Search-TypeTags-TypeTagForm",
-    "path": "/Search/TypeTags/TypeTagForm",
-    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeTags\\\\TypeTagForm\\\\index.vue",
-    "chunkName": "pages/Search/TypeTags/TypeTagForm/index",
-    "_name": "_10b4ea9d"
+    "name": "Books-BookList-BookForm",
+    "path": "/Books/BookList/BookForm",
+    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Books\\\\BookList\\\\BookForm\\\\index.vue",
+    "chunkName": "pages/Books/BookList/BookForm/index",
+    "_name": "_2c848448"
   },
   {
     "name": "System-AdminManage-AdminForm",
@@ -222,13 +208,6 @@
     "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Website\\\\WebContent\\\\ContentForm\\\\index.vue",
     "chunkName": "pages/Website/WebContent/ContentForm/index",
     "_name": "_e061a4de"
-  },
-  {
-    "name": "Search-TypeTags-TypeTagForm-UploadLogo",
-    "path": "/Search/TypeTags/TypeTagForm/UploadLogo",
-    "component": "D:\\\\project\\\\github.com\\\\biuxs\\\\service.biuxs.com\\\\client\\\\pages\\\\Search\\\\TypeTags\\\\TypeTagForm\\\\UploadLogo\\\\index.vue",
-    "chunkName": "pages/Search/TypeTags/TypeTagForm/UploadLogo/index",
-    "_name": "_3715c3b1"
   },
   {
     "name": "Website-IncludeLinks-IncludeLinkForm-UploadLogo",
