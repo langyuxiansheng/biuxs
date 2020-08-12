@@ -292,7 +292,7 @@ module.exports = class BookBaseCrawler {
                 const chapterCount = await BookChapterModel.count({ bookId, isDelete: false });
                 BookBaseModel.update({ chapterCount });
                 //只有完成了章节抓取的才算完成了任务
-                TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
+                TasksModel.update({ status: 4, remark: `抓取章节内容` }, { where: { taskId: task.taskId } });
             }
             return true;
         } catch (error) {
