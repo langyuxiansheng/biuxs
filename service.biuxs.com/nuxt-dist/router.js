@@ -5,6 +5,7 @@ import scrollBehavior from './router.scrollBehavior.js'
 
 const _aeba66c6 = () => interopDefault(import('..\\client\\pages\\Login\\index.vue' /* webpackChunkName: "pages/Login/index" */))
 const _a1e599d6 = () => interopDefault(import('..\\client\\pages\\Books\\BookList\\index.vue' /* webpackChunkName: "pages/Books/BookList/index" */))
+const _e65a6d62 = () => interopDefault(import('..\\client\\pages\\Crawlers\\ConfigList\\index.vue' /* webpackChunkName: "pages/Crawlers/ConfigList/index" */))
 const _72805603 = () => interopDefault(import('..\\client\\pages\\Home\\Welcome\\index.vue' /* webpackChunkName: "pages/Home/Welcome/index" */))
 const _64bf3d0a = () => interopDefault(import('..\\client\\pages\\Login\\LoginForm\\index.vue' /* webpackChunkName: "pages/Login/LoginForm/index" */))
 const _7f8a5f50 = () => interopDefault(import('..\\client\\pages\\Member\\Users\\index.vue' /* webpackChunkName: "pages/Member/Users/index" */))
@@ -62,6 +63,10 @@ export const routerOptions = {
     path: "/Books/BookList",
     component: _a1e599d6,
     name: "Books-BookList"
+  }, {
+    path: "/Crawlers/ConfigList",
+    component: _e65a6d62,
+    name: "Crawlers-ConfigList"
   }, {
     path: "/Home/Welcome",
     component: _72805603,

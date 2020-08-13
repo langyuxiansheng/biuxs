@@ -89,11 +89,11 @@ module.exports = class BookBaseCrawler {
 
     /**
      * 获取任务列表
-     * @param {*} param0 page 第1页，每次2条
+     * @param {*} param0 page 第1页，每次2条 status = 任务类型和状态
      */
-    async getTasks({ page = 1, limit = 2 }) {
+    async getTasks({ page = 1, limit = 5, status = 1 }) {
         let queryData = {
-            where: { isDelete: false, status: 1 },
+            where: { isDelete: false, status },
             order: [
                 ['createdTime', 'ASC']
             ],
@@ -212,27 +212,7 @@ module.exports = class BookBaseCrawler {
                 book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, configId, sourceName, sourceUrl, image, remark };
                 const bookId = await this.saveBookInfoData(book, task);
                 if (bookId) { //如果书籍是新抓取的就进行章节抓取
-                    console.log(bookId);
-                    const chapterList = [];
-                    $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
-                        const t = $(el).find(info.chapterNameSelector).text().split('章');
-                        const url = $(el).find(info.contentUrlSelector).attr('href').trim();
-                        chapterList.push({
-                            bookId,
-                            configId,
-                            index: index + 1,
-                            title: t.length > 1 ? t[1].trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题
-                            url: url && url.indexOf('http') != -1 ? url : `${base.protocol}${base.host}${url}`, //获取章节内容采集地址链接
-                            type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
-                            status: 2, //1已完成内容抓取  2未完成内容抓取 3抓取内容失败
-                            remark: `初次抓取章节`
-                        });
-                    });
-                    if (chapterList.length) {
-                        await this.saveBookChapterData(chapterList, bookId, task);
-                    } else {
-                        taskLog.info(`未抓取到相关章节!,${task.url}`);
-                    }
+                    this.getBookChapterList($, { bookId, configId, base, info, task });
                 }
             }
             taskLog.info(`============================================抓取结束 ${task.name}-${task.url} END================================================`);
@@ -241,6 +221,34 @@ module.exports = class BookBaseCrawler {
             TasksModel.update({ status: 3 }, { where: { taskId: task.taskId } });
             taskLog.error(`${task.name}-${task.url}抓取错误!`, new Error(error));
             return null;
+        }
+    }
+
+    /**
+     * 抓取章节详情
+     * @param {*} $
+     * @param {*} param1
+     */
+    async getBookChapterList($, { bookId, configId, task, base, info }) {
+        const chapterList = [];
+        $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
+            const t = $(el).find(info.chapterNameSelector).text().split('章');
+            const url = $(el).find(info.contentUrlSelector).attr('href').trim();
+            chapterList.push({
+                bookId,
+                configId,
+                index: index + 1,
+                title: t.length > 1 ? t[1].replace(/[、|：]/g, '').trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题
+                url: url && url.indexOf('http') != -1 ? url : `${base.protocol}${base.host}${url}`, //获取章节内容采集地址链接
+                type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
+                status: 2, //1已完成内容抓取  2未完成内容抓取 3抓取内容失败
+                remark: `初次抓取章节`
+            });
+        });
+        if (chapterList.length) {
+            await this.saveBookChapterData(chapterList, bookId, task);
+        } else {
+            taskLog.info(`未抓取到相关章节!,${task.url}`);
         }
     }
 
@@ -317,13 +325,15 @@ module.exports = class BookBaseCrawler {
                 }
             }
             if (list && list.length) {
-                const res = await BookChapterModel.bulkCreate(list);
-                taskLog.info(`本次保存: ${res.length} 条章节`);
-                //同步更新书籍基本信息的章节总数
-                const chapterCount = await BookChapterModel.count({ bookId, isDelete: false });
-                BookBaseModel.update({ chapterCount });
-                //只有完成了章节抓取的才算完成了任务
-                TasksModel.update({ status: 4, remark: `抓取章节内容` }, { where: { taskId: task.taskId } });
+                BiuDB.transaction(async(t) => {
+                    const res = await BookChapterModel.bulkCreate(list, { transaction: t });
+                    taskLog.info(`本次保存: ${res.length} 条章节`);
+                    //同步更新书籍基本信息的章节总数
+                    const chapterCount = await BookChapterModel.count({ bookId, isDelete: false }, { transaction: t });
+                    await BookBaseModel.update({ chapterCount }, { where: { bookId }, transaction: t });
+                    //只有完成了章节抓取的才算完成了任务
+                    return TasksModel.update({ status: 4, remark: `抓取章节内容` }, { where: { taskId: task.taskId }, transaction: t });
+                });
             }
             return true;
         } catch (error) {

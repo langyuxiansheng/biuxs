@@ -58,7 +58,7 @@ log4js.configure({
 });
 
 module.exports = {
-    accessLogger: () => log4js.koaLogger(log4js.getLogger('access')), // 记录所有访问级别的日志
+    accessLogger: () => log4js.koaLogger(log4js.getLogger('access'), { level: 'auto' }), // 记录所有访问级别的日志
     systemLogger: log4js.getLogger('application'), //记录所有应用级别的日志
     sqlLog: log4js.getLogger('sqlLog'), //记录所有SQL的日志
     logger: log4js.getLogger('logger'), //默认的日志模块

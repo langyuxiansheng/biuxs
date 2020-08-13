@@ -1,5 +1,5 @@
 /**
- *  公共信息入口
+ *  配置项管理
  */
 const KoaRouter = require('koa-router');
 const ConfigService = require(':services/common/ConfigService');

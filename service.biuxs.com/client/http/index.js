@@ -59,5 +59,11 @@ export const {
     updateBookAdmin,
     getBookChapterListByAdmin,
     delBookChapterAdminByIds,
-    updateBookChapterAdmin
+    updateBookChapterAdmin,
+    //配置项管理
+    addConfig,
+    getConfigList,
+    getConfigByCode,
+    updateConfig,
+    delConfigByIds
 } = apis;
