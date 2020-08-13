@@ -69,7 +69,7 @@ module.exports = {
                 options: { //配置项
                     dialect: 'mysql', // 数据库类型
                     host: 'cdb-86m6bq78.cd.tencentcdb.com', // 服务器地址
-                    port: 10159, // 数据库端口号
+                    port: 10559, // 数据库端口号
                     dialectOptions: { // MySQL > 5.5，其它数据库删除此项
                         charset: 'utf8mb4',
                         supportBigNumbers: true,

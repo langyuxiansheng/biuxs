@@ -32,21 +32,73 @@
                 <el-col :span="24">
                     <el-divider>配置项内容设置</el-divider>
                 </el-col>
-                <el-col v-if="sendData.status == 1" :span="24">
-                    <el-form-item label="状态">
-                        <el-select v-model="sendData.status" class="select-block" placeholder="请选择状态">
-                            <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                            />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="备注">
-                        <el-input v-model="sendData.remark" placeholder="请输入备注" />
-                    </el-form-item>
-                </el-col>
+
+                <template v-if="sendData.status == 1">
+                    <el-col :span="24">
+                        <el-divider content-position="left">
+                            <el-tag>基础配置</el-tag>
+                        </el-divider>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="站点名称">
+                            <el-input v-model="sendData.conf.base.title" placeholder="请输入站点名称(例:XX小说网)" />
+                        </el-form-item>
+                        <el-form-item label="站点协议">
+                            <el-input v-model="sendData.conf.base.protocol" placeholder="请输入站点名称(例:https://)" />
+                        </el-form-item>
+                        <el-form-item label="站点地址">
+                            <el-input v-model="sendData.conf.base.host" placeholder="请输入站点地址(例:www.xs.com)" />
+                        </el-form-item>
+                        <el-form-item label="站点编码">
+                            <el-input v-model="sendData.conf.base.charset" placeholder="请输入站点地址(例:utf-8)" />
+                        </el-form-item>
+                        <el-form-item label="站点超时">
+                            <el-input v-model="sendData.conf.base.timeout" placeholder="请输入站点超时(例:10000)单位:ms" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="分类列表容器">
+                            <el-input v-model="sendData.conf.base.listSelector" placeholder="请输入分类列表容器选择器(例:#content) CSS选择器" />
+                        </el-form-item>
+                        <el-form-item label="分类列表项目容器">
+                            <el-input v-model="sendData.conf.base.itemSelector" placeholder="请输入分类列表容器选择器(例:.li) CSS选择器" />
+                        </el-form-item>
+                        <el-form-item label="分类名称容器">
+                            <el-input v-model="sendData.conf.base.name" placeholder="请输入分类列表容器选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
+                        </el-form-item>
+                        <el-form-item label="分类链接容器">
+                            <el-input v-model="sendData.conf.base.href" placeholder="请输入分类列表容器选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-divider content-position="left">
+                            <el-tag>
+                                分类配置
+                            </el-tag>
+                        </el-divider>
+                    </el-col>
+                    <el-col :span="24">
+                        <template v-for="(item,k) in sendData.conf.types">
+                            <el-row :key="k" :gutter="20">
+                                <el-col :span="8">
+                                    <el-form-item label="分类标题">
+                                        <el-input v-model="item.title" placeholder="请输入分类标题(例:玄幻小说)" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="分类参数链接">
+                                        <el-input v-model="item.params" placeholder="请输入分类参数链接(例:#/list/1_[page].html) [page]代表分页参数" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="分类列表起始页">
+                                        <el-input v-model="item.page" placeholder="请输入分类列表起始页(例:1) 默认为1" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </template>
+                    </el-col>
+                </template>
                 <el-col :span="24">
                     <div class="app-submit-btns">
                         <el-form-item class="app-text-center">
