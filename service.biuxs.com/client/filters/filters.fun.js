@@ -114,6 +114,23 @@ export default {
     },
 
     /**
+     * 格式化配置项类型
+     * @param {*} value
+     */
+    formatConfigType(value) {
+        switch (Number(value)) {
+        case 1:
+            return '书籍爬虫配置';
+        case 2:
+            return 'IP代理爬虫配置';
+        case 3:
+            return '用户阅读器配置';
+        default:
+            return '-';
+        }
+    },
+
+    /**
      * 格式化文件大小
      * @param {*} value
      */

@@ -3,7 +3,7 @@
         <el-form :inline="true" :model="table.params" class="demo-form-inline">
             <el-form-item>
                 <el-button type="primary" icon="el-icon-circle-plus" plain @click="showDialog({type:'add'})">
-                    添加分类
+                    添加
                 </el-button>
             </el-form-item>
             <el-form-item>
@@ -37,38 +37,36 @@
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
                 </template>
-                <template v-else-if="data.col.key == 'title'">
-                    <nuxt-link class="app-link-btn" :to="`/Books/BookList/ChapterList/${data.row.bookId}`">
-                        {{ data.row[data.col.key] }}
-                    </nuxt-link>
-                </template>
                 <template v-else-if="['createdTime','updatedTime'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
                 </template>
                 <template v-else-if="data.col.key === 'status'">
                     <el-tag :type="$appFilters.formatTagType(data.row[data.col.key])">
-                        {{ data.row[data.col.key] | formatBookStatus }}
+                        {{ data.row[data.col.key] | formatStatus }}
                     </el-tag>
+                </template>
+                <template v-else-if="data.col.key === 'type'">
+                    {{ data.row[data.col.key] | formatConfigType }}
                 </template>
                 <template v-else>
                     {{ data.row[data.col.key] || '-' }}
                 </template>
             </template>
         </app-table>
-        <!-- <type-item-form ref="TypeItemForm" @refresh="init()" /> -->
+        <config-form ref="ConfigForm" @refresh="init()" />
     </card-container>
 </template>
 <script>
 import { getConfigList, delConfigByIds } from '@/http';
 import pager from '@/mixins/pager';
-// import TypeItemForm from './TypeItemForm';
+import ConfigForm from './ConfigForm';
 export default {
     name: 'Config',
+    components: { ConfigForm },
     mixins: [pager()],
     head: {
         title: '配置项管理'
     },
-    // components: { TypeItemForm },
     data () {
         return {
             table: {
@@ -82,52 +80,20 @@ export default {
                 total: 0, //总页数
                 cols: [ //表格列配置
                     {
-                        key: 'title',
-                        label: '书名'
+                        key: 'name',
+                        label: '配置项名'
                     },
                     {
-                        key: 'author',
-                        label: '作者'
-                    },
-                    {
-                        key: 'image',
-                        label: '图片'
-                    },
-                    // {
-                    //     key: 'brief',
-                    //     label: '书本简介'
-                    // },
-                    // {
-                    //     key: 'letterCount',
-                    //     label: '总字数'
-                    // },
-                    {
-                        key: 'chapterCount',
-                        label: '总章节数'
-                    },
-                    {
-                        key: 'readCount',
-                        label: '阅读总数'
+                        key: 'code',
+                        label: '标识符'
                     },
                     {
                         key: 'type',
-                        label: '分类'
-                    },
-                    // {
-                    //     key: 'pinyin',
-                    //     label: '拼音'
-                    // },
-                    // {
-                    //     key: 'tags',
-                    //     label: '小说标签'
-                    // },
-                    {
-                        key: 'sourceName',
-                        label: '来源名称'
+                        label: '类型'
                     },
                     {
-                        key: 'sourceUrl',
-                        label: '来源地址'
+                        key: 'userName',
+                        label: '设置人名称'
                     },
                     {
                         key: 'status',
@@ -178,9 +144,9 @@ export default {
 	     */
         showDialog ({ type, data }) {
             if (type === 'add') {
-                this.$refs.TypeItemForm.init({ type, title: '添加搜索分类' });
+                this.$refs.ConfigForm.init({ type, title: '添加配置项' });
             } else if (type === 'update') {
-                this.$refs.TypeItemForm.init({ type, data, title: '编辑搜索分类' });
+                this.$refs.ConfigForm.init({ type, data, title: '编辑配置项' });
             }
         },
 

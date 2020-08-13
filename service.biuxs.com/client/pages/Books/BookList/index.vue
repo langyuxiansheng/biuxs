@@ -51,7 +51,7 @@
                     </el-tag>
                 </template>
                 <template v-else>
-                    {{ data.row[data.col.key] || '-' }}
+                    {{ [null, undefined].includes(data.row[data.col.key]) ? '-' : data.row[data.col.key] }}
                 </template>
             </template>
         </app-table>

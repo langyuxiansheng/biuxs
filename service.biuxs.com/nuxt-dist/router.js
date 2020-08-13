@@ -22,6 +22,7 @@ const _9fc0a0c6 = () => interopDefault(import('..\\client\\pages\\Website\\Sites
 const _b01de9e0 = () => interopDefault(import('..\\client\\pages\\Website\\Types\\index.vue' /* webpackChunkName: "pages/Website/Types/index" */))
 const _a0be9734 = () => interopDefault(import('..\\client\\pages\\Website\\WebContent\\index.vue' /* webpackChunkName: "pages/Website/WebContent/index" */))
 const _2c848448 = () => interopDefault(import('..\\client\\pages\\Books\\BookList\\BookForm\\index.vue' /* webpackChunkName: "pages/Books/BookList/BookForm/index" */))
+const _0d5fe749 = () => interopDefault(import('..\\client\\pages\\Crawlers\\ConfigList\\ConfigForm\\index.vue' /* webpackChunkName: "pages/Crawlers/ConfigList/ConfigForm/index" */))
 const _752b2920 = () => interopDefault(import('..\\client\\pages\\System\\AdminManage\\AdminForm\\index.vue' /* webpackChunkName: "pages/System/AdminManage/AdminForm/index" */))
 const _145b312c = () => interopDefault(import('..\\client\\pages\\System\\AdminManage\\BindRoleForm\\index.vue' /* webpackChunkName: "pages/System/AdminManage/BindRoleForm/index" */))
 const _6b404079 = () => interopDefault(import('..\\client\\pages\\System\\FilesManage\\FileForm\\index.vue' /* webpackChunkName: "pages/System/FilesManage/FileForm/index" */))
@@ -131,6 +132,10 @@ export const routerOptions = {
     path: "/Books/BookList/BookForm",
     component: _2c848448,
     name: "Books-BookList-BookForm"
+  }, {
+    path: "/Crawlers/ConfigList/ConfigForm",
+    component: _0d5fe749,
+    name: "Crawlers-ConfigList-ConfigForm"
   }, {
     path: "/System/AdminManage/AdminForm",
     component: _752b2920,

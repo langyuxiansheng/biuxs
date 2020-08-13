@@ -28,6 +28,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '配置项唯一标识符'
         },
 
+        type: {
+            type: dataTypes.INTEGER(2),
+            allowNull: true,
+            comment: '配置项类型 1书籍爬虫配置 2IP代理 3用户阅读器设置'
+        },
+
         conf: {
             type: dataTypes.TEXT(),
             allowNull: true,
