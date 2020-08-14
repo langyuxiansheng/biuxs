@@ -103,6 +103,7 @@ module.exports = {
         /^\/Crawlers/, //爬虫系统
         /^\/Member/, //会员中心
         /^\/Book/, //搜索配置
+        /^\/403/,
         //api部分
         /^\/v1\/api\/common\/utils\/getImgValidate/, //图片验证码
         /^\/v1\/api\/common\/utils\/getEmailValidateCode/, //邮件验证码

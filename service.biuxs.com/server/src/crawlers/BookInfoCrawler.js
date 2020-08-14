@@ -194,7 +194,7 @@ module.exports = class BookBaseCrawler {
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
                 //抓取书籍的详情
-                const title = $(info.titleSelector).text().trim(); //书本名称
+                const title = task.name.split('-')[2].replace(/[/[|\]]/g, '').trim() || $(info.titleSelector).text().trim(); //书本名称
                 const author = $(info.authorSelector).text().trim(); //作者名
                 const brief = $(info.briefSelector).text().replace(new RegExp('内容简介：'), '').trim(); //书本简介
                 const image = $(info.imageSelector).attr('src') || null;//图片地址
@@ -329,8 +329,10 @@ module.exports = class BookBaseCrawler {
                     const res = await BookChapterModel.bulkCreate(list, { transaction: t });
                     taskLog.info(`本次保存: ${res.length} 条章节`);
                     //同步更新书籍基本信息的章节总数
-                    const chapterCount = await BookChapterModel.count({ bookId, isDelete: false }, { transaction: t });
-                    await BookBaseModel.update({ chapterCount }, { where: { bookId }, transaction: t });
+                    const chapterCount = await BookChapterModel.count({ where: { bookId, isDelete: false }, transaction: t });
+                    //计算总字数
+                    const letterCount = await BookArticleModel.count({ where: { bookId, isDelete: false }, col: ['letterCount'], transaction: t });
+                    await BookBaseModel.update({ chapterCount, letterCount }, { where: { bookId }, transaction: t });
                     //只有完成了章节抓取的才算完成了任务
                     return TasksModel.update({ status: 4, remark: `抓取章节内容` }, { where: { taskId: task.taskId }, transaction: t });
                 });

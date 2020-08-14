@@ -17,11 +17,8 @@
                     批量删除
                 </el-button>
             </el-form-item>
-            <el-form-item label="书名">
-                <el-input v-model="table.params.title" placeholder="请输入书名" />
-            </el-form-item>
-            <el-form-item label="作者">
-                <el-input v-model="table.params.author" placeholder="请输入作者名" />
+            <el-form-item label="配置项名">
+                <el-input v-model="table.params.name" placeholder="请输入配置项名" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="init()">

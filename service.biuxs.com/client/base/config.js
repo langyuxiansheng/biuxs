@@ -27,7 +27,7 @@ export default {
     dialogFormWidth: '850px', //表单弹出层宽度
     dialogSingleFormWidth: '500px', //单列表单弹出层宽度
     dialogPrompt: '500px', //弹出输入框
-    dialogFormGutterWidth: 82, //表单列间隔
+    dialogFormGutterWidth: 20, //表单列间隔
     dialogDetailWidth: '1000px', //详情弹出层宽度
     qiNiuURL: 'http://up-z2.qiniu.com', //七牛上传路径
     // qrUrl: 'http://b.bshare.cn/barCode?site=weixin&url=', //二维码链接
