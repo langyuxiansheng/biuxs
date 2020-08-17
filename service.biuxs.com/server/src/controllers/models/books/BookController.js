@@ -41,4 +41,9 @@ controller.get('/getBookArticleByAdmin/:chapterId', async(ctx) => {
     ctx.body = await service.getBookArticleByAdmin(ctx.params, ctx.state.user);
 });
 
+//管理员更新书籍章节
+controller.get('/refreshBookChapterByAdmin/:bookId', async(ctx) => {
+    ctx.body = await service.refreshBookChapterByAdmin(ctx.params, ctx.state.user);
+});
+
 module.exports = controller;

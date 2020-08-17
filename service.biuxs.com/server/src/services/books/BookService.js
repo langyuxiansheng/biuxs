@@ -167,4 +167,30 @@ module.exports = class {
             return result.failed(error);
         }
     }
+
+    /**
+     * 管理员更新书籍章节
+     * @param {*} param0
+     */
+    async refreshBookChapterByAdmin({ bookId }, user) {
+        //非超级管理员不可获取此菜单
+        if (!isSuperAdmin(user)) return result.noAuthority();
+        if (!bookId) return result.paramsLack();
+        let queryData = { where: { bookId, isDelete: false } };
+        try {
+            const book = await BookBaseModel.findOne(queryData);
+            if (book) {
+                const res = await bic.refreshBookChapterList(book);
+                if (res) {
+                    await BookBaseModel.update({ remark: `管理员更新书籍章节:本地更新${res}条` }, { where: { bookId } });
+                }
+                return result.success(null, res);
+            } else {
+                return result.failed(`未获取到书籍信息!`);
+            }
+        } catch (error) {
+            logger.error(`管理员更新书籍章节出错:${new Error(error)}`);
+            return result.failed(error);
+        }
+    }
 };
