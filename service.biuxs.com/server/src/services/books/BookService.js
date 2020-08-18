@@ -159,7 +159,11 @@ module.exports = class {
             //数据库没有就现成抓取
             if (!article) {
                 const chapter = await BookChapterModel.findOne({ where: { chapterId, isDelete: false } });
-                article = await bic.runArticleTask(chapter);
+                if (chapter) {
+                    article = await bic.runArticleTask(chapter);
+                } else {
+                    return result.failed(`章节不存在!`);
+                }
             }
             return result.success(null, article);
         } catch (error) {
