@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="biu-nav-email" style="width: 600px; margin: 40px auto;box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);font-size: 16px;padding: 20px;">
+        <h3 style="margin-bottom: 40px;">
+            Hi! 亲爱的笔优会员：
+        </h3>
+        <p>
+            感谢您使用笔优网址导航,您正在进行邮箱验证,本次请求的验证码为:
+        </p>
+        <p style="color: #9da4a5;">
+            <strong style="color: #3acbff;font-size: 24px;">${code}</strong>
+            <span>(为了保障您帐号的安全性，请在30分钟内完成验证)</span>
+        </p>
+        <p>
+            <span>快速访问:</span>
+            <a href="https://www.biunav.com" target="_blank" rel="noopener noreferrer">https://www.biunav.com</a>
+        </p>
+        <p style="margin-top: 40px;">笔优团队</p>
+        <p>${getYearMonthDay(null, true)}</p>
+    </div>
+
+    <div class="biu-nav-email" style="width: 600px; margin: 40px auto;box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);font-size: 16px;padding: 20px;">
+        <h3 style="margin-bottom: 40px;">
+            Hi! 亲爱的${user.nickname || '笔优会员'}：
+        </h3>
+        <p>
+            感谢您使用笔优网址导航,您的密码已经修改,请使用新密码登录系统，祝您生活愉快!
+        </p>
+        <p>
+            <span>快速访问:</span>
+            <a href="https://www.biunav.com" target="_blank" rel="noopener noreferrer">https://www.biunav.com</a>
+        </p>
+        <p style="margin-top: 40px;">笔优团队</p>
+        <p>${getYearMonthDay(null, true)}</p>
+    </div>
+</body>
+</html>
