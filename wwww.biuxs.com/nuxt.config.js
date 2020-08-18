@@ -7,7 +7,7 @@ export default {
             { charset: 'utf-8' },
             { 'http-equiv': 'Content-Type', content: 'text/html', charset: 'utf-8' },
             { 'http-equiv': 'X-UA-Compatible', content: 'IE=Edge,chrome=1' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            { name: 'viewport', content: 'width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no' },
             { name: 'renderer', content: 'webkit' },
             { hid: 'keywords', name: 'keywords', content: `笔优网址导航,网址大全,导航服务,网址分类,云书签自定义,互联网资讯` },
             { hid: 'description', name: 'description', content: `笔优网址导航,是一个快捷安全方便的上网导航,专注于及时收录各种分类的优秀网站,提供简单便捷的上网分类导航服务和自定义书签导航服务` }
@@ -17,12 +17,10 @@ export default {
             { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_gn279em8b7q.css' }
         ],
         script: [
-            {
-                type: 'text/javascript',
-                src: 'https://v1.cnzz.com/z_stat.php?id=1278668303&web_id=1278668303',
-                async: true
-            }
-        ]
+            { src: './js/flexible.js', type: 'text/javascript', charset: 'utf-8'}
+        ],
+        // 不对<script>标签中内容做转义处理
+        __dangerouslyDisableSanitizers: ['script']
     },
     loading: { color: '#3acbff' },
     css: [
@@ -42,8 +40,14 @@ export default {
     ],
     modules: [
         '@nuxtjs/axios',
-        '@nuxtjs/proxy'
+        '@nuxtjs/proxy',
+        '@nuxtjs/style-resources'
     ],
+    styleResources:{
+        less:[
+          './assets/styles/common/constant.less'
+        ]
+    },
     proxy: {
         '/biunavapi': {
             target: 'http://localhost:3010/', // 代理地址
@@ -66,6 +70,9 @@ export default {
                 });
             };
         },
+        postcss: require('postcss-px2rem')({
+            remUnit: 750
+        }),
         assetFilter: (fname) => fname.endsWith('.js'),
         splitChunks: {
             chunks: 'async',
