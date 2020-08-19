@@ -2,19 +2,19 @@
 export default {
     mode: 'universal',
     head: {
-        title: '笔优网-快捷安全的网址分类与互联网资讯', //笔优网址导航-快捷安全的网址分类导航页
+        title: '笔优小说网-免费的网络小说网', //笔优网址导航-快捷安全的网址分类导航页
         meta: [
             { charset: 'utf-8' },
             { 'http-equiv': 'Content-Type', content: 'text/html', charset: 'utf-8' },
             { 'http-equiv': 'X-UA-Compatible', content: 'IE=Edge,chrome=1' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes' },
+            { name: 'viewport', content: 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0' },
             { name: 'renderer', content: 'webkit' },
-            { hid: 'keywords', name: 'keywords', content: `笔优网址导航,网址大全,导航服务,网址分类,云书签自定义,互联网资讯` },
-            { hid: 'description', name: 'description', content: `笔优网址导航,是一个快捷安全方便的上网导航,专注于及时收录各种分类的优秀网站,提供简单便捷的上网分类导航服务和自定义书签导航服务` }
+            { hid: 'keywords', name: 'keywords', content: `笔优小说网,免费小说,网络小说,最新小说排行` },
+            { hid: 'description', name: 'description', content: `笔优小说网,是一个免费的小说网` }
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-            { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_gn279em8b7q.css' }
+            { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_9crqhgou5cj.css' }
         ],
         script: [
             { src: './js/autosize.js', type: 'text/javascript', charset: 'utf-8'}
@@ -34,6 +34,7 @@ export default {
         { src: '@/plugins/axios', ssr: true },
         { src: '@/plugins/baidu.tj', ssr: false },
         { src: '@/plugins/vue-cropper', ssr: false },
+        { src: '@/plugins/vue-swiper', ssr: false },
         { src: '@/plugins/dialog', ssr: false }
     ],
     modules: [
