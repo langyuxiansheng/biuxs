@@ -2,14 +2,14 @@
 export default {
     mode: 'universal',
     head: {
-        title: '笔优小说网-免费的网络小说网', //笔优网址导航-快捷安全的网址分类导航页
+        title: '笔优小说网-极致的阅读体验',
         meta: [
             { charset: 'utf-8' },
             { 'http-equiv': 'Content-Type', content: 'text/html', charset: 'utf-8' },
             { 'http-equiv': 'X-UA-Compatible', content: 'IE=Edge,chrome=1' },
             { name: 'viewport', content: 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0' },
             { name: 'renderer', content: 'webkit' },
-            { hid: 'keywords', name: 'keywords', content: `笔优小说网,免费小说,网络小说,最新小说排行` },
+            { hid: 'keywords', name: 'keywords', content: `笔优小说网,免费小说,网络小说,最新小说排行,小说阅读器` },
             { hid: 'description', name: 'description', content: `笔优小说网,是一个免费的小说网` }
         ],
         link: [
@@ -17,7 +17,7 @@ export default {
             { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_9crqhgou5cj.css' }
         ],
         script: [
-            { src: './js/autosize.js', type: 'text/javascript', charset: 'utf-8'}
+            { src: './js/autosize.js', type: 'text/javascript', charset: 'utf-8' }
         ]
     },
     loading: { color: '#3acbff' },
@@ -42,9 +42,9 @@ export default {
         '@nuxtjs/proxy',
         '@nuxtjs/style-resources'
     ],
-    styleResources:{
-        less:[
-          './assets/styles/common/constant.less'
+    styleResources: {
+        less: [
+            './assets/styles/common/constant.less'
         ]
     },
     proxy: {
