@@ -14,7 +14,7 @@
                 <i class="iconfont iconicon_search" />
                 <input type="search" placeholder="请输入作者名或者书名进行搜索" class="search-input">
             </div>
-            <div v-show="false" class="book-floor">
+            <div class="book-floor">
                 <h4 class="item-title app-flex app-flex-between">
                     <span class="name">我的收藏</span>
                     <nuxt-link class="more" to="/">
@@ -29,6 +29,25 @@
                                 <span class="b-tags">10</span>
                             </div>
                             <span class="b-title">最强狂兵{{ item }}</span>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            <div class="book-floor">
+                <h4 class="item-title app-flex app-flex-between">
+                    <span class="name">猜你喜欢</span>
+                    <span class="more" to="/">
+                        <i class="iconfont iconicon_refresh" />
+                        换一换
+                    </span>
+                </h4>
+                <ul class="book-list app-flex">
+                    <template v-for="item in 4">
+                        <li :key="item" class="book-item">
+                            <div class="b-image">
+                                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
+                                <span class="b-tags">10</span>
+                            </div>
                         </li>
                     </template>
                 </ul>
@@ -92,9 +111,10 @@
 </template>
 <script>
 // import { getSiteHomeData } from '@/http';
-import { AppMHeader, AppMFooter } from './components';
-import books from './books.json';
+import { AppMHeader, AppMFooter } from '../components';
+import books from '../books.json';
 export default {
+    name: 'MobileHome',
     components: { AppMHeader, AppMFooter },
     data() {
         return {
@@ -170,6 +190,11 @@ export default {
             margin-bottom: 1.25rem;
             .item-title{
                 margin-bottom: 1rem;
+                .more{
+                    .iconfont{
+                        font-size: 12px;
+                    }
+                }
             }
             .book-list{
                 .book-item{

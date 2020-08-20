@@ -1,11 +1,11 @@
 <template>
     <footer class="app-m-footer">
         <div class="footer-bar app-flex app-flex-between">
-            <nuxt-link class="link" to="/">
+            <nuxt-link class="link" to="/m/home">
                 <i class="iconfont iconicon13" />
                 <span class="label">首页</span>
             </nuxt-link>
-            <nuxt-link class="link" to="/1">
+            <nuxt-link class="link" to="/m/category">
                 <i class="iconfont iconicon_workset" />
                 <span class="label">分类</span>
             </nuxt-link>
