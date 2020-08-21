@@ -2,7 +2,7 @@
  * 通用粘贴布局
  * @res 返回的字段
  */
-export default (top = 100) => {
+export default (top = 100, dom) => {
     return {
         data() {
             return {
@@ -10,14 +10,22 @@ export default (top = 100) => {
             };
         },
         mounted() {
-            window.addEventListener('scroll', this.handleScroll);
+            if (dom) {
+                document.querySelector(dom).addEventListener('scroll', this.handleScroll);
+            } else {
+                window.addEventListener('scroll', this.handleScroll);
+            }
         },
         methods: {
             /**
              * 滑动到顶部的时候固定tabs
              */
-            handleScroll () {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+            handleScroll (e) {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+                if (dom) {
+                    scrollTop = e.target.scrollTop;
+                }
+                console.log(scrollTop);
                 if (scrollTop >= top) {
                     this.isFixedTop = true;
                 } else {

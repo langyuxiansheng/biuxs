@@ -20,7 +20,7 @@ export default {
             { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_w5sak51tysi.css' }
         ],
         script: [
-            { src: './js/autosize.js', type: 'text/javascript', charset: 'utf-8' }
+            { src: '../js/autosize.js', type: 'text/javascript', charset: 'utf-8' }
         ]
     },
     loading: { color: '#3acbff' },
@@ -38,7 +38,8 @@ export default {
         { src: '@/plugins/baidu.tj', ssr: false },
         { src: '@/plugins/vue-cropper', ssr: false },
         { src: '@/plugins/vue-swiper', ssr: false },
-        { src: '@/plugins/dialog', ssr: false }
+        { src: '@/plugins/dialog', ssr: false },
+        { src: '@/plugins/vue-scroll', ssr: false }
     ],
     modules: [
         '@nuxtjs/axios',
