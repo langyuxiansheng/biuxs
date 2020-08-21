@@ -83,7 +83,7 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  background-color: #e1ffed;
+  background-color: #f4fdf8;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -95,7 +95,7 @@ a {
   display: inline-block;
 }
 input {
-  background-color: #e1ffed;
+  background-color: #f4fdf8;
 }
 #__nuxt .app-text-left,
 #__layout .app-text-left {
@@ -330,4 +330,9 @@ input {
   visibility: visible;
   opacity: 1;
   transition: opacity 0.15s;
+}
+.app-fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
 }

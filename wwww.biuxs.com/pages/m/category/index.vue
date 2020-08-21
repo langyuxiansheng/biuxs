@@ -9,6 +9,7 @@
                 </span>
             </div>
             <div class="app-category">
+                app-fixed-top
                 <div class="cate-item app-flex">
                     <span class="cate-label">
                         频道
@@ -92,9 +93,11 @@
 // import { getSiteHomeData } from '@/http';
 import { AppMHeader, AppMFooter } from '../components';
 import books from '../books.json';
+import isFixedTop from '@/mixins/isFixedTop';
 export default {
     name: 'Category',
     components: { AppMHeader, AppMFooter },
+    mixins: [isFixedTop(64)],
     data() {
         return {
             books,
@@ -154,7 +157,7 @@ export default {
 @tag-size: 1.125rem;
 .app-m-container{
     .app-m-content{
-        max-height: calc(100vh - 5.5rem);
+        max-height: calc(100vh - 3rem);
         overflow: auto;
         font-size: .875rem;
         .search-warpper{
@@ -183,16 +186,6 @@ export default {
             margin: 1.25rem 1rem;
             .cate-item{
                 align-items: flex-start;
-                // position: relative;
-                // &::after{
-                //     width: 100%;
-                //     height: .0625rem;
-                //     content: '';
-                //     background: #dae2de;
-                //     position: absolute;
-                //     left: 0;
-                //     bottom: -.25rem;
-                // }
                 & + .cate-item{
                     margin-top: .625rem;
                 }
