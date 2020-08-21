@@ -65,7 +65,7 @@
                             <div class="b-image">
                                 <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
                             </div>
-                            <div class="b-info">
+                            <nuxt-link class="b-info" :to="`/m/book/${item.bookId}`">
                                 <h5 class="b-title">
                                     {{ item.title }}
                                 </h5>
@@ -82,7 +82,7 @@
                                     <span class="b-o-tags">阅读数 {{ item.readCount }}</span>
                                     <span class="b-o-tags">共 {{ item.chapterCount }} 章</span>
                                 </div>
-                            </div>
+                            </nuxt-link>
                         </li>
                     </template>
                 </ul>

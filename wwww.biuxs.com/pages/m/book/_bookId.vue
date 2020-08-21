@@ -1,147 +1,36 @@
 <template>
     <div class="app-m-container">
-        <app-m-header v-show="false" />
-        <div id="app-cate-content" class="app-m-content">
-            <div class="search-warpper app-flex app-flex-between">
-                <input type="search" placeholder="请输入作者名或者书名进行搜索" class="search-input">
-                <span class="search-btn">
-                    <i class="iconfont iconicon_search" />
-                </span>
-            </div>
-            <div class="app-category" :class="{'app-fixed-top': isFixedTop}">
-                <div class="cate-item app-flex">
-                    <span class="cate-label">
-                        频道
-                    </span>
-                    <ul class="cates app-flex">
-                        <li class="cate">
-                            男生专区
-                        </li>
-                        <li class="cate cate-active">
-                            女生专区
-                        </li>
-                    </ul>
-                </div>
-                <div class="cate-item app-flex">
-                    <span class="cate-label">
-                        分类
-                    </span>
-                    <ul class="cates app-flex">
-                        <template v-for="(cate,index) in cates">
-                            <li :key="index" class="cate" :class="{'cate-active':index == 2}">
-                                {{ cate.type }}
-                            </li>
-                        </template>
-                    </ul>
-                </div>
-                <div class="cate-item app-flex">
-                    <span class="cate-label">
-                        状态
-                    </span>
-                    <ul class="cates app-flex">
-                        <li class="cate cate-active">
-                            全部
-                        </li>
-                        <li class="cate">
-                            连载中
-                        </li>
-                        <li class="cate">
-                            已完结
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="app-cate-hr" />
-            <div class="book-floor hot-books" :class="{'book-floor-fixed': isFixedTop}">
-                <h4 class="item-title app-flex app-flex-between">
-                    <span class="name">书籍列表</span>
-                </h4>
-                <ul class="book-list app-flex">
-                    <template v-for="item in books">
-                        <li :key="item.bookId" class="book-item">
-                            <div class="b-image">
-                                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
-                            </div>
-                            <div class="b-info">
-                                <h5 class="b-title">
-                                    {{ item.title }}
-                                </h5>
-                                <div class="b-author">
-                                    <span class="b-a-name">{{ item.author }}</span>
-                                    <span class="b-a-line">|</span>
-                                    <span class="b-a-status">连载中</span>
-                                </div>
-                                <div class="b-brief">
-                                    {{ item.brief }}
-                                </div>
-                                <div class="b-other">
-                                    <span class="b-o-tags">{{ item.type }}</span>
-                                    <span class="b-o-tags">阅读数 {{ item.readCount }}</span>
-                                    <span class="b-o-tags">共 {{ item.chapterCount }} 章</span>
-                                </div>
-                            </div>
-                        </li>
-                    </template>
-                </ul>
-            </div>
-        </div>
-        <app-m-footer />
+        <app-top-bar>{{ book.title }}</app-top-bar>
     </div>
 </template>
 <script>
 // import { getSiteHomeData } from '@/http';
-import { AppMHeader, AppMFooter } from '../components';
-import books from '../books.json';
-import isFixedTop from '@/mixins/isFixedTop';
+import { AppTopBar } from '../components';
 export default {
     name: 'Category',
-    components: { AppMHeader, AppMFooter },
-    mixins: [isFixedTop(64, '#app-cate-content')],
+    components: { AppTopBar },
     data() {
         return {
-            books,
-            cates: [
-                {
-                    type: '武侠修真',
-                    icon: 'iconwuxia',
-                    img: 'wuxiaxiuzhen.png'
-                },
-                {
-                    type: '玄幻魔法',
-                    icon: 'iconxuanhuan',
-                    img: 'xuanhuanmofa.png'
-                },
-                {
-                    type: '科幻未来',
-                    icon: 'iconkehuan',
-                    img: 'kehuanweilai.png'
-                },
-                {
-                    type: '灵异穿越',
-                    icon: 'iconlingyi',
-                    img: 'lingyichuanyue.png'
-                },
-                {
-                    type: '历史军事',
-                    icon: 'iconjunshi',
-                    img: 'lishijunshi.png'
-                },
-                {
-                    type: '悬疑推理',
-                    icon: 'icontuilinengli',
-                    img: 'xuanyituili.png'
-                },
-                {
-                    type: '女生专区',
-                    icon: 'iconnvsheng',
-                    img: 'nvshengzhuanqu.png'
-                },
-                {
-                    type: '男生专区',
-                    icon: 'iconnansheng',
-                    img: 'nanshengzhuanqu.png'
-                }
-            ]
+            book: {
+                'bookId': '8AFF15F9140C2377B926F11BDDF873A6',
+                'title': '我真不想被夺舍',
+                'brief': '秦缺很困惑，作为一个平平无奇的修行者，怎么就成了穿越者眼中的香饽饽？    一个个穿越者都想穿越成自己？穿越不就是另类的夺舍？这不就是馋我身子么？    “既然诸位都想成为我，那么反过来被我收割，也合情合理吧？”    “你看你，人穿越来就行了嘛，还带什么金手指。”',
+                'letterCount': 0,
+                'chapterCount': 0,
+                'author': '更从心',
+                'readCount': 0,
+                'type': '玄幻小说',
+                'pinyin': 'xuanhuanxiaoshuo',
+                'tags': '玄幻小说',
+                'sourceName': '全本小说网',
+                'sourceUrl': 'https://www.quanben.net/296/296576/',
+                'image': null,
+                'status': 2,
+                'configId': 'D655267DEA565CC63BB8A0EDD612B5A6',
+                'remark': '初次抓取抓取[全本小说网]-[玄幻小说]-[我真不想被夺舍]-https://www.quanben.net/296/296576/',
+                'createdTime': 1597393575,
+                'updatedTime': 1597393575
+            }
         };
     },
     async asyncData({ req, $axios }) {

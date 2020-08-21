@@ -42,24 +42,27 @@ export default {
 .app-m-footer{
     width: 100%;
     background: #fff;
-    position: relative;
-    ::after{
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 1px;
-        background: #f3f3f3;
-    }
+    position: fixed;
+    bottom: 0;
+    left: 0;
     .footer-bar{
         font-size: 1rem;
+        position: relative;
+        ::after{
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 1px;
+            background: #f3f3f3;
+        }
         .link{
             text-align: center;
             flex: 1;
             padding: 1rem .25rem;
             outline: none;
-            // color: #fff;
+            font-weight: 400;
             .iconfont{
                 font-size: 1rem;
             }
@@ -67,7 +70,6 @@ export default {
         .nuxt-link-active{
             // background: rgba(75,175,126,.8);
             color: @app-theme-color;
-            font-weight: bold;
         }
     }
 }
