@@ -168,8 +168,7 @@ export default {
         }
         .search-warpper{
             border: 1px solid @app-theme-color;
-            margin: 1.25rem auto;
-            width: 90%;
+            margin: 1.25rem 1rem;
             height: 2rem;
             border-radius: .25rem;
             .iconfont{

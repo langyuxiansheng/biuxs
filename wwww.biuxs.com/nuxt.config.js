@@ -1,6 +1,9 @@
 
 export default {
     mode: 'universal',
+    dir: {
+
+    },
     head: {
         title: '笔优小说网-极致的阅读体验',
         meta: [
@@ -9,8 +12,8 @@ export default {
             { 'http-equiv': 'X-UA-Compatible', content: 'IE=Edge,chrome=1' },
             { name: 'viewport', content: 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0' },
             { name: 'renderer', content: 'webkit' },
-            { hid: 'keywords', name: 'keywords', content: `笔优小说网,免费小说,网络小说,最新小说排行,小说阅读器` },
-            { hid: 'description', name: 'description', content: `笔优小说网,是一个免费的小说网` }
+            { hid: 'keywords', name: 'keywords', content: `笔优小说网,免费小说,网络小说,最新小说排行,小说阅读器,笔趣阁学习` },
+            { hid: 'description', name: 'description', content: `笔优小说网,是一个免费的小说网,此站仅供学习使用,数据素材等来源于网络,版权归原作者所有.` }
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
