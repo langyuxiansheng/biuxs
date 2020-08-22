@@ -337,3 +337,14 @@ input {
   left: 0;
   z-index: 10;
 }
+.app-btn {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  background: #6c9;
+  color: #fff;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+}

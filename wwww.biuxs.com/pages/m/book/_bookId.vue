@@ -1,6 +1,99 @@
 <template>
     <div class="app-m-container">
         <app-top-bar>{{ book.title }}</app-top-bar>
+        <div class="app-book">
+            <div class="book-img">
+                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
+            </div>
+            <div class="book-info">
+                <h3 class="title">
+                    {{ book.title }}
+                </h3>
+                <div class="book-item app-flex">
+                    <span class="b-label">
+                        作者
+                    </span>
+                    <span class="b-value">
+                        {{ book.author }}
+                    </span>
+                </div>
+                <div class="book-item app-flex">
+                    <span class="b-label">
+                        分类
+                    </span>
+                    <span class="b-value">
+                        {{ book.type }}
+                    </span>
+                </div>
+                <div class="book-item app-flex">
+                    <span class="b-label">
+                        状态
+                    </span>
+                    <span class="b-value">
+                        连载中
+                    </span>
+                </div>
+
+                <div class="book-item app-flex">
+                    <span class="b-label">
+                        更新
+                    </span>
+                    <span class="b-value">
+                        {{ book.updatedTime | formatDateYearMonthDay }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="app-btns app-flex">
+            <button v-waves class="app-btn">
+                开始阅读
+            </button>
+            <button v-waves class="app-btn">
+                加入书架
+            </button>
+        </div>
+        <div class="book-brief">
+            <h6 class="name">
+                书本简介
+            </h6>
+            <div class="brief">
+                {{ book.brief }}
+            </div>
+        </div>
+        <!-- <div class="book-chapter">
+            <h4 class="chapter-title">
+                <span class="name">
+                    最新章节预览
+                </span>
+            </h4>
+            <ul class="chapter-list">
+                <template v-for="index in 2">
+                    <li :key="index" class="item">
+                        <nuxt-link v-waves class="item-link" to="/article">
+                            <span class="chapter-index">第{{ index }}章</span>
+                            <span class="chapter-name">远古魔法——风神的审判</span>
+                        </nuxt-link>
+                    </li>
+                </template>
+            </ul>
+        </div> -->
+        <div class="book-chapter">
+            <h4 class="chapter-title">
+                <span class="name">
+                    最新章节列表
+                </span>
+            </h4>
+            <ul class="chapter-list">
+                <template v-for="index in 10">
+                    <li :key="index" class="item">
+                        <nuxt-link v-waves class="item-link" to="/article">
+                            <span class="chapter-index">第{{ index }}章</span>
+                            <span class="chapter-name">远古魔法——风神的审判</span>
+                        </nuxt-link>
+                    </li>
+                </template>
+            </ul>
+        </div>
     </div>
 </template>
 <script>
@@ -46,164 +139,89 @@ export default {
 <style lang="less" scoped>
 @tag-size: 1.125rem;
 .app-m-container{
-    .app-m-content{
-        max-height: calc(100vh - 3rem);
-        overflow: auto;
-        font-size: .875rem;
-        .search-warpper{
-            border: 1px solid @app-theme-color;
-            margin: 1.25rem 1rem;
-            height: 2rem;
-            border-radius: .25rem;
-            margin-bottom: 0;
-            .search-input{
-                flex: 1;
-                border: none;
-                padding: .375rem;
-                outline: none;
-            }
-            .search-btn{
-                display: inline-block;
-                margin-left: .625rem;
-                margin-right: .625rem;
-                color: @app-theme-color;
-                .iconfont{
-                    font-size: 1.25rem;
-                    font-weight: bold;
-                }
+    padding-top: 2.5rem;
+    .app-book{
+        display: flex;
+        padding: 1.25rem 1rem;
+        font-size: .75rem;
+        background: #eaf5ef;
+        .book-img{
+            width: 5rem;
+            height: 6.875rem;
+            .image{
+                width: 100%;
+                height: 100%;
+                border-radius: .25rem;
             }
         }
-        .app-category{
-            padding: 1.25rem 1rem;
-            background: @app-bg-color;
-            .cate-item{
-                align-items: flex-start;
-                & + .cate-item{
+        .book-info{
+            flex: 1;
+            margin-left: 1rem;
+            .title{
+                font-size: 1rem;
+                margin-bottom: .625rem;
+            }
+            .book-item{
+                font-size: .875rem;
+                & + .book-item{
                     margin-top: .625rem;
                 }
-                .cate-label{
-                    margin-right: .625rem;
-                    color: #757575;
-                    padding: .4rem 0;
+                .b-label{
+                    display: inline-block;
                     font-weight: bold;
                 }
-                .cates{
-                    flex-wrap: wrap;
-                    flex: 1;
-                    .cate{
-                        padding: .4rem;
-                        border-radius: .25rem;
-                        margin-right: .25rem;
-                        &-active{
-                            background: @app-theme-color;
-                            color: #fff;
-                        }
-                    }
+                .b-value{
+                    margin-left: .25rem;
                 }
             }
         }
-        .app-cate-hr{
-            margin: 1.25rem 1rem;
-            height: .0625rem;
+    }
+    .app-btns{
+        justify-content: center;
+        background: #eaf5ef;
+        padding-bottom: 1rem;
+        .app-btn{
+            flex: 1;
+            margin: 0 1rem;
+            padding: .5rem;
+            font-size: .875rem
+        }
+    }
+    .book-brief{
+        padding: 1rem;
+        font-size: .875rem;
+        .name{
+            font-size: 1rem;
+            margin-bottom: .75rem;
+        }
+        .brief{
+            line-height: 1.5;
+        }
+    }
+    .book-chapter{
+        .chapter-title{
+            padding: .625rem 1rem;
             background: @app-theme-color;
-            margin-top: 0;
+            color: #fff;
         }
-        .book-floor{
-            padding-left: .75rem;
-            padding-right: .75rem;
-            margin-bottom: 1.25rem;
-            &-fixed{
-                margin-top: 11.5rem;
-            }
-            .item-title{
-                margin-bottom: 1rem;
-                .more{
-                    .iconfont{
-                        font-size: 12px;
-                    }
+        .chapter-list{
+            font-weight: bold;
+            background: #eaf5ef;
+            padding: 1.25rem 0;
+            .item{
+                position: relative;
+                &::after{
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    width: 100%;
+                    height: 1px;
+                    background: #cee2d8;
                 }
-            }
-            .book-list{
-                .book-item{
-                    font-size: .75rem;
-                    & + .book-item{
-                        margin-left: .5rem;
-                    }
-                    .b-image{
-                        width: 5rem;
-                        height: 6.875rem;
-                        position: relative;
-                        .image{
-                            width: 100%;
-                            height: 100%;
-                            border-radius: .25rem;
-                        }
-                        .b-tags{
-                            display: inline-block;
-                            color: #fff;
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            background: rgba(255, 69, 0, .8);
-                            padding: .15rem;
-                            text-align: center;
-                            border-radius: 20%;
-                            font-size: .75rem;
-                        }
-                    }
-                    .b-title{
-                        margin-top: .375rem;
-                        display: inline-block;
-                        color: #535353;
-                        font-weight: bold;
-                    }
-                }
-            }
-        }
-        .hot-books{
-            .book-list{
-                display: block;
-                .book-item{
-                    display: flex;
-                    & + .book-item{
-                        margin-left: 0;
-                        margin-top: 1rem;
-                    }
-                    .b-info{
-                        margin-left: 1rem;
-                        flex: 1;
-                        .b-title{
-                            display: block;
-                            font-size: .875rem;
-                            margin-top: 0;
-                            margin-bottom: .5rem;
-                        }
-                        .b-author{
-                            font-size: .75rem;
-                            .b-a-line{
-                                display: inline-block;
-                                margin: 0 .25rem;
-                            }
-                            .b-a-status{
-                                color: #f00;
-                            }
-                        }
-                        .b-brief{
-                            margin: .625rem 0;
-                            .ellipsis-mult(2);
-                            line-height: 1.5;
-                        }
-                        .b-other{
-                            margin-top: .625rem;
-                            .b-o-tags{
-                                display: inline-block;
-                                background: @app-theme-color;
-                                padding: .25rem;
-                                color: #fff;
-                                border-radius: .25rem;
-                            }
-                        }
-                    }
+                .item-link{
+                    display: block;
+                    padding: .625rem 1rem;
                 }
             }
         }

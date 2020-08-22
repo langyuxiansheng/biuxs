@@ -29,7 +29,7 @@ export default {
             { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_51v4xv4qhyt.css' }
         ],
         script: [
-            { src: '../js/autosize.js', type: 'text/javascript', charset: 'utf-8' }
+            { src: 'http://192.168.43.35:3021/js/autosize.js', type: 'text/javascript', charset: 'utf-8' }
         ]
     },
     loading: { color: '#3acbff' },

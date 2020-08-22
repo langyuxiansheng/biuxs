@@ -6,8 +6,8 @@
         <h1 class="top-title">
             <slot />
         </h1>
-        <nuxt-link class="star-book" to="/2">
-            <i class="iconfont iconshuji" />
+        <nuxt-link class="star-book" to="/m/home">
+            <i class="iconfont iconicon13" />
         </nuxt-link>
     </header>
 </template>
@@ -38,7 +38,9 @@ export default {
 .app-top-bar{
     background: #fff;
     padding: .625rem 1rem;
-    position: relative;
+    position: fixed;
+    width: 100%;
+    top: 0;
     ::after{
         content: '';
         position: absolute;
