@@ -60,7 +60,7 @@
                 {{ book.brief }}
             </div>
         </div>
-        <!-- <div class="book-chapter">
+        <div class="book-chapter">
             <h4 class="chapter-title">
                 <span class="name">
                     最新章节预览
@@ -76,7 +76,7 @@
                     </li>
                 </template>
             </ul>
-        </div> -->
+        </div>
         <div class="book-chapter">
             <h4 class="chapter-title">
                 <span class="name">
@@ -93,6 +93,15 @@
                     </li>
                 </template>
             </ul>
+        </div>
+        <div class="app-pager app-flex">
+            <span class="app-btn">上一页</span>
+            <sapn class="app-page-jump app-flex">
+                <font>第</font>
+                <input type="number" value="1">
+                <font>/3000页</font>
+            </sapn>
+            <span class="app-btn">下一页</span>
         </div>
     </div>
 </template>
@@ -207,7 +216,7 @@ export default {
         .chapter-list{
             font-weight: bold;
             background: #eaf5ef;
-            padding: 1.25rem 0;
+            padding-top: 1.25rem;
             .item{
                 position: relative;
                 &::after{
@@ -223,6 +232,27 @@ export default {
                     display: block;
                     padding: .625rem 1rem;
                 }
+            }
+        }
+    }
+    .app-pager{
+        justify-content: center;
+        font-size: 1rem;
+        padding: 1rem 0;
+        .app-btn{
+            font-size: .875rem;
+            padding: .5rem .75rem;
+        }
+        .app-page-jump{
+            margin: 0 .625rem;
+            [type="number"]{
+                display: inline-block;
+                max-width: 3rem;
+                margin: 0 .25rem;
+                border: 1px solid @app-theme-color;
+                border-radius: .25rem;
+                outline: none;
+                padding: .25rem;
             }
         }
     }
