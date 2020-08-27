@@ -1,5 +1,5 @@
 /**
- *  site
+ *  前端网站API类
  */
 const KoaRouter = require('koa-router');
 const SiteService = require(':services/biuxs/SiteService');
