@@ -1,3 +1,23 @@
+const os = require('os');
+
+/**
+ * 获取当前机器的ip地址
+ */
+function getIpAddress() {
+    var ifaces = os.networkInterfaces();
+
+    for (var dev in ifaces) {
+        let iface = ifaces[dev];
+
+        for (let i = 0; i < iface.length; i++) {
+            let { family, address, internal } = iface[i];
+
+            if (family === 'IPv4' && address !== '127.0.0.1' && !internal) {
+                return address;
+            }
+        }
+    }
+}
 
 export default {
     mode: 'universal',
@@ -29,7 +49,7 @@ export default {
             { rel: 'stylesheet', href: '//at.alicdn.com/t/font_1622620_51v4xv4qhyt.css' }
         ],
         script: [
-            { src: 'http://172.16.10.18:3021/js/autosize.js', type: 'text/javascript', charset: 'utf-8' }
+            { src: `http://${getIpAddress()}:3021/js/autosize.js`, type: 'text/javascript', charset: 'utf-8' }
         ]
     },
     loading: { color: '#3acbff' },
@@ -47,8 +67,7 @@ export default {
         { src: '@/plugins/baidu.tj', ssr: false },
         { src: '@/plugins/vue-cropper', ssr: false },
         { src: '@/plugins/vue-swiper', ssr: false },
-        { src: '@/plugins/dialog', ssr: false },
-        { src: '@/plugins/vue-scroll', ssr: false }
+        { src: '@/plugins/dialog', ssr: false }
     ],
     modules: [
         '@nuxtjs/axios',
