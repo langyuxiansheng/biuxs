@@ -92,6 +92,7 @@ export default {
     }
     .reader-content{
         padding: 0 1.25rem;
+        padding-bottom: 2.5rem;
         line-height: 1.8;
         font-size: 1rem;
         text-indent: 1.95rem;
