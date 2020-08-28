@@ -1,6 +1,6 @@
 <template>
     <div class="app-reader-contaier">
-        <vuescroll ref="AppBookReader" :ops="ops" @load-before-deactivate="infinite" @refresh-start="refresh">
+        <vuescroll ref="AppBookReader" :ops="ops" @load-start="handleLoadStart" @load-before-deactivate="handleLoadBeforeDeactivate" @refresh-start="refresh">
             <div class="scroll-content">
                 <h4 class="reader-title">
                     <span class="index">第1章</span>
@@ -27,10 +27,8 @@ export default {
                     pushLoad: {
                         enable: true,
                         tips: {
-                            deactive: 'Push to Load',
-                            active: 'Release to Load',
-                            start: 'Loading...',
-                            beforeDeactive: 'Load Successfully!'
+                            start: '加载中...',
+                            beforeDeactive: '加载成功!'
                         },
                         auto: !false,
                         autoLoadDistance: 40
@@ -54,31 +52,23 @@ export default {
     methods: {
 
         /**
-         * 上拉加载
+         * 上拉加载开始
          */
-        infinite(done) {
+        handleLoadStart(vm, refreshDom, done) {
             console.log(`上拉加载`);
-            // console.log(done());
-            // if (this.noData) {
-            //     setTimeout(() => {
-            //         this.$refs.AppBookReader.finishInfinite(2);
-            //     });
-            //     return;
-            // }
-            // let self = this;
-            // let i = 1;
-            // let start = this.list.length;
-            // setTimeout(() => {
-            //     for (var k = 0; k < 9; k++) {
-            //         self.list.push(k);
-            //     }
-            //     i++;
-            //     if (start / i < 9) {
-            //         self.noData = '没有更多数据';
-            //     }
-            //     self.$refs.my_scroller.resize();
-            //     done();
-            // }, 1500);
+            setTimeout(() => {
+                done();
+            }, 1000);
+        },
+
+        /**
+         * 上拉加载完成前
+         */
+        handleLoadBeforeDeactivate(vm, refreshDom, done) {
+            console.log(`上拉加载完成`);
+            setTimeout(() => {
+                done();
+            }, 1000);
         },
 
         /**
