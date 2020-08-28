@@ -1,6 +1,6 @@
 <template>
     <div class="app-reader-contaier">
-        <vuescroll ref="AppBookReader" :ops="ops" :on-infinite="infinite" :on-refresh="refresh">
+        <vuescroll ref="AppBookReader" :ops="ops" @load-before-deactivate="infinite" @refresh-start="refresh">
             <div class="scroll-content">
                 <h4 class="reader-title">
                     <span class="index">第1章</span>
@@ -58,7 +58,7 @@ export default {
          */
         infinite(done) {
             console.log(`上拉加载`);
-            console.log(done());
+            // console.log(done());
             // if (this.noData) {
             //     setTimeout(() => {
             //         this.$refs.AppBookReader.finishInfinite(2);
