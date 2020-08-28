@@ -1,11 +1,13 @@
 <template>
     <div class="app-reader-contaier">
-        <vuescroll ref="AppBookReader" :on-infinite="infinite" :on-refresh="refresh">
-            <h4 class="reader-title">
-                <span class="index">第1章</span>
-                <span class="title">{{ book.title }}</span>
-            </h4>
-            <div class="reader-content" v-html="formatContent(book.content)" />
+        <vuescroll ref="AppBookReader" :ops="ops" :on-infinite="infinite" :on-refresh="refresh">
+            <div class="scroll-content">
+                <h4 class="reader-title">
+                    <span class="index">第1章</span>
+                    <span class="title">{{ book.title }}</span>
+                </h4>
+                <div class="reader-content" v-html="formatContent(book.content)" />
+            </div>
         </vuescroll>
     </div>
 </template>
@@ -16,6 +18,25 @@ export default {
     components: { vuescroll },
     data() {
         return {
+            ops: {
+                vuescroll: {
+                    mode: 'slide',
+                    pullRefresh: {
+                        enable: true
+                    },
+                    pushLoad: {
+                        enable: true,
+                        tips: {
+                            deactive: 'Push to Load',
+                            active: 'Release to Load',
+                            start: 'Loading...',
+                            beforeDeactive: 'Load Successfully!'
+                        },
+                        auto: !false,
+                        autoLoadDistance: 40
+                    }
+                }
+            },
             book: {
                 'isDelete': false,
                 'createdTime': 1598597286,
@@ -31,29 +52,39 @@ export default {
         };
     },
     methods: {
-        infinite(done) { //上拉加载
-            if (this.noData) {
-                setTimeout(() => {
-                    this.$refs.AppBookReader.finishInfinite(2);
-                });
-                return;
-            }
-            let self = this;
-            let i = 1;
-            let start = this.list.length;
-            setTimeout(() => {
-                for (var k = 0; k < 9; k++) {
-                    self.list.push(k);
-                }
-                i++;
-                if (start / i < 9) {
-                    self.noData = '没有更多数据';
-                }
-                self.$refs.my_scroller.resize();
-                done();
-            }, 1500);
+
+        /**
+         * 上拉加载
+         */
+        infinite(done) {
+            console.log(`上拉加载`);
+            console.log(done());
+            // if (this.noData) {
+            //     setTimeout(() => {
+            //         this.$refs.AppBookReader.finishInfinite(2);
+            //     });
+            //     return;
+            // }
+            // let self = this;
+            // let i = 1;
+            // let start = this.list.length;
+            // setTimeout(() => {
+            //     for (var k = 0; k < 9; k++) {
+            //         self.list.push(k);
+            //     }
+            //     i++;
+            //     if (start / i < 9) {
+            //         self.noData = '没有更多数据';
+            //     }
+            //     self.$refs.my_scroller.resize();
+            //     done();
+            // }, 1500);
         },
-        refresh: function() { //下拉刷新
+
+        /**
+         * 下拉刷新
+         */
+        refresh() {
             console.log('refresh');
             this.timeout = setTimeout(() => {
                 this.$refs.my_scroller.finishPullToRefresh();
