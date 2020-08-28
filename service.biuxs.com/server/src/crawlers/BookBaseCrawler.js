@@ -3,7 +3,7 @@
  */
 const http = require('superagent');
 // const tr = require('transliteration'); //分类拼音
-const { logger } = require(':lib/logger4'); //日志系统
+const { taskLog } = require(':lib/logger4'); //日志系统
 // const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
 require('superagent-proxy')(http);
@@ -41,10 +41,10 @@ module.exports = class BookBaseCrawler {
                     console.log(`抓取完成!`, res);
                 });
             } else {
-                logger.error(`没有相关的配置项`);
+                taskLog.error(`没有相关的配置项`);
             }
         } catch (error) {
-            logger.error(`抓取站点的分类信息出错:`, JSON.stringify(error));
+            taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
         }
     }
 
@@ -59,7 +59,7 @@ module.exports = class BookBaseCrawler {
         const time = utils.getRandomNum(0, 59);
         this.RULE = this.__getScheduleJobRule(time, time);
         schedule.scheduleJob(this.RULE, () => {
-            logger.info(`定时抓取`, +new Date());
+            taskLog.info(`定时抓取`, +new Date());
             this.RULE = this.__getScheduleJobRule(time, time);
         });
     }
@@ -110,7 +110,7 @@ module.exports = class BookBaseCrawler {
         const params = config.params.replace('[page]', page); //替换url中的分页参数
         const baseURL = `${baseConf.protocol}${baseConf.host}${params}`;
         try {
-            logger.info(`============================================抓取开始 ${baseURL}-${baseConf.title}-${config.title} BEGIN================================================`);
+            taskLog.info(`============================================抓取开始 ${baseURL}-${baseConf.title}-${config.title} BEGIN================================================`);
             const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(baseConf.timeout).charset(baseConf.charset).buffer(true);
             const list = [];
             if (status == 200) {
@@ -135,15 +135,15 @@ module.exports = class BookBaseCrawler {
                 page++;
                 //抓取间隔1-10S
                 const time = utils.getRandomNum(1000, 10000);
-                logger.info(`抓取间隔 ${time} ms`);
+                taskLog.info(`抓取间隔 ${time} ms`);
                 setTimeout(() => {
                     this.getBookTypeBase(baseConf, config, page);
                 }, time);
             }
-            logger.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title} END=================================================`);
+            taskLog.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title} END=================================================`);
             return list;
         } catch (error) {
-            logger.error(`${baseURL}-${baseConf.title}-${config.title}抓取错误!`, JSON.stringify(error));
+            taskLog.error(`${baseURL}-${baseConf.title}-${config.title}抓取错误!`, new Error(error));
             return null;
         }
     }

@@ -68,8 +68,8 @@ module.exports = {
                 database: 'biuxs_db', // 数据库名称(测试)
                 options: { //配置项
                     dialect: 'mysql', // 数据库类型
-                    host: '114.55.95.232', // 服务器地址
-                    port: 3306, // 数据库端口号
+                    host: 'cdb-86m6bq78.cd.tencentcdb.com', // 服务器地址
+                    port: 10159, // 数据库端口号
                     dialectOptions: { // MySQL > 5.5，其它数据库删除此项
                         charset: 'utf8mb4',
                         supportBigNumbers: true,
@@ -100,8 +100,10 @@ module.exports = {
         /^\/System/, //系统设置
         /^\/Home/, //主页
         /^\/Website/, //系统设置
+        /^\/Crawlers/, //爬虫系统
         /^\/Member/, //会员中心
-        /^\/Search/, //搜索配置
+        /^\/Book/, //搜索配置
+        /^\/403/,
         //api部分
         /^\/v1\/api\/common\/utils\/getImgValidate/, //图片验证码
         /^\/v1\/api\/common\/utils\/getEmailValidateCode/, //邮件验证码
@@ -112,12 +114,7 @@ module.exports = {
         // /^\/v1\/api\/member\/userLogin/, //用户登录接口
         // /^\/v1\/api\/member\/userResetPwd/, //重置密码接口
         // /^\/v1\/api\/member\/sendUserResetPwdEmailCode/, //重置密码发送邮件验证码接口
-        /^\/v1\/api\/biunav\/site/, //site接口面认证
-        //====================爬虫接口==========================
-        /^\/v1\/api\/crawlers\/getWebSiteBase/, //爬虫系统(抓取网站基础信息)
-        /^\/v1\/api\/crawlers\/getSinaWeibo/, //爬虫系统(抓取热搜词)
-        /^\/v1\/api\/crawlers\/getQuWanLi/, //爬虫系统(抓取去碗里)
-        /^\/v1\/api\/crawlers\/getGithubAuth/ //测试github获取信息(抓取去碗里)
+        /^\/v1\/api\/biunav\/site/ //site接口面认证
     ],
     signUnlessPath: [ //免签名url白名单 如果不设置会返回{code:400,mag:"签名无需"}
         /^\/public/, //公共资源
@@ -127,9 +124,7 @@ module.exports = {
         /^\/favicon.ico/,
         /^\/__webpack_hmr/,
         /^\/System/, //系统设置
-        /^\/Home/, //主页
-        /^\/Website/, //系统设置
-        /^\/Member/, //会员中心
-        /^\/v1\/api\/crawlers\/getGithubAuth/ //测试github获取信息(抓取去碗里)
+        /^\/Crawlers/, //爬虫系统
+        /^\/Home/ //主页
     ]
 };

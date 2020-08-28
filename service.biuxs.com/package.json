@@ -25,6 +25,7 @@
     "cross-env": "^5.2.0",
     "dayjs": "^1.8.22",
     "element-ui": "^2.4.11",
+    "file-saver": "^2.0.2",
     "ioredis": "^4.14.1",
     "ip": "^1.1.5",
     "js-cookie": "^2.2.0",
@@ -44,6 +45,7 @@
     "node-schedule": "^1.3.2",
     "nodemailer": "^6.3.1",
     "nuxt": "^2.3.4",
+    "poolifier": "^1.1.0",
     "request": "^2.88.2",
     "require-directory": "^2.1.1",
     "sequelize": "^5.3.0",
@@ -57,7 +59,8 @@
     "vue-directive-image-previewer": "^2.2.1",
     "vue-i18n": "^8.10.0",
     "vuex-persist": "^2.2.0",
-    "wangeditor": "^3.1.1"
+    "wangeditor": "^3.1.1",
+    "xlsx": "^0.16.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

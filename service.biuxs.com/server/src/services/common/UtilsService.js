@@ -29,7 +29,7 @@ module.exports = class {
             logger.info(`设置验证码:${text}`);
             return result.success(null, { img: data, text });
         } catch (error) {
-            logger.error(`设置验证码出错:`, JSON.stringify(error));
+            logger.error(`设置验证码出错:`, new Error(error));
             return result.failed(error);
         }
     }

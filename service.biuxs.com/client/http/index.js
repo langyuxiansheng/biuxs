@@ -53,13 +53,17 @@ export const {
     delWebsiteBglibByIds,
     addWebsiteBglibs,
     updateWebsiteBglib,
-    //搜索配置
-    getSearchTypeList,
-    delSearchTypeByIds,
-    addSearchType,
-    updateSearchType,
-    getSearchTagList,
-    delSearchTagByIds,
-    addSearchTagByAdmin,
-    updateSearchTag
+    //书籍管理
+    getBookListByAdmin,
+    delBookAdminByIds,
+    updateBookAdmin,
+    getBookChapterListByAdmin,
+    delBookChapterAdminByIds,
+    updateBookChapterAdmin,
+    //配置项管理
+    addConfig,
+    getConfigList,
+    getConfigByCode,
+    updateConfig,
+    delConfigByIds
 } = apis;

@@ -21,6 +21,40 @@ export default {
     },
 
     /**
+     * 格式化书籍状态
+     * @param {*} value
+     */
+    formatBookStatus(value) {
+        switch (value) {
+        case 1:
+            return '完本';
+        case 2:
+            return '连载';
+        case 3:
+            return '已下架';
+        default:
+            return '其它';
+        }
+    },
+
+    /**
+     * 格式化书籍章节状态
+     * @param {*} value
+     */
+    formatBookChapterStatus(value) {
+        switch (value) {
+        case 1:
+            return '已完成';
+        case 2:
+            return '未完成';
+        case 3:
+            return '已失败';
+        default:
+            return '其它';
+        }
+    },
+
+    /**
      * 格式化状态
      * @param {*} value
      */
@@ -76,6 +110,23 @@ export default {
             return '产品建议';
         default:
             return '其它信息';
+        }
+    },
+
+    /**
+     * 格式化配置项类型
+     * @param {*} value
+     */
+    formatConfigType(value) {
+        switch (Number(value)) {
+        case 1:
+            return '书籍爬虫配置';
+        case 2:
+            return 'IP代理爬虫配置';
+        case 3:
+            return '用户阅读器配置';
+        default:
+            return '-';
         }
     },
 

@@ -34,15 +34,16 @@ module.exports = class {
             info['userId'] = user.adminId; //设置通用id名
             info['userName'] = user.adminName; //设置通用用户名
             const sid = getUCMd5(info.userId);
+            const maxAge = 60 * 60 * 24; //2小时有效!
             const jwtId = getTimeStampUUID(); //生成唯一id
-            const jwt = signJWT({ sid, jwtId }, '2h'); //验证通过签发jwt,2小时有效!
-            const res = await redis.setData(sid, { jwt, user: info, jwtId }); //redis
+            const jwt = signJWT({ sid, jwtId }, maxAge); //验证通过签发jwt
+            const res = await redis.setData(sid, { jwt, user: info, jwtId }, maxAge); //redis
             if (!res) return result.failed('系统错误,登录出错');
             //隐藏手机号中间4位
             delete info['password']; //移除密码字段
             return result.success(null, { jwt, user: info });
         } catch (error) {
-            logger.error(`管理员登录`, `LoginService.userLoginForSysAdmin`, JSON.stringify(error));
+            logger.error(`管理员登录`, `LoginService.userLoginForSysAdmin`, new Error(error));
             return result.failed(`登录出错!`, null, error);
         }
     }

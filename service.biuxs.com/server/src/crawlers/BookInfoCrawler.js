@@ -3,7 +3,7 @@
  */
 const http = require('superagent');
 const tr = require('transliteration'); //分类拼音
-const { logger } = require(':lib/logger4'); //日志系统
+const { taskLog } = require(':lib/logger4'); //日志系统
 const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
 require('superagent-proxy')(http);
@@ -15,9 +15,9 @@ const { MODELS_PATH } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
 const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
 const ConfigBaseModel = BiuDB.import(`${MODELS_PATH}/common/ConfigBaseModel`);
-const BookBaseModel = BiuDB.import(`${MODELS_PATH}/book/BookBaseModel`);
-const BookChapterModel = BiuDB.import(`${MODELS_PATH}/book/BookChapterModel`);
-const BookArticleModel = BiuDB.import(`${MODELS_PATH}/book/BookArticleModel`);
+const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
+const BookChapterModel = BiuDB.import(`${MODELS_PATH}/books/BookChapterModel`);
+const BookArticleModel = BiuDB.import(`${MODELS_PATH}/books/BookArticleModel`);
 module.exports = class BookBaseCrawler {
     constructor(pathname, typeId) {
         this.count = 0;
@@ -89,11 +89,11 @@ module.exports = class BookBaseCrawler {
 
     /**
      * 获取任务列表
-     * @param {*} param0 page 第1页，每次2条
+     * @param {*} param0 page 第1页，每次2条 status = 任务类型和状态
      */
-    async getTasks({ page = 1, limit = 2 }) {
+    async getTasks({ page = 1, limit = 5, status = 1 }) {
         let queryData = {
-            where: { isDelete: false, status: 1 },
+            where: { isDelete: false, status },
             order: [
                 ['createdTime', 'ASC']
             ],
@@ -108,42 +108,73 @@ module.exports = class BookBaseCrawler {
             const { rows, count } = await TasksModel.findAndCountAll(queryData);
             const taskCount = rows.length;
             if (taskCount) {
-                logger.info(`本次执行任务:${taskCount}条,总任务:${count}条`);
+                taskLog.info(`本次执行任务:${taskCount}条,总任务:${count}条`);
                 Promise.all(rows.map((task) => {
-                    return this.getTaskAndConfig(task);
+                    return this.runTask(task);
                 })).then((res) => {
                     const success = res.filter(item => item).length;
                     const failed = res.filter(item => !item).length;
-                    logger.info(`本次执行的任务:${res.length}条,成功:${success}条,失败:${failed}条`, JSON.stringify(rows));
+                    taskLog.info(`本次执行的任务:${res.length}条,成功:${success}条,失败:${failed}条`, JSON.stringify(rows));
                 });
             } else {
-                logger.warn(`没有需要执行的任务列表:`, rows);
+                taskLog.warn(`没有需要执行的任务列表:`, rows);
             }
         } catch (error) {
-            logger.error(`任务执行出错:${JSON.stringify(error)}`);
+            taskLog.error(`任务执行出错:${new Error(error)}`);
         }
     }
 
     /**
-     * 获取任务信息和配置信息
+     * 运行基础任务抓取书籍的基本信息
      * @param page
      */
-    async getTaskAndConfig(task) {
+    async runTask(task) {
         try {
-            //优先读取缓存
-            const ccb = await redis.getData(task.configId);
-            if (ccb) return await this.getBookInfo(task, ccb.conf);
-            //再次读取数据库
-            const cb = await ConfigBaseModel.findOne({ where: { isDelete: false, configId: task.configId } });
-            if (cb) {
-                redis.setData(task.configId, cb);
-                return await this.getBookInfo(task, cb.conf);
-            };
-            logger.error(`没有相关的配置项`);
+            const config = await this.getConfigById(task);
+            if (config) return await this.getBookInfo(task, config.conf);
+            taskLog.error(`没有相关的配置项`);
         } catch (error) {
-            logger.error(`抓取站点的分类信息出错:`, JSON.stringify(error));
+            taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
         }
         return null;
+    }
+
+    /**
+     * 运行抓取章节内容任务
+     * @param page
+     */
+    async runArticleTask(chapter) {
+        try {
+            const config = await this.getConfigById(chapter);
+            if (config) return await this.getChapterArticle(chapter, config.conf);
+            taskLog.error(`没有相关的配置项`);
+        } catch (error) {
+            taskLog.error(`抓取章节内容出错:`, new Error(error));
+        }
+        return null;
+    }
+
+    /**
+     * 获取配置项
+     * @param page
+     */
+    async getConfigById({ configId }) {
+        let config = null;
+        try {
+            //优先读取缓存
+            config = await redis.getData(configId);
+            if (config) return config;
+            //再次读取数据库
+            config = await ConfigBaseModel.findOne({ where: { isDelete: false, configId } });
+            if (config) {
+                redis.setData(configId, config);
+                return config;
+            };
+            taskLog.error(`没有相关的配置项`);
+        } catch (error) {
+            taskLog.error(`获取配置项出错:`, new Error(error));
+        }
+        return config;
     }
 
     /**
@@ -157,13 +188,13 @@ module.exports = class BookBaseCrawler {
         const headers = this.__getRequestHeaders(base.host); //获取请求头
         try {
             TasksModel.update({ status: 2 }, { where: { taskId: task.taskId } });
-            logger.info(`============================================抓取开始 ${task.name}-${task.url} BEGIN================================================`);
+            taskLog.info(`============================================抓取开始 ${task.name}-${task.url} BEGIN================================================`);
             const { status, text } = await http.get(`${task.url}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
             let book = null;
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
                 //抓取书籍的详情
-                const title = $(info.titleSelector).text().trim(); //书本名称
+                const title = task.name.split('-')[2].replace(/[/[|\]]/g, '').trim() || $(info.titleSelector).text().trim(); //书本名称
                 const author = $(info.authorSelector).text().trim(); //作者名
                 const brief = $(info.briefSelector).text().replace(new RegExp('内容简介：'), '').trim(); //书本简介
                 const image = $(info.imageSelector).attr('src') || null;//图片地址
@@ -181,36 +212,74 @@ module.exports = class BookBaseCrawler {
                 book = { title, author, brief, type, pinyin, letterCount, chapterCount, readCount, tags, status, configId, sourceName, sourceUrl, image, remark };
                 const bookId = await this.saveBookInfoData(book, task);
                 if (bookId) { //如果书籍是新抓取的就进行章节抓取
-                    console.log(bookId);
-                    const chapterList = [];
-                    $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
-                        const t = $(el).find(info.chapterNameSelector).text().split('章');
-                        const url = $(el).find(info.contentUrlSelector).attr('href').trim();
-                        chapterList.push({
-                            bookId,
-                            configId,
-                            index: index + 1,
-                            title: t.length > 1 ? t[1].trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题
-                            url: url && url.indexOf('http') != -1 ? url : `${base.protocol}${base.host}${url}`, //获取章节内容采集地址链接
-                            type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
-                            status: 1, //状态 1未完成内容抓取  2已完成内容抓取 3抓取内容失败
-                            remark: `初次抓取章节`
-                        });
-                    });
-                    if (chapterList.length) {
-                        this.saveBookChapterData(chapterList, bookId, task);
-                    } else {
-                        logger.info(`未抓取到相关章节!,${task.url}`);
+                    const res = await this.getBookChapterList($, { bookId, configId, base, info });
+                    if (res) {
+                        //只有完成了章节抓取的才算完成了任务
+                        TasksModel.update({ status: 4, remark: `抓取章节内容` }, { where: { taskId: task.taskId } });
                     }
                 }
             }
-            logger.info(`============================================抓取结束 ${task.name}-${task.url} END================================================`);
+            taskLog.info(`============================================抓取结束 ${task.name}-${task.url} END================================================`);
             return book;
         } catch (error) {
             TasksModel.update({ status: 3 }, { where: { taskId: task.taskId } });
-            logger.error(`${task.name}-${task.url}抓取错误!`, JSON.stringify(error));
+            taskLog.error(`${task.name}-${task.url}抓取错误!`, new Error(error));
             return null;
         }
+    }
+
+    /**
+    * 更新章节
+    * @param {*} baseURL
+    * @param {*} param1
+    * @description 这里只采集书籍章节列表
+    */
+    async refreshBookChapterList({ title, bookId, sourceUrl, configId }) {
+        let res = 0;
+        try {
+            const { conf: { base, info } } = await this.getConfigById({ configId });
+            const headers = this.__getRequestHeaders(base.host); //获取请求头
+            taskLog.info(`============================================更新抓取开始 ${title}-${sourceUrl} BEGIN================================================`);
+            const { status, text } = await http.get(`${sourceUrl}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
+            if (status == 200) {
+                const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
+                res = await this.getBookChapterList($, { bookId, configId, base, info });
+            }
+            taskLog.info(`============================================更新抓取结束 ${title}-${sourceUrl} END================================================`);
+        } catch (error) {
+            taskLog.error(`${title}-${sourceUrl}抓取错误!`, new Error(error));
+        }
+        return res;
+    }
+
+    /**
+     * 抓取章节详情
+     * @param {*} $
+     * @param {*} param1
+     */
+    async getBookChapterList($, { bookId, configId, base, info }) {
+        let res = 0;
+        const chapterList = [];
+        $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
+            const t = $(el).find(info.chapterNameSelector).text().split('章');
+            const url = $(el).find(info.contentUrlSelector).attr('href').trim();
+            chapterList.push({
+                bookId,
+                configId,
+                index: index + 1,
+                title: t.length > 1 ? t[1].replace(/[、|：]/g, '').trim() : $(el).find(info.chapterNameSelector).text(), //获取章节标题
+                url: url && url.indexOf('http') != -1 ? url : `${base.protocol}${base.host}${url}`, //获取章节内容采集地址链接
+                type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
+                status: 2, //1已完成内容抓取  2未完成内容抓取 3抓取内容失败
+                remark: `初次抓取章节`
+            });
+        });
+        if (chapterList.length) {
+            res = await this.saveBookChapterData(chapterList, bookId);
+        } else {
+            taskLog.info(`未抓取到相关章节!`);
+        }
+        return res;
     }
 
     /**
@@ -223,22 +292,23 @@ module.exports = class BookBaseCrawler {
         const headers = this.__getRequestHeaders(base.host); //获取请求头
         let article = null;
         try {
-            logger.info(`============================================抓取开始 ${chapter.title}-${chapter.url} BEGIN================================================`);
+            taskLog.info(`============================================抓取开始 ${chapter.title}-${chapter.url} BEGIN================================================`);
             const { status, text } = await http.get(`${chapter.url}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
             if (status == 200) {
                 const $ = cheerio.load(text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
-                const articleId = chapter.chapterId;
+                const articleId = chapter.chapterId; //内容id同章节id
+                const bookId = chapter.bookId; //书籍id
                 //抓取章节的内容详情
                 const title = chapter.title; //书本名称
                 const content = $(info.contentSelector).text().trim();
                 const letterCount = content && content.length; //总字数
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
-                article = await this.saveChapterArticleData({ articleId, title, letterCount, status, remark });
+                article = await this.saveChapterArticleData({ articleId, title, content, letterCount, status, bookId, remark });
             }
-            logger.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
+            taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
         } catch (error) {
-            logger.error(`${chapter.title}-${chapter.url}抓取错误!`, JSON.stringify(error));
+            taskLog.error(`${chapter.title}-${chapter.url}抓取错误!`, new Error(error));
         }
         return article;
     }
@@ -254,14 +324,14 @@ module.exports = class BookBaseCrawler {
                 where: { title: book.title, author: book.author, isDelete: false }
             });
             if (count) { //查询数据库已有的数据
-                logger.info(`书籍:${book.title}已存在`);
+                taskLog.info(`书籍:${book.title}已存在`);
             } else {
                 const res = await BookBaseModel.create(book);
-                logger.info(`本次保存书籍:${book.title}`);
+                taskLog.info(`本次保存书籍:${book.title}`);
                 bookId = res && res.bookId;
             }
         } catch (error) {
-            logger.error(`保存书籍出错:${book.title}出错,${JSON.stringify(error)}`);
+            taskLog.error(`保存书籍出错:${book.title}出错,${new Error(error)}`);
         }
         return bookId;
     }
@@ -269,8 +339,9 @@ module.exports = class BookBaseCrawler {
     /**
      * 保存章节数据
      * @param {*} list
+     * @returns 本地保存的章节数
      */
-    async saveBookChapterData(list, bookId, task) {
+    async saveBookChapterData(list, bookId) {
         try {
             const datas = await BookChapterModel.findAll({
                 where: { bookId, isDelete: false }
@@ -285,15 +356,20 @@ module.exports = class BookBaseCrawler {
                 }
             }
             if (list && list.length) {
-                const res = await BookChapterModel.bulkCreate(list);
-                logger.info(`本次保存: ${res.length} 条章节`);
-                //只有完成了章节抓取的才算完成了任务
-                TasksModel.update({ status: 4 }, { where: { taskId: task.taskId } });
+                BiuDB.transaction(async(t) => {
+                    const res = await BookChapterModel.bulkCreate(list, { transaction: t });
+                    taskLog.info(`本次保存: ${res.length} 条章节`);
+                    //同步更新书籍基本信息的章节总数
+                    const chapterCount = await BookChapterModel.count({ where: { bookId, isDelete: false }, transaction: t });
+                    //计算总字数
+                    const letterCount = await BookArticleModel.count({ where: { bookId, isDelete: false }, col: ['letterCount'], transaction: t });
+                    return BookBaseModel.update({ chapterCount, letterCount }, { where: { bookId }, transaction: t });
+                });
             }
-            return true;
+            return list.length;
         } catch (error) {
-            logger.error(`章节数据保存出错:${JSON.stringify(error)}`);
-            return false;
+            taskLog.error(`章节数据保存出错:${new Error(error)}`);
+            return 0;
         }
     }
 
@@ -305,12 +381,12 @@ module.exports = class BookBaseCrawler {
         try {
             const res = await BookArticleModel.create(article);
             if (res && res.articleId) {
-                logger.info(`本次保存: ${article}-${article.content}`);
-                await BookChapterModel.update({ status: 2 }, { where: { chapterId: res.articleId } });
+                taskLog.info(`本次保存: ${article}-${article.content}`);
+                await BookChapterModel.update({ status: 1 }, { where: { chapterId: res.articleId } });
             }
             return res;
         } catch (error) {
-            logger.error(`章节内容数据保存出错:${JSON.stringify(error)}`);
+            taskLog.error(`章节内容数据保存出错:${new Error(error)}`);
             return null;
         }
     }

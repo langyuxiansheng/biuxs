@@ -9,7 +9,7 @@ export default (callbackName = 'init') => {
              * 分页翻页
              */
             handleCurrentChange(page) {
-                if (this.table && this.table.queryData && this.table.queryData.page) {
+                if (this.table && this.table.params && this.table.params.page) {
                     this.table.params.page = page;
                     this[callbackName]();
                 };
@@ -19,7 +19,7 @@ export default (callbackName = 'init') => {
              * 分页大小
              */
             handleSizeChange(size) {
-                if (this.table && this.table.queryData && this.table.queryData.size) {
+                if (this.table && this.table.params && this.table.params.size) {
                     this.table.params.size = size;
                     this[callbackName]();
                 }

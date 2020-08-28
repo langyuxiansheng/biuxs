@@ -32,3 +32,10 @@ git clone https://github.com/langyuxiansheng/biuxs.git
 2. 安装项目相关的依赖
 
 ... 未完待续，开发完后更新文档
+
+#### 关注站长
+
+![image](https://github.com/langyuxiansheng/biuxs/blob/master/images/vx-open.jpg)
+
+- 关注公众号,获取最新的状态
+- 不定时分享一下干货

@@ -1,0 +1,48 @@
+.dg-btn-loader {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 0;
+  left: 0;
+
+  .dg-circles {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  .dg-circle {
+    width: .9em;
+    height: .9em;
+    opacity: 0;
+    background-color: rgb(9, 162, 227);
+    display: inline-block;
+    border-radius: 50%;
+    animation-name: dg-circle-oscillation;
+    animation-duration: 0.5875s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+
+    &:nth-child(1) {
+      animation-delay: 0.1195s;
+    }
+    &:nth-child(2) {
+      animation-delay: 0.2755s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.3485s;
+    }
+  }
+}
+
+@keyframes dg-circle-oscillation {
+  0% {}
+  50% {opacity: 1}
+  100% {}
+}

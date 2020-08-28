@@ -8,6 +8,7 @@ import CardContainer from './CardContainer';
 import ImgDialog from './ImgDialog';
 import DialogContainer from './DialogContainer';
 import AppTables from './AppTables';
+import AppTable from './AppTable'; //(新表)
 import AppTreeTable from './AppTreeTable';
 //预览文件
 import ReadFileDialog from './ReadFileDialog';
@@ -15,17 +16,16 @@ import UploadFile from './UploadFile';
 import WebsiteTypesSelect from './WebsiteTypesSelect'; //网站分类选择
 import AppVueEditor from './AppVueEditor'; //富文本编辑器
 import AppCropper from './AppCropper'; //富文本编辑器
-import SearchTypesSelect from './SearchTypesSelect'; //搜索类型
 export default {
     CardContainer,
     ImgDialog,
     DialogContainer,
     AppTables,
+    AppTable,
     AppTreeTable,
     ReadFileDialog,
     UploadFile,
     WebsiteTypesSelect,
     AppVueEditor,
-    AppCropper,
-    SearchTypesSelect
+    AppCropper
 };

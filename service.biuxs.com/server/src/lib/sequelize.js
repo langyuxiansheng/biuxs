@@ -32,7 +32,7 @@ const Attrs = (table, list) => {
 const BiuDB = new Sequelize(config.dbs.BiuDB.config.database, config.dbs.BiuDB.config.username, config.dbs.BiuDB.config.password, {
     ...config.dbs.BiuDB.config.options,
     logging(sql) { //日志输出 不显示的输出设置为false
-        sqlLog.info(`${config.dbs.BiuDB.config.database}----${sql}`);
+        sqlLog.info(`[${config.dbs.BiuDB.config.database}]-${sql}`);
     }
 });
 BiuDB.authenticate().then((res) => {

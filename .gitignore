@@ -103,3 +103,5 @@ dist
 # TernJS port file
 .tern-port
 .DS_Store
+wwww.biuxs.com/package-lock.json
+wwww.biuxs.com/yarn.lock

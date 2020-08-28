@@ -1,0 +1,350 @@
+.clearfix:after {
+  content: "";
+  height: 0;
+  line-height: 0;
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+.clearfix {
+  zoom: 1;
+}
+/*fade*/
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.28s;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+/*fade*/
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+  transition: all 0.5s;
+}
+.breadcrumb-enter,
+.breadcrumb-leave-active {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.breadcrumb-move {
+  transition: all 0.5s;
+}
+.breadcrumb-leave-active {
+  position: absolute;
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #fafbfc;
+  border-radius: 10px;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fafbfc;
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px #6c9;
+  background-color: #6c9;
+}
+.app-content {
+  width: 1200px;
+  margin: 0 auto;
+}
+.app-flex {
+  display: flex;
+  align-items: center;
+}
+.app-flex-left {
+  justify-content: start;
+}
+.app-flex-between {
+  justify-content: space-between;
+}
+.app-flex-around {
+  justify-content: space-around;
+}
+.app-flex-right {
+  justify-content: end;
+}
+.app-flex-center {
+  justify-content: center;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: #f4fdf8;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+a {
+  transition: color 0.3s ease-in;
+}
+span,
+a {
+  display: inline-block;
+}
+input {
+  background-color: #f4fdf8;
+}
+#__nuxt .app-text-left,
+#__layout .app-text-left {
+  text-align: left;
+}
+#__nuxt .app-pagination,
+#__layout .app-pagination {
+  width: 500px;
+  margin: 60px auto;
+  text-align: center;
+}
+#__nuxt .flex-1,
+#__layout .flex-1 {
+  flex: 1;
+}
+/**图片放大**/
+.vue-directive-image-previewer {
+  z-index: 10000000;
+}
+.vue-directive-image-previewer .vue-directive-image-previewer-pic {
+  z-index: 10000002;
+}
+.app-image-previewer {
+  cursor: pointer;
+}
+.sidebar-submenu {
+  background: linear-gradient(160deg, #7faadc, #6c9 66%);
+}
+.el-image-viewer__close {
+  color: #fff;
+}
+[disabled] {
+  cursor: not-allowed;
+}
+.app-dg-container,
+.app-dg-input-container {
+  text-align: center;
+}
+.app-dg-container .dg-backdrop,
+.app-dg-input-container .dg-backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.app-dg-container .dg-btn,
+.app-dg-input-container .dg-btn {
+  border-width: 1px;
+  font-weight: normal;
+  margin: 0 12px;
+}
+.app-dg-container .dg-btn--cancel,
+.app-dg-input-container .dg-btn--cancel {
+  color: #6c9;
+  background-color: #fefefe;
+  border-color: #6c9;
+  transition: all 0.2s ease-in;
+}
+.app-dg-container .dg-btn--cancel:hover,
+.app-dg-input-container .dg-btn--cancel:hover {
+  color: #fff;
+  background-color: #6c9;
+  border-color: #6c9;
+}
+.app-dg-container .dg-btn--ok,
+.app-dg-input-container .dg-btn--ok {
+  color: #fefefe;
+  transition: all 0.2s ease-in;
+  background-color: #6c9;
+  border-color: #6c9;
+  opacity: 0.9;
+}
+.app-dg-container .dg-btn--ok:hover,
+.app-dg-input-container .dg-btn--ok:hover {
+  opacity: 1;
+}
+.app-dg-container .dg-title .tips,
+.app-dg-input-container .dg-title .tips {
+  color: #303133;
+  font-size: 18px;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-dg-container .dg-title .tips i,
+.app-dg-input-container .dg-title .tips i {
+  color: #e6a23c;
+  font-size: 20px;
+  margin-right: 4px;
+}
+.app-dg-container .dg-main-content,
+.app-dg-input-container .dg-main-content {
+  padding: 20px 16px;
+  color: #606266;
+}
+.app-dg-container .dg-content-body,
+.app-dg-input-container .dg-content-body {
+  border-bottom: none;
+}
+.app-dg-container .dg-content-body--has-title .dg-content,
+.app-dg-input-container .dg-content-body--has-title .dg-content {
+  font-size: 16px;
+  padding: 20px 0;
+}
+.app-dg-container .dg-content-footer,
+.app-dg-input-container .dg-content-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-dg-container .dg-content-footer .dg-clear,
+.app-dg-input-container .dg-content-footer .dg-clear {
+  display: none;
+}
+.app-dg-input-container .dg-title {
+  font-weight: normal;
+}
+.app-dg-input-container .dg-content {
+  display: none;
+}
+.app-dg-input-container .dg-container--has-input .dg-form {
+  border: none;
+  background: none;
+}
+.app-dg-input-container .dg-container--has-input .dg-form label {
+  display: none;
+}
+.app-dg-input-container .dg-container--has-input .dg-form input {
+  outline: none;
+  border: 1px solid #eee !important;
+}
+.app-dg-input-container .dg-container--has-input .dg-form input:focus {
+  border: 1px solid #6c9 !important;
+}
+.app-dg-input-container .dg-container--has-input .dg-content-footer {
+  border: none;
+  background: none;
+  margin-top: 20px;
+}
+.app-form .form-item .append-btn {
+  width: 80px;
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  display: inline-block;
+  background: #3acbff;
+  color: #fff;
+  height: 38px;
+  line-height: 38px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0.8;
+  font-size: 14px;
+}
+.app-form .form-item .append-btn:hover {
+  opacity: 1;
+}
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
+.tooltip .tooltip-inner {
+  background: #e4faff;
+  border-radius: 16px;
+  padding: 6px 15px;
+}
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+  border-color: #e4faff;
+  z-index: 1;
+}
+.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+.tooltip[x-placement^="bottom"] .tooltip-arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.tooltip[x-placement^="right"] {
+  margin-left: 5px;
+}
+.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
+.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+.tooltip[aria-hidden='true'] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s, visibility 0.15s;
+}
+.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+.app-fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+.app-btn {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  background: #6c9;
+  color: #fff;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+}

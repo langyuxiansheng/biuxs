@@ -1,0 +1,199 @@
+//默认背景
+// @app-bg-color:#F9F9F9;
+// @app-bg-color: rgba(242, 252, 255,.95);
+@app-bg-color: #f4fdf8;
+//主题颜色
+// @app-theme-color: #3acbff;
+@app-theme-color: #6c9;
+// @app-theme-color: #5862FF;
+//默认hover背景
+@app-hover-bg: #e4faff;
+@app-hover-color: @app-theme-color;
+//主边框
+// @app-theme-boder: #bcedff;
+@app-theme-boder: #dbeff7;
+@app-form-title: #d0edf3;
+@app-boder-color: @app-theme-color;
+//主字体
+@app-font-color: #2F2F2F;
+@app-value-font-color: #777;
+@app-label-font-color: #000;
+@app-font-size: 14px;
+//默认内容宽度
+@app-container-width: 1200px;
+
+.clearfix:after {
+	content: "";
+	height: 0;
+	line-height: 0;
+	display: block;
+	visibility: hidden;
+	clear: both;
+}
+.clearfix{
+	zoom:1;
+}
+
+//面包屑导航动画
+/*fade*/
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.28s;
+}
+
+.fade-enter,
+.fade-leave-active {
+	opacity: 0;
+}
+
+/*fade*/
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+	transition: all .5s;
+}
+
+.breadcrumb-enter,
+.breadcrumb-leave-active {
+	opacity: 0;
+	transform: translateX(20px);
+}
+
+.breadcrumb-move {
+	transition: all .5s;
+}
+
+.breadcrumb-leave-active {
+	position: absolute;
+}
+
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar
+{
+	width: 6px;
+	height: 6px;
+    background-color: #fafbfc;
+    border-radius: 10px;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track
+{
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+	border-radius: 10px;
+    background-color: #fafbfc;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	box-shadow: inset 0 0 6px @app-theme-color;
+	background-color: @app-theme-color;
+}
+.ellipsis-single(){
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
+
+// 文本溢出省略号显示 (多行)
+// 只支持 webkit 浏览器, 解决方案：高度 = 行高*行数
+// height: 90px; line-height: 30px; -webkit-line-clamp: 3;
+.ellipsis-mult(@n: 3) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: @n;
+    word-break: break-all;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
+
+// 书写模式：牌匾从右至左水平单行排版效果、文笺从右至左、从上至下排版效果
+.retext(x) { direction: rtl; unicode-bidi: bidi-override; }
+.retext(y) { writing-mode: tb-rl; writing-mode: vertical-rl; }
+
+// 文字透明
+.transparent-text() { font: 0/0 serif; text-shadow: none; color: transparent; }
+
+// 文字隐藏（常用于SEO优化）
+.hidden-text() { text-indent : -9999px; overflow: hidden; text-align: left; }
+// 文字外发光效果
+.glow-text(@r: 10px, @color: gold) { text-shadow: 0 0 @r @color; }
+
+//------------------------------------- ├ 图像 ┆ └------------------------------------
+
+// 用 max-width 来防止图片撑破容器
+.max-img() { display: block; max-width: 100%; height: auto; }
+
+// 2x 3x 背景图片
+.bg-image(@url) {
+    background-image: url("@url + '@2x.png'");
+    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
+    background-image: url("@url + '@3x.png'");
+}
+}
+// 全屏大图背景
+.fullscreen-bg(@url) {
+    width: 100vw;
+    height: 100vh;
+    background: url(@url) no-repeat 50% 50%;
+    background-size: cover;
+}
+// 滤镜: 将彩色照片显示为黑白照片
+.grayscale() {
+filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+}
+
+//垂直水平居中
+.flex-g(@h:center,@v:center){
+    display: flex;
+    justify-content: @h;
+    align-items: @v;
+}
+
+//宽度 1200 水平居中
+.margin-center(@m:0,@w:1200px){
+    width: @w;
+    margin: @m auto;
+}
+
+//垂直水平居中
+.flex-margin-center(@h:center,@v:center){
+    .margin-center();
+    .flex-g(@h,@v);
+}
+
+.app-content(){
+    width: 1200px;
+    margin: 0 auto;
+}
+.app-content{
+    .app-content();
+}
+.app-flex{
+    display: flex;
+    align-items: center;
+}
+.app-flex-left{
+    justify-content: start;
+}
+.app-flex-between{
+    justify-content: space-between;
+}
+.app-flex-around{
+    justify-content: space-around;
+}
+.app-flex-right{
+    justify-content: end;
+}
+.app-flex-center{
+    justify-content: center;
+}
