@@ -1,8 +1,8 @@
-# biuxs.com  笔优小说项目简介
+# biuxs.com  笔优小说项目简介(目前正处于开发阶段,域名未解析)
 
 #### 前言及免责声明:
 
-1.笔优小说网(www.biuxs.com),以下称为本小说网:
+1.笔优小说网(www.biuxs.com) ,以下称为本小说网:
 - 本小说网的创立初衷是让更多的人可以学习和了解nodejs爬虫相关以及简单的node-koa服务搭建等.
 
 - 前端部分采用的vue的nuxt服务端渲染框架,让您可以了解到服务端渲染的机制.
@@ -32,6 +32,12 @@ git clone https://github.com/langyuxiansheng/biuxs.git
 2. 安装项目相关的依赖
 
 ... 未完待续，开发完后更新文档
+
+3. 项目的谍照
+
+![image](https://www.biunav.com/20200622100632.jpg)
+
+![image](https://www.biunav.com/20200622100635.jpg)
 
 #### 关注站长
 
