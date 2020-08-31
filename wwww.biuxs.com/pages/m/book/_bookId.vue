@@ -46,7 +46,9 @@
         </div>
         <div class="app-btns app-flex">
             <button v-waves class="app-btn">
-                开始阅读
+                <nuxt-link to="/m/reader/BE0E3A76C93C9CF3AA73F14CC5CAC14C">
+                    开始阅读
+                </nuxt-link>
             </button>
             <button v-waves class="app-btn">
                 加入书架
@@ -193,7 +195,10 @@ export default {
             flex: 1;
             margin: 0 1rem;
             padding: .5rem;
-            font-size: .875rem
+            font-size: .875rem;
+            a{
+                color: #fff;
+            }
         }
     }
     .book-brief{
