@@ -1,6 +1,6 @@
 <template>
     <div class="app-reader-contaier">
-        <vuescroll ref="AppBookReader" :ops="ops" @load-start="handleLoadStart" @load-before-deactivate="handleLoadBeforeDeactivate" @refresh-start="refresh">
+        <vuescroll ref="AppBookReader" :ops="ops" @load-start="handleLoadStart" @load-before-deactivate="handleLoadBeforeDeactivate">
             <div class="scroll-content">
                 <h4 class="reader-title">
                     <span class="index">第1章</span>
