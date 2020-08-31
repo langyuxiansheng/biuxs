@@ -2,6 +2,7 @@
  * web信息爬虫系统信息服务类
  */
 const result = require(':lib/Result');
+const FileUtils = require(':lib/FileUtils');
 const IPProxyCrawler = require(':crawlers/IPProxyCrawler');
 const ipc = new IPProxyCrawler();
 const BookBaseCrawler = require(':crawlers/BookBaseCrawler');
@@ -48,5 +49,14 @@ module.exports = class {
             console.error(error);
             return result.failed(new Error(error));
         }
+    }
+
+    /**
+     * 图片下载测试
+     * @param {*} imageUrl
+     */
+    async downloadImageToLocal({ imageUrl }) {
+        const res = await FileUtils.downloadImageToLocal({ imageUrl });
+        return res;
     }
 };

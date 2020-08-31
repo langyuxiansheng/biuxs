@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const request = require('request');
 const config = require(':config/server.base.config'); //配置文件
-const { MODELS_PATH, getFileNameUUID32, getExtname, getTimeStampUUID, getYearMonthDay } = require(':lib/Utils');
+const { MODELS_PATH, getTimeStampUUID, getYearMonthDay } = require(':lib/Utils');
 const userAgents = require(':lib/userAgents');
 const { BiuDB } = require(':lib/sequelize');
 const FilesBaseModel = BiuDB.import(`${MODELS_PATH}/common/FilesBaseModel`);
@@ -28,35 +28,33 @@ const FileUtils = {
                 let uploadPath = path.join(config.staticPath, `/books/`, time.replace(/-/g, '')); //文件上传存放路径
                 const existsSync = await this.isDirExists(uploadPath, true); //判断文件夹是否存在,不存在就创建
                 if (existsSync) { //确认成功之后再进行操作
-                    const suffix = getExtname(imageUrl);
-                    const fileName = getFileNameUUID32(suffix); //重名名后的文件
+                    const fileName = getFileNameUUID32(data.suffix); //重名名后的文件
                     const fileSavePath = path.join(uploadPath, fileName); //合成路径 + 时间 + 文件名
+                    data.path = fileSavePath.split('public')[1]; //存储完整路径
+                    data.aliasName = fileName; //存储别名
                     request(imageUrl, options).on('response', async (res) => { // 再次发起请求，写文件
-                        if (res.statusCode == 200) {
-                            const type = res.headers['content-type'];
-                            const size = res.headers['content-length'];
-                            //创建数据库存储数据
-                            const data = {
-                                userId: '84A94F76FFA345E2509FFBAE5195FBBA', //上传者id
-                                userName: '爬虫自动抓取', //上传者名称
-                                fileId: getTimeStampUUID(),
-                                size: size || 0, //文件大小
-                                type: type || 'image/jpeg', //文件类型
-                                fileName: name, //获取原文件名
-                                suffix: getExtname(name), //获取文件后缀名
-                                path: fileSavePath.split('public')[1], //存储完整路径,文件路径
-                                aliasName: res.request.path, //文件别名
-                                remark: '爬虫自动抓取书籍封面图'
-                            };
-                            await FilesBaseModel.create(data); //保存文件到数据库
-                            console.log(`已下载文件:${fileSavePath}`);
-                            resolve({ status: 200, data });
-                        } else {
-                            reject(res);
-                        }
-                    }).pipe(fs.createWriteStream(fileSavePath, {
+                        // //创建数据库存储数据
+                        // const data = {
+                        //     userId: '', //上传者id
+                        //     userName: '爬虫自动抓取', //上传者名称
+                        //     fileId: getTimeStampUUID(),
+                        //     size, //文件大小
+                        //     type, //文件类型
+                        //     fileName: name, //获取原文件名
+                        //     suffix: getExtname(name), //获取文件后缀名
+                        //     path: null, //文件路径
+                        //     aliasName: null, //文件别名
+                        //     remark: body && body.remark || null //源文件路径
+                        // };
+
+                        // console.log(`已下载文件:${imgDir}/${filename}`);
+                        // resolve({ filename, status: 200 });
+                    }).pipe(fs.createWriteStream(path.join(existsSync, filename), {
                         'encoding': encoding || 'utf8'
                     }));
+
+                    // await FilesBaseModel.create(data); //保存文件到数据库
+                    // return result.success(null, data);
                 }
             } catch (error) {
                 reject(new Error({ status: 400, msg: error }));

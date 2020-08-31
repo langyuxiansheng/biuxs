@@ -17,4 +17,8 @@ controller.get('/manualStart', async(ctx) => {
 controller.get('/manualTest', async(ctx) => {
     ctx.body = await service.manualTest(ctx.request.query);
 });
+
+controller.get('/downloadImageToLocal', async(ctx) => {
+    ctx.body = await service.downloadImageToLocal(ctx.request.query);
+});
 module.exports = controller;
