@@ -3,6 +3,7 @@ const path = require('path');
 const request = require('request');
 const crypto = require('crypto');
 const config = require(':config/server.base.config'); //配置文件
+const { taskLog, systemLogger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, getFileNameUUID32, getExtname, getTimeStampUUID, getYearMonthDay } = require(':lib/Utils');
 const userAgents = require(':lib/userAgents');
 const { BiuDB } = require(':lib/sequelize');
@@ -18,8 +19,8 @@ const FileUtils = {
      * @param {*} imageUrl
      * @param {*} encoding
      */
-    async downloadImageToLocal({ imageUrl, encoding, proxyIP }) {
-        console.log(`正在下载:${imageUrl},代理IP为: ${proxyIP}`);
+    downloadImageToLocal({ imageUrl, encoding, proxyIP }) {
+        taskLog.info(`正在下载:${imageUrl},代理IP为: ${proxyIP || '无代理IP'}`);
         return new Promise(async(resolve, reject) => {
             try {
                 const headers = { 'User-Agent': userAgents };
@@ -66,14 +67,14 @@ const FileUtils = {
                         data.fileId = getTimeStampUUID();
                         const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
                         if (file) {
-                            console.log(`文件已存在:${file.path}`);
+                            taskLog.info(`文件已存在:${file.path}`);
                             //重新创建一个文件存储对象
                             data.path = file.path;
                             await this.deleteFile(fileSavePath);
                         }
                         //保存文件到数据库
                         await FilesBaseModel.create(data);
-                        console.log(`已下载文件:${fileSavePath}`);
+                        taskLog.info(`已下载文件:${fileSavePath}`);
                         resolve({ status: 200, data });
                     });
                 }
@@ -87,7 +88,7 @@ const FileUtils = {
      * 获取日志文件列表
      * @param {*} filePath
      */
-    async getLogsFileList(logsPath) {
+    getLogsFileList(logsPath) {
         return new Promise(async(resolve, reject) => {
             try {
                 const filePaths = await FileUtils.readdir(logsPath);
@@ -120,11 +121,11 @@ const FileUtils = {
      * 读取目录
      * @param {*} path
      */
-    async readdir(readPath) {
+    readdir(readPath) {
         return new Promise((resolve, reject) => {
             fs.readdir(readPath, (err, files) => {
                 if (err) {
-                    console.log(`获取文件列表失败`);
+                    systemLogger.error(`获取文件列表失败`);
                     reject(err);
                 } else {
                     resolve(files);
@@ -137,11 +138,11 @@ const FileUtils = {
      * 获取文件信息
      * @param {*} path
      */
-    async getfileStat(filepath) {
+    getfileStat(filepath) {
         return new Promise((resolve, reject) => {
             fs.stat(filepath, (eror, stats) => {
                 if (eror) {
-                    console.log(`获取文件stats失败`);
+                    systemLogger.error(`获取文件stats失败`);
                     reject(eror);
                 } else {
                     if (stats.isFile()) { //是文件
@@ -162,14 +163,14 @@ const FileUtils = {
      * @param encode 编码格式
      * @returns { code,data}
      */
-    async readerFile(fileFullPath, encode) {
+    readerFile(fileFullPath, encode) {
         return new Promise((resolve, reject) => {
             fs.readFile(fileFullPath, (err, data) => {
                 if (err) {
-                    console.log(`读取文件:${fileFullPath}内容失败,${err}`);
+                    systemLogger.error(`读取文件:${fileFullPath}内容失败,${err}`);
                     reject(err);
                 } else if (encode) {
-                    console.log(`读取文件:${fileFullPath}成功！`);
+                    systemLogger.info(`读取文件:${fileFullPath}成功！`);
                     resolve({ code: 200, data: data.toString(encode || 'utf-8') });
                 } else {
                     resolve({ code: 200, data });
@@ -183,14 +184,14 @@ const FileUtils = {
      * @param {*} filepath
      * @returns Boolean
      */
-    async createDir(filepath) {
+    createDir(filepath) {
         return new Promise((resolve, reject) => {
             fs.mkdir(filepath, (err) => {
                 if (err) {
-                    console.log(`创建文件夹:${filepath}失败！`);
+                    systemLogger.error(`创建文件夹:${filepath}失败！`);
                     reject(err);
                 } else {
-                    console.log(`创建文件夹:${filepath}成功！`);
+                    systemLogger.info(`创建文件夹:${filepath}成功！`);
                     resolve(true);
                 }
             });
@@ -202,7 +203,7 @@ const FileUtils = {
      * @param {*} dirpath 文件夹路径
      * @param {*} isCreateDir  如果不存在就创建
      */
-    async isDirExists(dirpath, isCreateDir) {
+    isDirExists(dirpath, isCreateDir) {
         return new Promise(async (resolve, reject) => {
             if (!fs.existsSync(dirpath)) { //判断文件夹是否存在
                 if (isCreateDir) {
@@ -226,14 +227,14 @@ const FileUtils = {
      * @param {*} fileFullPath 文件的路径
      * @returns {code }
      */
-    async deleteFile(fileFullPath) {
+    deleteFile(fileFullPath) {
         return new Promise((resolve, reject) => {
             fs.unlink(fileFullPath, (err) => { //上传成功后删除临时文件
                 if (err) {
-                    console.log(`删除文件:${fileFullPath}异常!`);
+                    systemLogger.error(`删除文件:${fileFullPath}异常!`);
                     reject(err);
                 } else {
-                    console.log(`删除文件:${fileFullPath}成功！`);
+                    systemLogger.info(`删除文件:${fileFullPath}成功！`);
                     resolve({ code: 200, path: fileFullPath });
                 }
             });
@@ -246,14 +247,14 @@ const FileUtils = {
      * @param encode 编码格式
      * @returns { code,data}
      */
-    async writeFile(fileFullPath, content) {
+    writeFile(fileFullPath, content) {
         return new Promise((resolve, reject) => {
             fs.writeFile(fileFullPath, content, (err, data) => {
                 if (err) {
-                    console.log(`写入文件:${fileFullPath}内容失败,${err}`);
+                    systemLogger.error(`写入文件:${fileFullPath}内容失败,${err}`);
                     reject(err);
                 } else if (content) {
-                    console.log(`写入文件:${fileFullPath}成功！`);
+                    systemLogger.info(`写入文件:${fileFullPath}成功！`);
                     resolve({ code: 200, data: data.toString(content || 'utf-8') });
                 } else {
                     resolve({ code: 200, data });
