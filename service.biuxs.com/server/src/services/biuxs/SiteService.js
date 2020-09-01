@@ -4,18 +4,57 @@
 const result = require(':lib/Result');
 // const config = require(':config/server.base.config'); //配置文件
 // const redis = require(':lib/redis'); //redis
-// const { MODELS_PATH, checkParams, getLC } = require(':lib/Utils');
-// const { BiuDB, SOP } = require(':lib/sequelize');
-// const { SOP } = require(':lib/sequelize');
+const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
+const { BiuDB } = require(':lib/sequelize');
+const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
 module.exports = class {
     /**
-     * 获取首页的数据（无需token）
+     * 获取移动端首页的数据（无需token）
      * @param {*} param0
+     * @description 需要返回如下:
+     * 1.轮播图推荐 2.用户的书架(待定) 3.随机推荐 4.热门推荐 5.最新推荐
      */
-    async getHomeData({ ip, host, headers }) {
+    async getHomeMobileData(user) {
         try {
-
-            // return result.success(null, res);
+            //轮播
+            const banner = [];
+            console.log(BookBaseModel);
+            //用户的书架
+            const query = {
+                limit: 10,
+                offset: 0,
+                where: { isDelete: false },
+                order: [
+                    ['createdTime', 'DESC']
+                ],
+                attributes: { exclude: ['sourceName', 'sourceUrl', 'remark', 'isDelete'] }
+            };
+            //最新推荐
+            const { rows, count } = await BookBaseModel.findAndCountAll(query);
+            //热门推荐
+            query.order = [['readCount', 'DESC']];
+            const hots = BookBaseModel.findAndCountAll(query);
+            //随机推荐
+            query.order = [];
+            query.limit = 100;
+            const randoms = BookBaseModel.findAndCountAll(query);
+            const anyRes = await Promise.all([randoms, hots]);
+            let randomArray = [];
+            for (let i = 0; i < count; i++) {
+                const index = getRandomNum(0, anyRes[0].count - 1);
+                const book = anyRes[0].rows[index];
+                if (randomArray.indexOf(book) === -1) {
+                    randomArray.push(book);
+                }
+                if (randomArray.length >= 10) break;
+            }
+            const res = {
+                banner,
+                randoms: randomArray,
+                news: rows,
+                hots: anyRes[1].rows
+            };
+            return result.success(null, res);
         } catch (error) {
             console.error(error);
             return result.failed(error);

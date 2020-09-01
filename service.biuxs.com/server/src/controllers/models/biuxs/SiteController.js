@@ -6,6 +6,11 @@ const SiteService = require(':services/biuxs/SiteService');
 const controller = new KoaRouter({ prefix: '/site' });
 const service = new SiteService();
 
+//移动端首页数据（无需token）
+controller.get('/getHomeMobileData', async(ctx) => {
+    ctx.body = await service.getHomeMobileData(ctx.state.user);
+});
+
 //用户留言（无需token）
 controller.post('/addOptionMsg', async(ctx) => {
     ctx.body = await service.addOptionMsg(ctx.request.body, ctx.request.headers);
