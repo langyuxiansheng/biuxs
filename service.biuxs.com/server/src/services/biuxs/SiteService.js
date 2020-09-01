@@ -18,7 +18,6 @@ module.exports = class {
         try {
             //轮播
             const banner = [];
-            console.log(BookBaseModel);
             //用户的书架
             const query = {
                 limit: 10,
