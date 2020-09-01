@@ -43,10 +43,8 @@ module.exports = class {
             for (let i = 0; i < count; i++) {
                 const index = getRandomNum(0, anyRes[0].count - 1);
                 const book = anyRes[0].rows[index];
-                if (randomArray.indexOf(book) === -1) {
-                    randomArray.push(book);
-                }
                 if (randomArray.length >= 10) break;
+                if (randomArray.indexOf(book) === -1) randomArray.push(book);
             }
             const res = {
                 banner,
