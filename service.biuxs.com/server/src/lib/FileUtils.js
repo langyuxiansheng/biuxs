@@ -1,11 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('request');
+const crypto = require('crypto');
 const config = require(':config/server.base.config'); //配置文件
 const { MODELS_PATH, getFileNameUUID32, getExtname, getTimeStampUUID, getYearMonthDay } = require(':lib/Utils');
 const userAgents = require(':lib/userAgents');
 const { BiuDB } = require(':lib/sequelize');
 const FilesBaseModel = BiuDB.import(`${MODELS_PATH}/common/FilesBaseModel`);
+
 /**
  * 文件操作工具类
  */
@@ -30,33 +32,50 @@ const FileUtils = {
                 if (existsSync) { //确认成功之后再进行操作
                     const suffix = getExtname(imageUrl);
                     const fileName = getFileNameUUID32(suffix); //重名名后的文件
-                    const fileSavePath = path.join(uploadPath, fileName); //合成路径 + 时间 + 文件名
-                    request(imageUrl, options).on('response', async (res) => { // 再次发起请求，写文件
-                        if (res.statusCode == 200) {
-                            const type = res.headers['content-type'];
-                            const size = res.headers['content-length'];
-                            //创建数据库存储数据
-                            const data = {
-                                userId: '84A94F76FFA345E2509FFBAE5195FBBA', //上传者id
-                                userName: '爬虫自动抓取', //上传者名称
-                                fileId: getTimeStampUUID(),
-                                size: size || 0, //文件大小
-                                type: type || 'image/jpeg', //文件类型
-                                fileName: name, //获取原文件名
-                                suffix: getExtname(name), //获取文件后缀名
-                                path: fileSavePath.split('public')[1], //存储完整路径,文件路径
-                                aliasName: res.request.path, //文件别名
-                                remark: '爬虫自动抓取书籍封面图'
-                            };
-                            await FilesBaseModel.create(data); //保存文件到数据库
-                            console.log(`已下载文件:${fileSavePath}`);
-                            resolve({ status: 200, data });
-                        } else {
-                            reject(res);
-                        }
-                    }).pipe(fs.createWriteStream(fileSavePath, {
+                    const fileSavePath = path.join(uploadPath, fileName).replace(/\\/g, '/'); //合成路径 + 时间 + 文件名
+                    const httpRequest = request(imageUrl, options);
+                    //创建数据库存储数据
+                    const data = {
+                        userId: '84A94F76FFA345E2509FFBAE5195FBBA', //上传者id
+                        userName: '爬虫自动抓取', //上传者名称
+                        fileId: null,
+                        size: 0, //文件大小
+                        type: 'image/jpeg', //文件类型
+                        fileMD5: null, //文件指纹
+                        fileName: imageUrl, //获取原文件名
+                        suffix: suffix, //获取文件后缀名
+                        path: fileSavePath.split('public')[1], //存储完整路径,文件路径
+                        aliasName: fileName, //文件别名
+                        status: 1,
+                        remark: '爬虫自动抓取图片'
+                    };
+                    //读取文件流
+                    httpRequest.on('response', (res) => {
+                        data.type = res.headers['content-type'];
+                        data.size = res.headers['content-length'];
+                    });
+                    httpRequest.on('data', (chunk) => {
+                        data.fileMD5 = crypto.createHash('md5').update(chunk).digest('hex').toUpperCase(); //创建文件指纹读取对象
+                    });
+                    //写入文件到本地
+                    httpRequest.pipe(fs.createWriteStream(fileSavePath, {
                         'encoding': encoding || 'utf8'
-                    }));
+                    })).on('error', (err) => { //监听报错信息
+                        reject(new Error(err));
+                    }).on('close', async() => {
+                        data.fileId = getTimeStampUUID();
+                        const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
+                        if (file) {
+                            console.log(`文件已存在:${file.path}`);
+                            //重新创建一个文件存储对象
+                            data.path = file.path;
+                            await this.deleteFile(fileSavePath);
+                        }
+                        //保存文件到数据库
+                        await FilesBaseModel.create(data);
+                        console.log(`已下载文件:${fileSavePath}`);
+                        resolve({ status: 200, data });
+                    });
                 }
             } catch (error) {
                 reject(new Error({ status: 400, msg: error }));
