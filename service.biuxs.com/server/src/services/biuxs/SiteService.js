@@ -77,7 +77,7 @@ module.exports = class {
      * 获取书籍详情
      * @param {*} user
      */
-    async getBookDetailData({ bookId }, user) {
+    async getBookDetailData({ query: { bookId }, ip }, user) {
         try {
             if (!bookId) return result.paramsLack();
             let book = await redis.getData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`);
@@ -87,9 +87,13 @@ module.exports = class {
                     where: { isDelete: false, bookId },
                     attributes: { exclude: ['isDelete', 'remark'] }
                 });
-                redis.setData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`, book);
             }
-            if (book) BookBaseModel.update({ readCount: book.readCount++ }, { where: { bookId } });
+            let visitor = await redis.getData(`${redis.key.GET_VISITOR}${ip}`);
+            if (book && (!visitor)) {
+                book.readCount += 1;
+                BookBaseModel.update({ readCount: book.readCount }, { where: { bookId } });
+            };
+            redis.setData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`, book);
             return result.success(null, book);
         } catch (error) {
             console.error(error);

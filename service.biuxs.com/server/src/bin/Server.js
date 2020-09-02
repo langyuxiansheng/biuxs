@@ -31,7 +31,7 @@ module.exports = class Server {
             }
         }
         app.keys = config.keys;
-        app.use(visitLogs); //有效期5分钟
+        app.use(visitLogs);
         app.use(session(config.sessionConfig, app)); //有效期5分钟
         app.use(accessLogger());
         app.use(responseTime({ hrtime: true }));
