@@ -57,4 +57,19 @@ module.exports = class {
             return result.failed(error);
         }
     }
+
+    /**
+     * 获取书籍分类
+     * @param {*} user
+     */
+    async getBookTypeData(user) {
+        try {
+            const SQL = `select distinct type,pinyin from ${BookBaseModel.getTableName()}`;
+            const res = await BiuDB.query(SQL, { type: BiuDB.QueryTypes.SELECT });
+            return result.success(null, res);
+        } catch (error) {
+            console.error(error);
+            return result.failed(error);
+        }
+    }
 };
