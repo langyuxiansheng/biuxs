@@ -43,5 +43,5 @@ git clone https://github.com/langyuxiansheng/biuxs.git
 
 ![image](https://www.biunav.com/vx-open.jpg)
 
-- 关注公众号,获取最新的状态
-- 不定时分享一下干货
+- 关注公众号:笔优站长， 获取更新状态
+- 不定时分享一下干货，优致文章等
