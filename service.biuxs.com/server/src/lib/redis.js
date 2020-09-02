@@ -3,11 +3,13 @@ const config = require(':config/server.base.config');
 const { getUCMd5 } = require(':lib/Utils');
 const Redis = require('ioredis');
 const rediskey = {
+    GET_VISITOR: 'GET_VISITOR_', //'获取网站访问者'
     GET_WEBSITE_TYPES: 'GET_WEBSITE_TYPES', //'获取网站分类列表'
     GET_HOME_DATA: 'GET_HOME_DATA', //获取首页的数据（无需token）
     GET_EMAIL_VALIDATE_CODE: 'GET_EMAIL_VALIDATE_CODE_', //获取邮件验证码无需token）
     GET_BOOK_TYPES: 'GET_BOOK_TYPES', //'获取小说网站分类列表'
-    IS_VALIDATE_PROXY_IP: 'IS_VALIDATE_PROXY_IP' //是否正在验证ip 避免异步方法重复运行
+    IS_VALIDATE_PROXY_IP: 'IS_VALIDATE_PROXY_IP', //是否正在验证ip 避免异步方法重复运行
+    GET_BOOK_DETAIL_DATA: `GET_BOOK_DETAIL_DATA_` //前端获取书籍详情
 };
 class RedisStore {
     constructor() {

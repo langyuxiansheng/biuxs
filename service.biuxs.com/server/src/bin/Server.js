@@ -13,6 +13,7 @@ const controllers = require(':controllers/index'); //路由入口
 const secureSignature = require(':middleware/secureSignature'); //请求签名验证
 const userAuthorities = require(':middleware/userAuthorities'); //用户身份验证
 const ErrorRoutesCatch = require(':middleware/ErrorRoutesCatch'); //全局错误捕获
+const visitLogs = require(':middleware/visitLogs'); //访问日志
 const IPProxyCrawler = require(':crawlers/IPProxyCrawler'); //IP代理爬虫
 const { accessLogger } = require(':lib/logger4'); //日志系统
 const app = new Koa2();
@@ -30,6 +31,7 @@ module.exports = class Server {
             }
         }
         app.keys = config.keys;
+        app.use(visitLogs); //有效期5分钟
         app.use(session(config.sessionConfig, app)); //有效期5分钟
         app.use(accessLogger());
         app.use(responseTime({ hrtime: true }));

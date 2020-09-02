@@ -3,7 +3,7 @@
  */
 const result = require(':lib/Result');
 // const config = require(':config/server.base.config'); //配置文件
-// const redis = require(':lib/redis'); //redis
+const redis = require(':lib/redis'); //redis
 const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
@@ -67,6 +67,30 @@ module.exports = class {
             const SQL = `select distinct type,pinyin from ${BookBaseModel.getTableName()}`;
             const res = await BiuDB.query(SQL, { type: BiuDB.QueryTypes.SELECT });
             return result.success(null, res);
+        } catch (error) {
+            console.error(error);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 获取书籍详情
+     * @param {*} user
+     */
+    async getBookDetailData({ bookId }, user) {
+        try {
+            if (!bookId) return result.paramsLack();
+            let book = await redis.getData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`);
+            if (!book) {
+                //书籍详情
+                book = await BookBaseModel.findOne({
+                    where: { isDelete: false, bookId },
+                    attributes: { exclude: ['isDelete', 'remark'] }
+                });
+                redis.setData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`, book);
+            }
+            if (book) BookBaseModel.update({ readCount: book.readCount++ }, { where: { bookId } });
+            return result.success(null, book);
         } catch (error) {
             console.error(error);
             return result.failed(error);
