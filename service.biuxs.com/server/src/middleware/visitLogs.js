@@ -15,7 +15,7 @@ module.exports = async (ctx, next) => {
     const ip = ctx.ip;
     const userAgent = ctx.headers['user-agent'];
     let visitor = await redis.getData(`${redis.key.GET_VISITOR}${ip}`);
-    if (!visitor) visitor = await VisitLogsModel.findOne({ where: { ip, userAgent } });
+    if (!visitor) visitor = await VisitLogsModel.findOne({ where: { ip } });
     if (!visitor) {
         const origin = ctx.origin;
         const originalUrl = ctx.originalUrl;
