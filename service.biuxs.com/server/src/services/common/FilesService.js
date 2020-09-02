@@ -112,7 +112,7 @@ module.exports = class {
                 console.log(`正在上传${name}`);
                 const reader = fs.createReadStream(file.path); //创建可读文件流
                 const fileName = getFileNameUUID32(data.suffix); //重名名后的文件
-                const fileSavePath = path.join(uploadPath, fileName); //合成路径 + 时间 + 文件名
+                const fileSavePath = path.join(uploadPath, fileName).replace(/\\/g, '/'); //合成路径 + 时间 + 文件名
                 data.path = fileSavePath.split('public')[1]; //存储完整路径
                 data.aliasName = fileName; //存储别名
                 reader.pipe(fs.createWriteStream(fileSavePath)); //写入文件

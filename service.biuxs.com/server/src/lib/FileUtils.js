@@ -1,9 +1,14 @@
 const fs = require('fs');
-// 图片文件夹路径
 const path = require('path');
 const request = require('request');
-const { SRC_PATH, getFileNameUUID32 } = require(':lib/Utils');
+const crypto = require('crypto');
+const config = require(':config/server.base.config'); //配置文件
+const { taskLog, systemLogger } = require(':lib/logger4'); //日志系统
+const { MODELS_PATH, getFileNameUUID32, getExtname, getTimeStampUUID, getYearMonthDay } = require(':lib/Utils');
 const userAgents = require(':lib/userAgents');
+const { BiuDB } = require(':lib/sequelize');
+const FilesBaseModel = BiuDB.import(`${MODELS_PATH}/common/FilesBaseModel`);
+
 /**
  * 文件操作工具类
  */
@@ -14,29 +19,65 @@ const FileUtils = {
      * @param {*} imageUrl
      * @param {*} encoding
      */
-    async downloadImageToLocal({ imageUrl, encoding, mkdirName, proxyIP }) {
-        console.log(`正在下载:${imageUrl},代理IP为: ${proxyIP}`);
+    downloadImageToLocal({ imageUrl, encoding, proxyIP }) {
+        taskLog.info(`正在下载:${imageUrl},代理IP为: ${proxyIP || '无代理IP'}`);
         return new Promise(async(resolve, reject) => {
             try {
                 const headers = { 'User-Agent': userAgents };
-                const options = { pool: false, proxy: proxyIP, headers };
-                request.head(imageUrl, options, (err, res) => {
-                    if (res) {
-                        const ext = imageUrl.split('.').pop(); //获取文件扩展名
-                        const filepath = `${SRC_PATH}/public/images`; //保存到书城图片专用文件夹
-                        const imgDir = path.join(filepath, mkdirName); //保存到哪里去
-                        const filename = getFileNameUUID32(ext); //获取文件名
-                        request(imageUrl, options).on('response', () => { // 再次发起请求，写文件
-                            console.log(`已下载文件:${imgDir}/${filename}`);
-                            resolve({ filename, status: 200 });
-                        }).pipe(fs.createWriteStream(path.join(imgDir, filename), {
-                            'encoding': encoding || 'utf8'
-                        }));
-                    } else {
-                        console.log(`失败：下载图片=>${imageUrl}`);
-                        reject(new Error({ status: 400, msg: err }));
-                    }
-                });
+                const options = { pool: false, headers };
+                if (proxyIP) options.proxy = proxyIP;
+                //创建文件夹;
+                const time = getYearMonthDay(); //获取时间
+                let uploadPath = path.join(config.staticPath, `/books/`, time.replace(/-/g, '')); //文件上传存放路径
+                const existsSync = await this.isDirExists(uploadPath, true); //判断文件夹是否存在,不存在就创建
+                if (existsSync) { //确认成功之后再进行操作
+                    const suffix = getExtname(imageUrl);
+                    const fileName = getFileNameUUID32(suffix); //重名名后的文件
+                    const fileSavePath = path.join(uploadPath, fileName).replace(/\\/g, '/'); //合成路径 + 时间 + 文件名
+                    const httpRequest = request(imageUrl, options);
+                    //创建数据库存储数据
+                    const data = {
+                        userId: '84A94F76FFA345E2509FFBAE5195FBBA', //上传者id
+                        userName: '爬虫自动抓取', //上传者名称
+                        fileId: null,
+                        size: 0, //文件大小
+                        type: 'image/jpeg', //文件类型
+                        fileMD5: null, //文件指纹
+                        fileName: imageUrl, //获取原文件名
+                        suffix: suffix, //获取文件后缀名
+                        path: fileSavePath.split('public')[1], //存储完整路径,文件路径
+                        aliasName: fileName, //文件别名
+                        status: 1,
+                        remark: '爬虫自动抓取图片'
+                    };
+                    //读取文件流
+                    httpRequest.on('response', (res) => {
+                        data.type = res.headers['content-type'];
+                        data.size = res.headers['content-length'];
+                    });
+                    httpRequest.on('data', (chunk) => {
+                        data.fileMD5 = crypto.createHash('md5').update(chunk).digest('hex').toUpperCase(); //创建文件指纹读取对象
+                    });
+                    //写入文件到本地
+                    httpRequest.pipe(fs.createWriteStream(fileSavePath, {
+                        'encoding': encoding || 'utf8'
+                    })).on('error', (err) => { //监听报错信息
+                        reject(new Error(err));
+                    }).on('close', async() => {
+                        data.fileId = getTimeStampUUID();
+                        const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
+                        if (file) {
+                            taskLog.info(`文件已存在:${file.path}`);
+                            //重新创建一个文件存储对象
+                            data.path = file.path;
+                            await this.deleteFile(fileSavePath);
+                        }
+                        //保存文件到数据库
+                        await FilesBaseModel.create(data);
+                        taskLog.info(`已下载文件:${fileSavePath}`);
+                        resolve({ status: 200, data });
+                    });
+                }
             } catch (error) {
                 reject(new Error({ status: 400, msg: error }));
             }
@@ -47,7 +88,7 @@ const FileUtils = {
      * 获取日志文件列表
      * @param {*} filePath
      */
-    async getLogsFileList(logsPath) {
+    getLogsFileList(logsPath) {
         return new Promise(async(resolve, reject) => {
             try {
                 const filePaths = await FileUtils.readdir(logsPath);
@@ -80,11 +121,11 @@ const FileUtils = {
      * 读取目录
      * @param {*} path
      */
-    async readdir(readPath) {
+    readdir(readPath) {
         return new Promise((resolve, reject) => {
             fs.readdir(readPath, (err, files) => {
                 if (err) {
-                    console.log(`获取文件列表失败`);
+                    systemLogger.error(`获取文件列表失败`);
                     reject(err);
                 } else {
                     resolve(files);
@@ -97,11 +138,11 @@ const FileUtils = {
      * 获取文件信息
      * @param {*} path
      */
-    async getfileStat(filepath) {
+    getfileStat(filepath) {
         return new Promise((resolve, reject) => {
             fs.stat(filepath, (eror, stats) => {
                 if (eror) {
-                    console.log(`获取文件stats失败`);
+                    systemLogger.error(`获取文件stats失败`);
                     reject(eror);
                 } else {
                     if (stats.isFile()) { //是文件
@@ -122,14 +163,14 @@ const FileUtils = {
      * @param encode 编码格式
      * @returns { code,data}
      */
-    async readerFile(fileFullPath, encode) {
+    readerFile(fileFullPath, encode) {
         return new Promise((resolve, reject) => {
             fs.readFile(fileFullPath, (err, data) => {
                 if (err) {
-                    console.log(`读取文件:${fileFullPath}内容失败,${err}`);
+                    systemLogger.error(`读取文件:${fileFullPath}内容失败,${err}`);
                     reject(err);
                 } else if (encode) {
-                    console.log(`读取文件:${fileFullPath}成功！`);
+                    systemLogger.info(`读取文件:${fileFullPath}成功！`);
                     resolve({ code: 200, data: data.toString(encode || 'utf-8') });
                 } else {
                     resolve({ code: 200, data });
@@ -143,14 +184,14 @@ const FileUtils = {
      * @param {*} filepath
      * @returns Boolean
      */
-    async createDir(filepath) {
+    createDir(filepath) {
         return new Promise((resolve, reject) => {
             fs.mkdir(filepath, (err) => {
                 if (err) {
-                    console.log(`创建文件夹:${filepath}失败！`);
+                    systemLogger.error(`创建文件夹:${filepath}失败！`);
                     reject(err);
                 } else {
-                    console.log(`创建文件夹:${filepath}成功！`);
+                    systemLogger.info(`创建文件夹:${filepath}成功！`);
                     resolve(true);
                 }
             });
@@ -162,7 +203,7 @@ const FileUtils = {
      * @param {*} dirpath 文件夹路径
      * @param {*} isCreateDir  如果不存在就创建
      */
-    async isDirExists(dirpath, isCreateDir) {
+    isDirExists(dirpath, isCreateDir) {
         return new Promise(async (resolve, reject) => {
             if (!fs.existsSync(dirpath)) { //判断文件夹是否存在
                 if (isCreateDir) {
@@ -186,14 +227,14 @@ const FileUtils = {
      * @param {*} fileFullPath 文件的路径
      * @returns {code }
      */
-    async deleteFile(fileFullPath) {
+    deleteFile(fileFullPath) {
         return new Promise((resolve, reject) => {
             fs.unlink(fileFullPath, (err) => { //上传成功后删除临时文件
                 if (err) {
-                    console.log(`删除文件:${fileFullPath}异常!`);
+                    systemLogger.error(`删除文件:${fileFullPath}异常!`);
                     reject(err);
                 } else {
-                    console.log(`删除文件:${fileFullPath}成功！`);
+                    systemLogger.info(`删除文件:${fileFullPath}成功！`);
                     resolve({ code: 200, path: fileFullPath });
                 }
             });
@@ -206,14 +247,14 @@ const FileUtils = {
      * @param encode 编码格式
      * @returns { code,data}
      */
-    async writeFile(fileFullPath, content) {
+    writeFile(fileFullPath, content) {
         return new Promise((resolve, reject) => {
             fs.writeFile(fileFullPath, content, (err, data) => {
                 if (err) {
-                    console.log(`写入文件:${fileFullPath}内容失败,${err}`);
+                    systemLogger.error(`写入文件:${fileFullPath}内容失败,${err}`);
                     reject(err);
                 } else if (content) {
-                    console.log(`写入文件:${fileFullPath}成功！`);
+                    systemLogger.info(`写入文件:${fileFullPath}成功！`);
                     resolve({ code: 200, data: data.toString(content || 'utf-8') });
                 } else {
                     resolve({ code: 200, data });
