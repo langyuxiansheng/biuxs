@@ -16,6 +16,8 @@ module.exports = class {
      */
     async getHomeMobileData(user) {
         try {
+            const homeData = await redis.getData(redis.key.GET_HOME_MOBILE_DATA);
+            if (homeData) return result.success(homeData);
             //轮播
             const banner = [];
             //用户的书架
@@ -51,6 +53,8 @@ module.exports = class {
                 news: rows,
                 hots: anyRes[1].rows
             };
+            //首页数据10分钟更新一次
+            redis.setData(redis.key.GET_HOME_MOBILE_DATA, res, 60 * 10);
             return result.success(null, res);
         } catch (error) {
             console.error(error);
@@ -88,10 +92,11 @@ module.exports = class {
                     attributes: { exclude: ['isDelete', 'remark'] }
                 });
             }
-            let visitor = await redis.getData(`${redis.key.GET_VISITOR}${ip}`);
-            if (book && (!visitor)) {
+            const isRead = await redis.getData(`${redis.key.GET_VISITOR}${ip}${bookId}`);
+            if (book && !(isRead)) {
                 book.readCount += 1;
                 BookBaseModel.update({ readCount: book.readCount }, { where: { bookId } });
+                redis.setData(`${redis.key.GET_VISITOR}${ip}${bookId}`, true, 60 * 60 * 2);
             };
             redis.setData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`, book);
             return result.success(null, book);

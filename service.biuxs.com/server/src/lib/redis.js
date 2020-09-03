@@ -9,6 +9,7 @@ const rediskey = {
     GET_EMAIL_VALIDATE_CODE: 'GET_EMAIL_VALIDATE_CODE_', //获取邮件验证码无需token）
     GET_BOOK_TYPES: 'GET_BOOK_TYPES', //'获取小说网站分类列表'
     IS_VALIDATE_PROXY_IP: 'IS_VALIDATE_PROXY_IP', //是否正在验证ip 避免异步方法重复运行
+    GET_HOME_MOBILE_DATA: 'GET_HOME_MOBILE_DATA', //获取移动端首页的数据
     GET_BOOK_DETAIL_DATA: `GET_BOOK_DETAIL_DATA_` //前端获取书籍详情
 };
 class RedisStore {

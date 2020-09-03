@@ -19,6 +19,11 @@ const { accessLogger } = require(':lib/logger4'); //日志系统
 const app = new Koa2();
 const host = process.env.HOST || config.host || '127.0.0.1';
 const port = process.env.PORT || config.port || 3000;
+// const testReg = require('./hhhh');
+// for (let index = 1; index <= 200; index++) {
+//     testReg(index);
+// }
+
 config.dev = !(app.env === 'production');
 module.exports = class Server {
     static async run() {

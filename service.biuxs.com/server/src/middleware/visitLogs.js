@@ -13,7 +13,7 @@ module.exports = async (ctx, next) => {
         // VisitLogsModel.sync().then((res) => {
     //     console.log(`VisitLogsModel 同步成功`, res);
     // });
-        console.log(`访客日志中间件调用${ctx.ip}`);
+        console.log(`访客日志中间件调用,IP: ${ctx.ip}`);
         const ip = ctx.ip;
         const userAgent = ctx.headers['user-agent'];
         let visitor = await redis.getData(`${redis.key.GET_VISITOR}${ip}`);
@@ -25,7 +25,7 @@ module.exports = async (ctx, next) => {
             const remark = JSON.stringify({ ...ctx.headers, originalUrl, href });
             VisitLogsModel.create({ origin, ip, userAgent, remark, status: 1 });
         } else {
-        //有效期为7天
+            //有效期为7天
             redis.setData(`${redis.key.GET_VISITOR}${ip}`, visitor, 60 * 60 * 24 * 7);
             if (visitor.status == 2) {
                 return ctx.body = result.failed('非法访问,稍后再试!');
