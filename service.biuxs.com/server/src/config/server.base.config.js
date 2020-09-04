@@ -114,7 +114,8 @@ module.exports = {
         // /^\/v1\/api\/member\/userLogin/, //用户登录接口
         // /^\/v1\/api\/member\/userResetPwd/, //重置密码接口
         // /^\/v1\/api\/member\/sendUserResetPwdEmailCode/, //重置密码发送邮件验证码接口
-        /^\/v1\/api\/biuxs\/site/ //site接口面认证
+        /^\/v1\/api\/biuxs\/site/, //site接口面认证
+        /^\/v1\/api\/biuxs\/book/ //前端书籍接口面认证
     ],
     signUnlessPath: [ //免签名url白名单 如果不设置会返回{code:400,mag:"签名无需"}
         /^\/public/, //公共资源

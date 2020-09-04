@@ -2,14 +2,11 @@
  * 网站信息服务类
  */
 const result = require(':lib/Result');
-// const config = require(':config/server.base.config'); //配置文件
 const redis = require(':lib/redis'); //redis
 const { logger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
-const BookChapterModel = BiuDB.import(`${MODELS_PATH}/books/BookChapterModel`);
-
 module.exports = class {
     /**
      * 获取移动端首页的数据（无需token）
@@ -76,60 +73,6 @@ module.exports = class {
             return result.success(null, res);
         } catch (error) {
             logger.error(`获取书籍分类出错:${new Error(error)}`);
-            return result.failed(error);
-        }
-    }
-
-    /**
-     * 获取书籍详情
-     * @param {*} user
-     */
-    async getBookDetailData({ query: { bookId }, ip }, user) {
-        try {
-            if (!bookId) return result.paramsLack();
-            let book = await redis.getData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`);
-            if (!book) {
-                //书籍详情
-                book = await BookBaseModel.findOne({
-                    where: { isDelete: false, bookId },
-                    attributes: { exclude: ['isDelete', 'remark'] }
-                });
-            }
-            const isRead = await redis.getData(`${redis.key.GET_VISITOR}${ip}${bookId}`);
-            if (book && !(isRead)) {
-                book.readCount += 1;
-                BookBaseModel.update({ readCount: book.readCount }, { where: { bookId } });
-                redis.setData(`${redis.key.GET_VISITOR}${ip}${bookId}`, true, 60 * 60 * 2);
-            };
-            redis.setData(`${redis.key.GET_BOOK_DETAIL_DATA}${bookId}`, book);
-            return result.success(null, book);
-        } catch (error) {
-            logger.error(`获取书籍详情出错:${new Error(error)}`);
-            return result.failed(error);
-        }
-    }
-
-    /**
-     * 获取书籍章节列表
-     * @param {*} param0
-     */
-    async getBookChapterListData({ bookId, page, limit }, user) {
-        if (!bookId) return result.paramsLack();
-        let queryData = {
-            where: { bookId, isDelete: false },
-            order: [['index', 'ASC']],
-            attributes: { exclude: ['isDelete'] }
-        };
-        //分页
-        if (page && limit) {
-            queryData.offset = Number((page - 1) * limit); //开始的数据索引
-            queryData.limit = Number(limit); //每页限制返回的数据条数
-        };
-        try {
-            const { rows, count } = await BookChapterModel.findAndCountAll(queryData);
-            return result.success(null, { list: rows, total: count });
-        } catch (error) {
-            logger.error(`获取书籍章节列表出错:${new Error(error)}`);
             return result.failed(error);
         }
     }
