@@ -5,7 +5,7 @@ const result = require(':lib/Result');
 const redis = require(':lib/redis'); //redis
 const { logger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
-const { BiuDB } = require(':lib/sequelize');
+const { BiuDB, SOP } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
 module.exports = class {
     /**
@@ -71,6 +71,49 @@ module.exports = class {
             const SQL = `select distinct type,pinyin from ${BookBaseModel.getTableName()}`;
             const res = await BiuDB.query(SQL, { type: BiuDB.QueryTypes.SELECT });
             return result.success(null, res);
+        } catch (error) {
+            logger.error(`获取书籍分类出错:${new Error(error)}`);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 搜索书籍
+     * @param {*} type 搜索类型: 1站内  2站外,
+     * @param {*} keyword 关键字: 作者名 或者 书籍名
+     * @param {*} sourceId 来源ID: 站点源ID
+     * @param {*} page 分页参数 页码
+     * @param {*} limit 分页参数 数据大小
+     * @param {*} user
+     */
+    async searchBook({ type, keyword, sourceId, page, limit }, user) {
+        try {
+            if (!type || !keyword) return result.paramsLack();
+            if (type == 1) { //站内搜索
+                const query = {
+                    limit: 10,
+                    offset: 0,
+                    where: {
+                        isDelete: false,
+                        [SOP.or]: [
+                            { title: { [SOP.like]: `%${keyword}%` } },
+                            { author: { [SOP.like]: `%${keyword}%` } }
+                        ]
+                    },
+                    order: [
+                        ['createdTime', 'DESC']
+                    ],
+                    attributes: { exclude: ['sourceName', 'sourceUrl', 'remark', 'isDelete'] }
+                };
+                //分页
+                if (page && limit) {
+                    query.offset = Number((page - 1) * limit); //开始的数据索引
+                    query.limit = Number(limit); //每页限制返回的数据条数
+                };
+                const { rows, count } = await BookBaseModel.findAndCountAll(query);
+                return result.success(null, { list: rows, total: count });
+            }
+            return result.success(null);
         } catch (error) {
             logger.error(`获取书籍分类出错:${new Error(error)}`);
             return result.failed(error);
