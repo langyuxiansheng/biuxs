@@ -84,22 +84,24 @@ module.exports = class {
             if (!article) {
                 const chapter = await BookChapterModel.findOne({ where: { chapterId, isDelete: false } });
                 if (chapter) {
-                    article = await bic.runArticleTask(chapter);
+                    const bicArticle = await bic.runArticleTask(chapter);
+                    if (bicArticle) { //过滤一次
+                        article = {
+                            articleId: bicArticle.articleId,
+                            title: bicArticle.title,
+                            content: bicArticle.content,
+                            letterCount: bicArticle.letterCount
+                        };
+                    }
                 } else {
                     return result.failed(`章节不存在!`);
                 }
             } else { //每章章节缓存2小时
                 redis.setData(`${redis.key.GET_BOOK_CHAPTER_ARTICLE_DATA}${chapterId}`, article, 60 * 60 * 2);
             }
-            const res = {};
-            for (const key in article) {
-                if (queryData.attributes.includes(key)) {
-                    res[key] = article[key];
-                }
-            }
-            return result.success(null, res);
+            return result.success(null, article);
         } catch (error) {
-            logger.error(`获取书籍章节列表出错:${new Error(error)}`);
+            logger.error(`获取书籍章节内容出错:${new Error(error)}`);
             return result.failed(error);
         }
     }
