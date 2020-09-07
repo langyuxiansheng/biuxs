@@ -105,7 +105,7 @@ module.exports = class BookBaseCrawler {
     * @param {*} page 开始页数
     * @description 1抓取后存入任务表,进行异步抓取
     */
-    async getBookTypeBase(baseConf, config, page = 1) {
+    async getBookTypeBase(baseConf, config, page = 1, max = 1000) {
         const headers = this.__getRequestHeaders(baseConf.host); //获取请求头
         const params = config.params.replace('[page]', page); //替换url中的分页参数
         const baseURL = `${baseConf.protocol}${baseConf.host}${params}`;
@@ -129,7 +129,7 @@ module.exports = class BookBaseCrawler {
                     });
                 });
             }
-            if (list.length) {
+            if (list.length && page <= max) {
                 console.log(list);
                 this.saveData(config, list);
                 page++;
@@ -137,7 +137,7 @@ module.exports = class BookBaseCrawler {
                 const time = utils.getRandomNum(1000, 10000);
                 taskLog.info(`抓取间隔 ${time} ms`);
                 setTimeout(() => {
-                    this.getBookTypeBase(baseConf, config, page);
+                    this.getBookTypeBase(baseConf, config, page, max);
                 }, time);
             }
             taskLog.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title} END=================================================`);

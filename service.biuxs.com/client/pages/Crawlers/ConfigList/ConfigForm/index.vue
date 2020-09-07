@@ -63,12 +63,33 @@
                         <el-form-item label="分类列表项" prop="conf.base.itemSelector">
                             <el-input v-model="sendData.conf.base.itemSelector" placeholder="请输入分类列表项选择器(例:.li) CSS选择器" />
                         </el-form-item>
-                        <el-form-item label="分类名称" prop="conf.base.name">
-                            <el-input v-model="sendData.conf.base.name" placeholder="请输入分类名称选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
+                        <el-form-item label="分类列表书籍名称" prop="conf.base.name">
+                            <el-input v-model="sendData.conf.base.name" placeholder="请输入分类列表书籍名称选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
                         </el-form-item>
-                        <el-form-item label="分类链接" prop="conf.base.href">
-                            <el-input v-model="sendData.conf.base.href" placeholder="请输入分类链接选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
+                        <el-form-item label="分类列表书籍链接" prop="conf.base.href">
+                            <el-input v-model="sendData.conf.base.href" placeholder="请输入分类列表书籍链接选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
                         </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-divider content-position="left">
+                            <el-tag>
+                                基本任务信息模型
+                            </el-tag>
+                        </el-divider>
+                        <div class="config-model">
+                            <p class="line-model">
+                                $(<span class="select-name">`{{ sendData.conf.base.listSelector || '分类列表选择器' }}`</span>).find(<span class="select-name">`{{ sendData.conf.base.itemSelector || '分类列表项选择器' }}`</span>).each((index, el) => {
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const url = $(el).find(<span class="select-name">`{{ sendData.conf.base.href || '分类列表书籍链接选择器' }}`</span>).attr('href').trim();
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const name = $(el).find(<span class="select-name">`{{ sendData.conf.base.name || '分类列表书籍名称选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                });
+                            </p>
+                        </div>
                     </el-col>
                     <el-col :span="24">
                         <el-divider content-position="left">
@@ -153,6 +174,45 @@
                         <el-form-item label="章节名称" prop="conf.info.chapterNameSelector">
                             <el-input v-model="sendData.conf.info.chapterNameSelector" placeholder="请输入章节名称选择器(例: a ) CSS选择器" />
                         </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-divider content-position="left">
+                            <el-tag>
+                                书籍信息数据采集模型
+                            </el-tag>
+                        </el-divider>
+                        <div class="config-model">
+                            //基本信息
+                            <p class="line-model">
+                                const title = $(<span class="select-name">`{{ sendData.conf.info.titleSelector || '书籍标题选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                const author = $(<span class="select-name">`{{ sendData.conf.info.authorSelector || '书籍作者选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                const brief = $(<span class="select-name">`{{ sendData.conf.info.briefSelector || '内容简介选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                const image = $(<span class="select-name">`{{ sendData.conf.info.imageSelector || '书籍封面图选择器' }}`</span>).attr('src');
+                            </p>
+                            //章节列表配置
+                            <p class="line-model">
+                                $(<span class="select-name">`{{ sendData.conf.info.chapterListSelector || '分类列表选择器' }}`</span>).find(<span class="select-name">`{{ sendData.conf.info.itemSelector || '章节列表项选择器' }}`</span>).each((index, el) => {
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const title = $(el).find(<span class="select-name">`{{ sendData.conf.info.title || '章节标题选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const url = $(el).find(<span class="select-name">`{{ sendData.conf.info.contentUrlSelector || '章节内容采集地址选择器' }}`</span>).attr('href').trim();
+                            </p>
+                            <p class="line-model">
+                                });
+                            </p>
+                            //章节内容
+                            <p class="line-model">
+                                const content = $(el).find(<span class="select-name">`{{ sendData.conf.info.contentSelector || '章节内容选择器' }}`</span>).text().trim();
+                            </p>
+                        </div>
                     </el-col>
                 </template>
                 <el-col :span="24">
@@ -258,10 +318,10 @@ export default {
                     { required: true, message: '请输入分类列表项选择器(例:.li)', trigger: 'blur' }
                 ],
                 'conf.base.name': [
-                    { required: true, message: '请输入分类名称选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
+                    { required: true, message: '请输入分类列表书籍名称选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
                 ],
                 'conf.base.href': [
-                    { required: true, message: '请输入分类链接选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
+                    { required: true, message: '请输分类列表书籍链接选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
                 ],
                 'conf.info.titleSelector': [
                     { required: true, message: '请输入书籍标题选择器(例:#container .bookinfo .btitle h1)', trigger: 'blur' }
@@ -419,3 +479,21 @@ export default {
     }
 };
 </script>
+<style lang="less" scope>
+.config-model{
+    line-height: 1.6;
+    background: #333;
+    padding: 20px;
+    border-radius: 4px;
+    .line-model{
+        color: #6ebb6e;
+        font-weight: bold;
+        .select-name{
+            color: #ff3737;
+        }
+    }
+    .pd-left-20{
+        padding-left: 32px;
+    }
+}
+</style>
