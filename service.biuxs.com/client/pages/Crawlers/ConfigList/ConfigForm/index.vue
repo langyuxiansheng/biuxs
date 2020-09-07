@@ -7,11 +7,14 @@
                         <el-input v-model="sendData.name" placeholder="请输入配置项名" />
                     </el-form-item>
                     <el-form-item label="配置项类型" prop="type">
-                        <el-select v-model="sendData.status" class="select-block" placeholder="请选择配置项类型" @change="handleStatusChange">
+                        <el-select v-model="sendData.type" class="select-block" placeholder="请选择配置项类型" @change="handleStatusChange">
                             <el-option label="书籍爬虫配置" :value="1" />
                             <el-option label="IP代理爬虫配置" :value="2" />
                             <el-option label="用户阅读器配置" :value="3" />
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="唯一标识符" prop="code">
+                        <el-input v-model="sendData.code" placeholder="请输唯一标识符" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -101,19 +104,32 @@
                     <el-col :span="24">
                         <template v-for="(item,k) in sendData.conf.types">
                             <el-row :key="k" :gutter="20">
-                                <el-col :span="6">
-                                    <el-form-item label="分类名" :prop="'conf.types.' + k + '.title'" :rules="{required: true, message: '分类名不能为空', trigger: 'blur'}">
-                                        <el-input v-model="item.title" placeholder="请输入分类名(例:玄幻小说)" />
+                                <el-col :span="4">
+                                    <el-form-item :label="`分类名:${item.title || ''}`" :prop="'conf.types.' + k + '.title'" :rules="{required: true, message: '分类名不能为空', trigger: 'blur'}">
+                                        <el-select v-model="item.title" class="select-block" placeholder="请选择分类">
+                                            <el-option
+                                                v-for="(cate,cindex) in cates"
+                                                :key="cindex"
+                                                :label="cate.type"
+                                                :value="cate.type"
+                                                :disabled="sendData.conf.types.map(i => i.title).includes(cate.type)"
+                                            />
+                                        </el-select>
                                     </el-form-item>
                                 </el-col>
-                                <el-col :span="12">
+                                <el-col :span="11">
                                     <el-form-item label="分类参数链接" :prop="'conf.types.' + k + '.params'" :rules="{required: true, message: '分类参数链接不能为空', trigger: 'blur'}">
                                         <el-input v-model="item.params" placeholder="请输入分类参数链接(例:#/list/1_[page].html) [page]代表分页参数" />
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
                                     <el-form-item label="起始页" :prop="'conf.types.' + k + '.page'" :rules="{required: true, message: '分类列表起始页不能为空', trigger: 'blur'}">
-                                        <el-input v-model="item.page" placeholder="请输入分类列表起始页(例:1) 默认为1" />
+                                        <el-input v-model="item.page" placeholder="默认为1" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="3">
+                                    <el-form-item label="最大页">
+                                        <el-input v-model="item.max" placeholder="默认为100" />
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
@@ -126,7 +142,7 @@
                             </el-row>
                         </template>
                     </el-col>
-                    <el-col :span="24">
+                    <el-col v-if="sendData.conf.types.length < cates.length" :span="24">
                         <el-form-item>
                             <el-button type="primary" plain @click="handleAddtype()">
                                 添加分类
@@ -200,7 +216,7 @@
                                 $(<span class="select-name">`{{ sendData.conf.info.chapterListSelector || '分类列表选择器' }}`</span>).find(<span class="select-name">`{{ sendData.conf.info.itemSelector || '章节列表项选择器' }}`</span>).each((index, el) => {
                             </p>
                             <p class="line-model pd-left-20">
-                                const title = $(el).find(<span class="select-name">`{{ sendData.conf.info.title || '章节标题选择器' }}`</span>).text().trim();
+                                const title = $(el).find(<span class="select-name">`{{ sendData.conf.info.chapterNameSelector || '章节标题选择器' }}`</span>).text().trim();
                             </p>
                             <p class="line-model pd-left-20">
                                 const url = $(el).find(<span class="select-name">`{{ sendData.conf.info.contentUrlSelector || '章节内容采集地址选择器' }}`</span>).attr('href').trim();
@@ -237,10 +253,10 @@ import { addConfig, updateConfig } from '@/http';
 export default {
     name: 'ConfigForm',
     data () {
-        const { dialogFormWidth } = this.$store.state.config;
+        const { dialogDetailWidth } = this.$store.state.config;
         return {
             dialogConf: {
-                width: dialogFormWidth,
+                width: dialogDetailWidth,
                 isShow: false,
                 center: true,
                 title: null
@@ -364,6 +380,63 @@ export default {
                 {
                     value: 4,
                     label: '禁用'
+                }
+            ],
+            cates: [
+                {
+                    type: '武侠修真',
+                    icon: 'iconwuxia',
+                    img: 'wuxiaxiuzhen.png'
+                },
+                {
+                    type: '玄幻魔法',
+                    icon: 'iconxuanhuan',
+                    img: 'xuanhuanmofa.png'
+                },
+                {
+                    type: '都市言情',
+                    icon: 'iconxuanhuan',
+                    img: 'xuanhuanmofa.png'
+                },
+                {
+                    type: '科幻未来',
+                    icon: 'iconkehuan',
+                    img: 'kehuanweilai.png'
+                },
+                {
+                    type: '灵异穿越',
+                    icon: 'iconlingyi',
+                    img: 'lingyichuanyue.png'
+                },
+                {
+                    type: '历史军事',
+                    icon: 'iconjunshi',
+                    img: 'lishijunshi.png'
+                },
+                {
+                    type: '悬疑推理',
+                    icon: 'icontuilinengli',
+                    img: 'xuanyituili.png'
+                },
+                {
+                    type: '网游动漫',
+                    icon: 'icontuilinengli',
+                    img: 'xuanyituili.png'
+                },
+                {
+                    type: '散文诗词',
+                    icon: 'icontuilinengli',
+                    img: 'xuanyituili.png'
+                },
+                {
+                    type: '女生专区',
+                    icon: 'iconnvsheng',
+                    img: 'nvshengzhuanqu.png'
+                },
+                {
+                    type: '男生专区',
+                    icon: 'iconnansheng',
+                    img: 'nanshengzhuanqu.png'
                 }
             ]
         };
