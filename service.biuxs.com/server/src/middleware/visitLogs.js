@@ -2,7 +2,7 @@
  * 访客日志中间件
  * 通过jwt的sid获取redis里存储的用户信息
  */
-
+const http = require('superagent');
 const redis = require(':lib/redis'); //redis
 const result = require(':lib/Result');
 const { MODELS_PATH } = require(':lib/Utils');
@@ -13,7 +13,6 @@ module.exports = async (ctx, next) => {
         // VisitLogsModel.sync().then((res) => {
     //     console.log(`VisitLogsModel 同步成功`, res);
     // });
-        console.log(`访客日志中间件调用,IP: ${ctx.ip}`);
         const ip = ctx.ip;
         const userAgent = ctx.headers['user-agent'];
         let visitor = await redis.getData(`${redis.key.GET_VISITOR}${ip}`);
@@ -23,7 +22,16 @@ module.exports = async (ctx, next) => {
             const originalUrl = ctx.originalUrl;
             const href = ctx.href;
             const remark = JSON.stringify({ ...ctx.headers, originalUrl, href });
-            VisitLogsModel.create({ origin, ip, userAgent, remark, status: 1 });
+            const requestURL = `http://ip-api.com/json/127.0.0.1?lang=zh-CN`;
+            let location = null;
+            http.get(requestURL).accept('json').then((res) => {
+                if (res && res.status == 200) {
+                    const { query, country, regionName, city, lat, lon } = res.body || {};
+                    location = ['127.0.0.1', 'localhost'].includes(query) ? '本地服务调用' : `${country}${regionName}${city}[${lat},${lon}]`;
+                }
+            }).finally(() => {
+                VisitLogsModel.create({ origin, ip, userAgent, remark, status: 1, location });
+            });
         } else {
             //有效期为7天
             redis.setData(`${redis.key.GET_VISITOR}${ip}`, visitor, 60 * 60 * 24 * 7);

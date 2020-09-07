@@ -4,7 +4,7 @@
 const http = require('superagent');
 // const tr = require('transliteration'); //分类拼音
 const { taskLog } = require(':lib/logger4'); //日志系统
-// const redis = require(':lib/redis'); //redis
+const redis = require(':lib/redis'); //redis
 const utils = require(':lib/Utils');
 require('superagent-proxy')(http);
 require('superagent-charset')(http);
@@ -176,6 +176,107 @@ module.exports = class BookBaseCrawler {
         } catch (error) {
             console.log(`任务数据保存出错`, error);
             return false;
+        }
+    }
+
+    /**
+     * 运行站外搜索任务
+     * @param page
+     */
+    async runOutSiteSearchTask({ configId }, query) {
+        try {
+            const config = await this.getConfigById({ configId });
+            if (config) return await this.search(config, query);
+        } catch (error) {
+            taskLog.error(`获取站外搜索配置出错:`, new Error(error));
+        }
+        return null;
+    }
+
+    /**
+     * 获取配置项
+     * @param page
+     */
+    async getConfigById({ configId }) {
+        let config = null;
+        try {
+            //优先读取缓存
+            config = await redis.getData(configId);
+            if (config) return config;
+            //再次读取数据库
+            config = await ConfigBaseModel.findOne({ where: { isDelete: false, configId } });
+            if (config) {
+                redis.setData(configId, config);
+                return config;
+            };
+            taskLog.error(`没有相关的配置项`);
+        } catch (error) {
+            taskLog.error(`获取配置项出错:`, new Error(error));
+        }
+        return config;
+    }
+
+    async outSiteSearch({ configId, conf: { searchs, base } }, { keyword, page }) {
+        const headers = this.__getRequestHeaders(base.host); //获取请求头
+        // const params = config.params.replace('[page]', page); //替换url中的分页参数
+        // const baseURL = `${baseConf.protocol}${baseConf.host}${params}`;
+        const search = {
+            'url': 'https://www.quanben.net/s.php',
+            'method': 'get',
+            'body': null, //
+            'params': 'keyword=[keyword]&page=[1]',
+            'listSelector': '#container tbody',
+            'itemSelector': 'tr:not(:first-child)',
+            'nameSelector': 'td:nth-child(1) a',
+            'authorSelector': 'td:nth-child(2) a',
+            'typeSelector': null,
+            'detailUrlSelector': 'td:nth-child(1) a'
+        };
+        try {
+            taskLog.info(`============================================站外搜索开始 ${search.url}-${base.title}-${keyword} BEGIN================================================`);
+            let res = null;
+            if (search.method.toLocaleLowerCase == 'get') {
+                res = await http.get(`${search.url}?${search.query}`).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
+            } else {
+                res = await http.post(search.url).send(search.body).set(headers).timeout(base.timeout).charset(base.charset).buffer(true);
+            }
+            const list = [];
+            if (res && res.status == 200) {
+                const $ = cheerio.load(res.text, { decodeEntities: false }); //decodeEntities 设置了某些站点不会出现乱码
+                $(search.listSelector).find(search.itemSelector).each((index, el) => {
+                    const url = $(el).find(search.detailUrlSelector).attr('href').trim();
+                    const name = $(el).find(search.nameSelector).text().trim();
+                    console.log(url, name);
+                    const data = {
+                        configId: configId,
+                        website: base.title, //站点名称
+                        domain: `${base.protocol}${base.host}`, //域名地址
+                        // name: `抓取[${base.title}]-[${name}]-[${$(el).find(baseConf.name).text().trim()}]`, //任务名称
+                        // url: url && url.indexOf('http') != -1 ? url : `${baseConf.protocol}${baseConf.host}${url}`, //获取采集地址链接
+                        type: 1, //任务采集类型 1分类 2书籍 3章节 4内容
+                        status: 1 //状态(1未开始 2进行中 3未完成 4已完成)
+                        // remark: `建立抓取任务 ${baseURL}-${baseConf.title}-${config.title}`
+                    };
+                    //[全本小说网]-[言情小说]-[道吟]
+                    list.push(data);
+                });
+            }
+            // if (list.length) {
+            //     console.log(list);
+            //     this.saveData(config, list);
+            //     page++;
+            //     //抓取间隔1-10S
+            //     const time = utils.getRandomNum(1000, 10000);
+            //     taskLog.info(`抓取间隔 ${time} ms`);
+            //     setTimeout(() => {
+            //         this.getBookTypeBase(baseConf, config, page);
+            //     }, time);
+            // }
+            taskLog.info(`=============================================站外搜索开始 ${search.url}-${base.title}-${keyword} BEGIN=================================================`);
+            // return list;
+        } catch (error) {
+            // taskLog.error(`${baseURL}-${baseConf.title}-${config.title}抓取错误!`, new Error(error));
+            return null;
         }
     }
 };
