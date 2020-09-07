@@ -42,7 +42,7 @@ export default {
      * @param {*} data
      */
     delConfigByIds: {
-        url: `${API_SERVER}/books/book/delConfigByIds`,
+        url: `${API_SERVER}/common/config/delConfigByIds`,
         method: 'delete'
     },
 
@@ -51,7 +51,7 @@ export default {
      * @param {*} data
      */
     runTaskByConfigId: {
-        url: `${API_SERVER}/books/book/runTaskByConfigId`,
+        url: `${API_SERVER}/common/config/runTaskByConfigId`,
         method: 'post'
     }
 };

@@ -55,15 +55,15 @@ module.exports = class BookBaseCrawler {
      */
     async runTaskByConfigId({ configId }) {
         try {
-            const isRunTask = await redis.setData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`, true, 60 * 60 * 2);
+            const isRunTask = await redis.getData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`);
             if (isRunTask) {
                 taskLog.error(`任务:${configId}进行中!`);
                 return result.failed('任务进行中!');
             }
             const cb = await ConfigBaseModel.findOne({ where: { isDelete: false, configId } });
-            redis.setData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`, true, 60 * 60 * 2);
             //创建异步同时抓取多个分类
             if (cb) {
+                redis.setData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`, true, 60 * 60 * 2);
                 const { conf } = cb;
                 const crawlers = conf.types.map((config) => {
                     config.configId = cb.configId;
