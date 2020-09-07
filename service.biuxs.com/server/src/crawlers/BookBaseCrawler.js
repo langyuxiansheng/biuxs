@@ -2,6 +2,7 @@
  * 书籍的基本信息采集爬虫
  */
 const http = require('superagent');
+const result = require(':lib/Result');
 // const tr = require('transliteration'); //分类拼音
 const { taskLog } = require(':lib/logger4'); //日志系统
 const redis = require(':lib/redis'); //redis
@@ -46,6 +47,40 @@ module.exports = class BookBaseCrawler {
         } catch (error) {
             taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
         }
+    }
+
+    /**
+     * 运行任务
+     * @param {*} param0
+     */
+    async runTaskByConfigId({ configId }) {
+        try {
+            const isRunTask = await redis.setData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`, true, 60 * 60 * 2);
+            if (isRunTask) {
+                taskLog.error(`任务:${configId}进行中!`);
+                return result.failed('任务进行中!');
+            }
+            const cb = await ConfigBaseModel.findOne({ where: { isDelete: false, configId } });
+            redis.setData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`, true, 60 * 60 * 2);
+            //创建异步同时抓取多个分类
+            if (cb) {
+                const { conf } = cb;
+                const crawlers = conf.types.map((config) => {
+                    config.configId = cb.configId;
+                    return this.getBookTypeBase(conf.base, config, config.page);
+                });
+                Promise.all(crawlers).then((res) => {
+                    console.log(`抓取完成!`, res);
+                    redis.delData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`);
+                });
+            } else {
+                taskLog.error(`没有相关的配置项`);
+            }
+        } catch (error) {
+            taskLog.error(`抓取站点的分类信息出错:`, new Error(error));
+            redis.delData(`${redis.key.RUN_TASK_BY_CONFIG_ID}${configId}`);
+        }
+        return result.success();
     }
 
     start() {

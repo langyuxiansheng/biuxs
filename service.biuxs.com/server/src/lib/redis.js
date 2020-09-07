@@ -11,7 +11,8 @@ const rediskey = {
     IS_VALIDATE_PROXY_IP: 'IS_VALIDATE_PROXY_IP', //是否正在验证ip 避免异步方法重复运行
     GET_HOME_MOBILE_DATA: 'GET_HOME_MOBILE_DATA', //获取移动端首页的数据
     GET_BOOK_DETAIL_DATA: `GET_BOOK_DETAIL_DATA_`, //前端获取书籍详情
-    GET_BOOK_CHAPTER_ARTICLE_DATA: `GET_BOOK_CHAPTER_ARTICLE_DATA_` //前端获取书籍章节内容
+    GET_BOOK_CHAPTER_ARTICLE_DATA: `GET_BOOK_CHAPTER_ARTICLE_DATA_`, //前端获取书籍章节内容
+    RUN_TASK_BY_CONFIG_ID: `RUN_TASK_BY_CONFIG_ID_` //配置项的爬虫任务
 };
 class RedisStore {
     constructor() {

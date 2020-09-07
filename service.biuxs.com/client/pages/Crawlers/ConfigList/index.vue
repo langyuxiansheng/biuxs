@@ -30,6 +30,7 @@
             <template slot="column" slot-scope="{data}">
                 <template v-if="data.col.key === 'operation'">
                     <el-button-group>
+                        <el-button title="运行" type="primary" icon="el-icon-s-promotion" @click="runTask(data.row)" />
                         <el-button title="编辑" type="warning" icon="el-icon-edit" @click="showDialog({type:'update',data:data.row})" />
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
@@ -54,7 +55,7 @@
     </card-container>
 </template>
 <script>
-import { getConfigList, delConfigByIds } from '@/http';
+import { getConfigList, delConfigByIds, runTaskByConfigId } from '@/http';
 import pager from '@/mixins/pager';
 import ConfigForm from './ConfigForm';
 export default {
@@ -163,6 +164,27 @@ export default {
                 });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.deleted_success'));
+                    this.init();
+                }
+            }).catch(() => {});
+        },
+
+        /**
+         * 运行此配置项的任务
+         */
+        runTask ({ configId }) {
+            this.$confirm(`此操作将会运行此配置项的任务(耗时操作),是否继续?`, '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning',
+                center: true,
+                customClass: 'bg-warning'
+            }).then(async () => {
+                const { code } = await this.$axios[runTaskByConfigId.method](runTaskByConfigId.url, {
+                    data: { configId }
+                });
+                if (code == 200) {
+                    this.$message.success(this.$t('msg.operation_success'));
                     this.init();
                 }
             }).catch(() => {});

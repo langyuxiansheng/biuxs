@@ -65,5 +65,6 @@ export const {
     getConfigList,
     getConfigByCode,
     updateConfig,
-    delConfigByIds
+    delConfigByIds,
+    runTaskByConfigId
 } = apis;

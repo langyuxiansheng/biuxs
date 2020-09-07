@@ -44,5 +44,14 @@ export default {
     delConfigByIds: {
         url: `${API_SERVER}/books/book/delConfigByIds`,
         method: 'delete'
+    },
+
+    /**
+     * 运行配置项的任务
+     * @param {*} data
+     */
+    runTaskByConfigId: {
+        url: `${API_SERVER}/books/book/runTaskByConfigId`,
+        method: 'post'
     }
 };
