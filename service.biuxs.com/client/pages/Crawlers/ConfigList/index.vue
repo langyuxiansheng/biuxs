@@ -160,7 +160,7 @@ export default {
                 customClass: 'bg-warning'
             }).then(async () => {
                 const { code } = await this.$axios[delConfigByIds.method](delConfigByIds.url, {
-                    data: { ids: ids || [configId], isDelete: true }
+                    ids: ids || [configId], isDelete: true
                 });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.deleted_success'));
@@ -180,9 +180,7 @@ export default {
                 center: true,
                 customClass: 'bg-warning'
             }).then(async () => {
-                const { code } = await this.$axios[runTaskByConfigId.method](runTaskByConfigId.url, {
-                    data: { configId }
-                });
+                const { code } = await this.$axios[runTaskByConfigId.method](runTaskByConfigId.url, { configId });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.operation_success'));
                     this.init();

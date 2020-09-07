@@ -144,8 +144,9 @@ module.exports = class BookBaseCrawler {
         const headers = this.__getRequestHeaders(baseConf.host); //获取请求头
         const params = config.params.replace('[page]', page); //替换url中的分页参数
         const baseURL = `${baseConf.protocol}${baseConf.host}${params}`;
+        let count = 0;
         try {
-            taskLog.info(`============================================抓取开始 ${baseURL}-${baseConf.title}-${config.title} BEGIN================================================`);
+            taskLog.info(`============================================抓取开始 ${baseURL}-${baseConf.title}-${config.title}-${page}-${max} BEGIN================================================`);
             const { status, text } = await http.get(`${baseURL}`).set(headers).timeout(baseConf.timeout).charset(baseConf.charset).buffer(true);
             const list = [];
             if (status == 200) {
@@ -175,12 +176,17 @@ module.exports = class BookBaseCrawler {
                     this.getBookTypeBase(baseConf, config, page, max);
                 }, time);
             }
-            taskLog.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title} END=================================================`);
+            taskLog.info(`=============================================抓取结束 ${baseURL}-${baseConf.title}-${config.title}-${page}-${max} END=================================================`);
             return list;
         } catch (error) {
             taskLog.error(`${baseURL}-${baseConf.title}-${config.title}抓取错误!`, new Error(error));
-            return null;
+            count++;
+            if (count <= 3) {
+                taskLog.error(`${baseURL}-${baseConf.title}-${config.title} 错误重试:${count}次!`, new Error(error));
+                return this.getBookTypeBase(baseConf, config, page, max);
+            }
         }
+        return null;
     }
 
     /**
