@@ -66,5 +66,9 @@ export const {
     getConfigByCode,
     updateConfig,
     delConfigByIds,
-    runTaskByConfigId
+    runTaskByConfigId,
+    //任务管理
+    getTaskList,
+    delTaskByIds,
+    runTaskById
 } = apis;

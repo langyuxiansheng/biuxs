@@ -72,8 +72,7 @@ module.exports = class {
         try {
             const task = await TasksModel.findOne({ where: { taskId } });
             if (task && task.type == 1) {
-                console.log(task);
-                const book = await bic.getTaskAndConfig(task);
+                const book = await bic.runTask(task);
                 return result.success(null, book);
             }
             return result.success();

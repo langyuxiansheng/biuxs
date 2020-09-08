@@ -53,5 +53,33 @@ export default {
     runTaskByConfigId: {
         url: `${API_SERVER}/common/config/runTaskByConfigId`,
         method: 'post'
+    },
+
+    /**
+     * 获取爬虫系统任务列表
+     * @param {*} params
+     */
+    getTaskList: {
+        url: `${API_SERVER}/crawlers/tasks/getTaskList`,
+        method: 'get'
+    },
+
+    /**
+     * 删除爬虫系统任务
+     * @param {*} params
+     */
+    delTaskByIds: {
+        url: `${API_SERVER}/crawlers/tasks/delTaskByIds`,
+        method: 'delete'
+    },
+
+    /**
+     * 运行爬虫系统任务
+     * @param {*} params
+     */
+    runTaskById: {
+        url: `${API_SERVER}/crawlers/tasks/runTaskById`,
+        method: 'post'
     }
+
 };

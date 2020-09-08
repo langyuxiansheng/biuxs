@@ -65,6 +65,9 @@ body {
   color: #606266;
   background-color: #f4f5ff;
 }
+a {
+  color: #409EFF;
+}
 #__nuxt,
 #__layout {
   width: 100%;
