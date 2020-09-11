@@ -7,7 +7,6 @@
 const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
     return sequelize.define('BookBase', {
-
         bookId: {
             type: dataTypes.STRING(),
             allowNull: false,
@@ -130,6 +129,7 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'biu_book_base'
+        tableName: 'biu_book_base',
+        indexes: [ { unique: true, fields: [ 'bookId' ] } ]
     });
 };

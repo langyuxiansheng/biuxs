@@ -74,6 +74,7 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'biu_book_article'
+        tableName: 'biu_book_article',
+        indexes: [ { unique: true, fields: [ 'articleId' ] } ]
     });
 };
