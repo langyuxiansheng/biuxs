@@ -15,7 +15,7 @@ const userAuthorities = require(':middleware/userAuthorities'); //用户身份�
 const ErrorRoutesCatch = require(':middleware/ErrorRoutesCatch'); //全局错误捕获
 const visitLogs = require(':middleware/visitLogs'); //访问日志
 const IPProxyCrawler = require(':crawlers/IPProxyCrawler'); //IP代理爬虫
-const BookScheduleCrawler = require(':crawlers/BookScheduleCrawler'); //IP代理爬虫
+// const BookScheduleCrawler = require(':crawlers/BookScheduleCrawler'); //IP代理爬虫
 const { accessLogger } = require(':lib/logger4'); //日志系统
 const app = new Koa2();
 const host = process.env.HOST || config.host || '127.0.0.1';
@@ -24,9 +24,6 @@ const port = process.env.PORT || config.port || 3000;
 // for (let index = 1; index <= 200; index++) {
 //     testReg(index);
 // }
-
-const bsc = new BookScheduleCrawler();
-bsc.iterationRunTask({ page: 1, limit: 4, status: 1 });
 
 config.dev = !(app.env === 'production');
 module.exports = class Server {
@@ -92,6 +89,8 @@ module.exports = class Server {
             console.log(`===================服=务=器=启=动=完=成======================`);
         });
         if (config.crawler.isOpen) {
+            //const bsc = new BookScheduleCrawler();
+            //bsc.iterationRunTask({ page: 1, limit: 5, status: 1 });
             const ipc = new IPProxyCrawler();
             ipc.start();
         }
