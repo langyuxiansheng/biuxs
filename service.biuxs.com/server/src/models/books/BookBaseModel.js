@@ -130,6 +130,11 @@ module.exports = (sequelize, dataTypes) => {
         }
     }, {
         tableName: 'biu_book_base',
-        indexes: [ { unique: true, fields: [ 'bookId' ] } ]
+        indexes: [
+            {
+                unique: true,
+                fields: [ 'bookId' ]
+            }
+        ]
     });
 };

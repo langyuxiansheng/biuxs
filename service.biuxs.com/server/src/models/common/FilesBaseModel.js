@@ -104,6 +104,12 @@ module.exports = (sequelize, dataTypes) => {
             }
         }
     }, {
-        tableName: 'biu_files_base'
+        tableName: 'biu_files_base',
+        indexs: [
+            {
+                unique: true,
+                fields: [ 'fileId' ]
+            }
+        ]
     });
 };

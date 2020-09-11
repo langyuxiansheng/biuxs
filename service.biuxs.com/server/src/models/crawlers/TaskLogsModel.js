@@ -77,8 +77,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        freezeTableName: true,
         tableName: 'biu_task_logs',
-        timestamps: false //是否需要增加createdAt、updatedAt、deletedAt字段
+        indexes: [
+            {
+                unique: true,
+                fields: [ 'logId' ]
+            }
+        ]
     });
 };

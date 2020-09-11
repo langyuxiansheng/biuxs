@@ -76,6 +76,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'sys_visit_logs'
+        tableName: 'sys_visit_logs',
+        indexs: [
+            {
+                unique: true,
+                fields: [ 'visitId' ]
+            }
+        ]
     });
 };
