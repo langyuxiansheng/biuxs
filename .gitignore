@@ -106,3 +106,4 @@ dist
 wwww.biuxs.com/package-lock.json
 wwww.biuxs.com/yarn.lock
 /service.biuxs.com/nuxt-dist
+service.biuxs.com/package-lock.json

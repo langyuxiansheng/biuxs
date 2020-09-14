@@ -140,7 +140,7 @@ module.exports = class BookBaseCrawler {
     * @param {*} page 开始页数
     * @description 1抓取后存入任务表,进行异步抓取
     */
-    async getBookTypeBase(baseConf, config, page = 1, max = 1000) {
+    async getBookTypeBase(baseConf, config, page = 1, max = 100) {
         const headers = this.__getRequestHeaders(baseConf.host); //获取请求头
         const params = config.params.replace('[page]', page); //替换url中的分页参数
         const baseURL = `${baseConf.protocol}${baseConf.host}${params}`;
