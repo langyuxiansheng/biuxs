@@ -64,19 +64,23 @@ const FileUtils = {
                     })).on('error', (err) => { //监听报错信息
                         reject(new Error(err));
                     }).on('close', async() => {
-                        data.fileId = getTimeStampUUID();
-                        const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
-                        if (file) {
-                            taskLog.info(`文件已存在:${file.path}`);
-                            //重新创建一个文件存储对象
-                            data.path = file.path;
-                            await this.deleteFile(fileSavePath);
-                            resolve(file);
-                        } else {
+                        try {
+                            data.fileId = getTimeStampUUID();
+                            const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
+                            if (file) {
+                                taskLog.info(`文件已存在:${file.path}`);
+                                //重新创建一个文件存储对象
+                                data.path = file.path;
+                                await this.deleteFile(fileSavePath);
+                                resolve(file);
+                            } else {
                             //保存文件到数据库
-                            const res = await FilesBaseModel.create(data);
-                            taskLog.info(`已下载文件:${fileSavePath}`);
-                            resolve(res);
+                                const res = await FilesBaseModel.create(data);
+                                taskLog.info(`已下载文件:${fileSavePath}`);
+                                resolve(res);
+                            }
+                        } catch (error) {
+                            reject(new Error({ status: 400, msg: error }));
                         }
                     });
                 }
