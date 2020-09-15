@@ -71,11 +71,13 @@ const FileUtils = {
                             //重新创建一个文件存储对象
                             data.path = file.path;
                             await this.deleteFile(fileSavePath);
+                            resolve(file);
+                        } else {
+                            //保存文件到数据库
+                            const res = await FilesBaseModel.create(data);
+                            taskLog.info(`已下载文件:${fileSavePath}`);
+                            resolve(res);
                         }
-                        //保存文件到数据库
-                        await FilesBaseModel.create(data);
-                        taskLog.info(`已下载文件:${fileSavePath}`);
-                        resolve({ status: 200, data });
                     });
                 }
             } catch (error) {

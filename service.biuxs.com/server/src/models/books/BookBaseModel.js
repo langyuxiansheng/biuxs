@@ -81,10 +81,16 @@ module.exports = (sequelize, dataTypes) => {
             comment: '来源地址'
         },
 
+        sourceImage: {
+            type: dataTypes.STRING(500),
+            allowNull: true,
+            comment: '图片原地址'
+        },
+
         image: {
             type: dataTypes.STRING(),
             allowNull: true,
-            comment: '图片本地名'
+            comment: '本地图片地址'
         },
 
         status: {
