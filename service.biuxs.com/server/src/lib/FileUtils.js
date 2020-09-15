@@ -61,6 +61,7 @@ const FileUtils = {
                     httpRequest.on('error', (err) => { //监听报错信息
                         console.error(err);
                         taskLog.info(`下载文件出错:`, new Error(err));
+                        this.deleteFile(fileSavePath);
                         reject(new Error({ status: 400, msg: err }));
                     });
                     //写入文件到本地
