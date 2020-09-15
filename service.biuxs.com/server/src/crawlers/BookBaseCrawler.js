@@ -36,7 +36,7 @@ module.exports = class BookBaseCrawler {
                 const { conf } = cb;
                 const crawlers = conf.types.map((config) => {
                     config.configId = cb.configId;
-                    return this.getBookTypeBase(conf.base, config, config.page);
+                    return this.getBookTypeBase(conf.base, config, config.page, config.max);
                 });
                 Promise.all(crawlers).then((res) => {
                     console.log(`抓取完成!`, res);
@@ -165,7 +165,7 @@ module.exports = class BookBaseCrawler {
                     });
                 });
             }
-            if (list.length && page <= max) {
+            if (list.length && page < max) {
                 console.log(list);
                 this.saveData(config, list);
                 page++;

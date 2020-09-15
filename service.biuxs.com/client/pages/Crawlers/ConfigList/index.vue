@@ -160,7 +160,7 @@ export default {
                 customClass: 'bg-warning'
             }).then(async () => {
                 const { code } = await this.$axios[delConfigByIds.method](delConfigByIds.url, {
-                    ids: ids || [configId], isDelete: true
+                    data: { ids: ids || [configId], isDelete: true }
                 });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.deleted_success'));
