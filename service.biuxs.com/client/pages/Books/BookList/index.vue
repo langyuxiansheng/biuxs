@@ -37,10 +37,22 @@
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
                 </template>
+                <template v-else-if="data.col.key == 'image'">
+                    <el-image
+                        fit="cover"
+                        :src="data.row.image"
+                        :preview-src-list="[data.row.image]"
+                    />
+                </template>
                 <template v-else-if="data.col.key == 'title'">
                     <nuxt-link class="app-link-btn" :to="`/Books/BookList/ChapterList/${data.row.bookId}`">
                         {{ data.row[data.col.key] }}
                     </nuxt-link>
+                </template>
+                <template v-else-if="data.col.key === 'sourceUrl'">
+                    <a :href="data.row[data.col.key]" target="_blank" rel="noopener noreferrer">
+                        {{ data.row[data.col.key] }}
+                    </a>
                 </template>
                 <template v-else-if="['createdTime','updatedTime'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
@@ -103,11 +115,11 @@ export default {
                     // },
                     {
                         key: 'chapterCount',
-                        label: '总章节数'
+                        label: '章节数'
                     },
                     {
                         key: 'readCount',
-                        label: '阅读总数'
+                        label: '阅读数'
                     },
                     {
                         key: 'type',
@@ -141,10 +153,10 @@ export default {
                         key: 'updatedTime',
                         label: '修改时间'
                     },
-                    {
-                        key: 'remark',
-                        label: '备注'
-                    },
+                    // {
+                    //     key: 'remark',
+                    //     label: '备注'
+                    // },
                     {
                         key: 'operation',
                         width: '180px',
