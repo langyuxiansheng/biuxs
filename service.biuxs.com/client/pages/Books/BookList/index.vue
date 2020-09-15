@@ -38,11 +38,16 @@
                     </el-button-group>
                 </template>
                 <template v-else-if="data.col.key == 'image'">
-                    <el-image
-                        fit="cover"
-                        :src="data.row.image"
-                        :preview-src-list="[data.row.image]"
-                    />
+                    <template v-if="data.row.image">
+                        <el-image
+                            fit="cover"
+                            :src="data.row.image"
+                            :preview-src-list="[data.row.image]"
+                        />
+                    </template>
+                    <template v-else>
+                        暂无封面
+                    </template>
                 </template>
                 <template v-else-if="data.col.key == 'title'">
                     <nuxt-link class="app-link-btn" :to="`/Books/BookList/ChapterList/${data.row.bookId}`">
