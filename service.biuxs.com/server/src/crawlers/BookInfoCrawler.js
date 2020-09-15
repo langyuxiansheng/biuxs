@@ -195,7 +195,7 @@ module.exports = class BookBaseCrawler {
                             //更新图片
                             file && BookBaseModel.update({ image: file.path }, { where: { bookId } });
                         }).catch((err) => {
-                            taskLog.error(`${book.title}-${task.url}图片下载错误!`, new Error(err));
+                            taskLog.error(`${book.title}-${task.url}-图片下载错误!`, new Error(err));
                         });
                     }
                     //获取章节列表
