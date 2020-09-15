@@ -202,6 +202,8 @@ module.exports = class BookBaseCrawler {
                     this.getBookChapterList($, { bookId, configId, base, info }).then((res) => {
                         //只有完成了章节抓取的才算完成了任务
                         res && TasksModel.update({ status: 4, remark: `抓取章节内容` }, { where: { taskId: task.taskId } });
+                    }).catch((error) => {
+                        taskLog.error(`抓取章节列表错误!`, new Error(error));
                     });
                 }
             }
