@@ -171,7 +171,7 @@ module.exports = class BookBaseCrawler {
                 const remark = `初次抓取${task.name}-${task.url}`;
                 book = {
                     title: title && title.trim() || null,
-                    author: author && author.trim() || null,
+                    author: author && author.replace(new RegExp(`作者：|(作者)`, 'g'), '').trim() || null,
                     brief: brief && brief.replace(new RegExp(`内容简介：`, 'g'), '').trim() || null,
                     type,
                     pinyin,
@@ -184,7 +184,8 @@ module.exports = class BookBaseCrawler {
                     sourceName,
                     sourceUrl,
                     image,
-                    remark };
+                    remark
+                };
                 const bookId = await this.saveBookInfoData(book, task);
                 if (bookId) { //如果书籍是新抓取的就进行章节抓取
                     const res = await this.getBookChapterList($, { bookId, configId, base, info });
@@ -234,7 +235,7 @@ module.exports = class BookBaseCrawler {
      */
     async getBookChapterList($, { bookId, configId, base, info }) {
         let res = 0;
-        const replaceRule = `、|(.*章：)|\\d|\\.|(第.*章)|（(.*)?）`;
+        const replaceRule = `、|(.*章：)|(.\\d：)|\\d|\\.|(第.*章)|（(.*)?）`;
         const chapterList = [];
         $(info.chapterListSelector).find(info.itemSelector).each((index, el) => {
             const t = $(el).find(info.chapterNameSelector).text();
@@ -284,7 +285,16 @@ module.exports = class BookBaseCrawler {
                 const letterCount = content && content.length; //总字数
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
-                article = await this.saveChapterArticleData({ articleId, title, content, letterCount, status, bookId, remark });
+                article = await this.saveChapterArticleData({
+                    articleId,
+                    title,
+                    content,
+                    // content content ? content.replace(new RegExp(info.contentReplace,'g'),'') : content,
+                    letterCount,
+                    status,
+                    bookId,
+                    remark
+                });
             }
             taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
         } catch (error) {
