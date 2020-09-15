@@ -58,12 +58,14 @@ const FileUtils = {
                     httpRequest.on('data', (chunk) => {
                         data.fileMD5 = crypto.createHash('md5').update(chunk).digest('hex').toUpperCase(); //创建文件指纹读取对象
                     });
+                    httpRequest.on('error', (err) => { //监听报错信息
+                        taskLog.info(`下载文件出错:${new Error(err)}`);
+                        reject(new Error({ status: 400, msg: err }));
+                    });
                     //写入文件到本地
                     httpRequest.pipe(fs.createWriteStream(fileSavePath, {
                         'encoding': encoding || 'utf8'
-                    })).on('error', (err) => { //监听报错信息
-                        reject(new Error(err));
-                    }).on('close', async() => {
+                    })).on('close', async() => {
                         try {
                             data.fileId = getTimeStampUUID();
                             const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
@@ -80,11 +82,13 @@ const FileUtils = {
                                 resolve(res);
                             }
                         } catch (error) {
+                            taskLog.info(`保存文件出错:${new Error(error)}`);
                             reject(new Error({ status: 400, msg: error }));
                         }
                     });
                 }
             } catch (error) {
+                taskLog.info(`请求文件出错:${new Error(error)}`);
                 reject(new Error({ status: 400, msg: error }));
             }
         });

@@ -85,7 +85,7 @@ module.exports = class Server {
         });
         if (config.crawler.isOpen) {
             const bsc = new BookScheduleCrawler();
-            bsc.iterationRunTask({ page: 1, limit: 5, status: 1 });
+            bsc.iterationRunTask({ page: 1, limit: 1, status: 1 });
             const ipc = new IPProxyCrawler();
             ipc.start();
         }
