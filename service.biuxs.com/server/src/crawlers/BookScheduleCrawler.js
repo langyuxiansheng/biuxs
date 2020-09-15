@@ -70,7 +70,7 @@ module.exports = class BookBaseCrawler extends BookInfoCrawler {
             const { rows, count } = await TasksModel.findAndCountAll(queryData);
             const taskCount = rows.length;
             if (taskCount) {
-                taskLog.info(`本次执行任务:${taskCount}条,总任务:${count}条`);
+                taskLog.info(`本次执行任务:${taskCount}条,总任务剩余:${count}条`);
                 Promise.all(rows.map((task) => {
                     return this.runTask(task);
                 })).then((res) => {
