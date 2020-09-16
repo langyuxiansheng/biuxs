@@ -182,6 +182,9 @@
                         <el-form-item label="章节内容" prop="conf.info.contentSelector">
                             <el-input v-model="sendData.conf.info.contentSelector" placeholder="请输入章节内容选择器(例:#BookText) CSS选择器" />
                         </el-form-item>
+                        <el-form-item label="章节忽略内容">
+                            <el-input v-model="sendData.conf.info.contentReplace" placeholder="请输入章节内容忽略多个用|隔开" />
+                        </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="章节列表项" prop="conf.info.itemSelector">
@@ -294,7 +297,8 @@ export default {
                         'itemSelector': null,
                         'chapterNameSelector': null,
                         'contentUrlSelector': null,
-                        'contentSelector': null
+                        'contentSelector': null,
+                        'contentReplace': null
                     }
                 },
                 status: 1, //排序

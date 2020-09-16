@@ -297,20 +297,23 @@ module.exports = class BookBaseCrawler {
                 const bookId = chapter.bookId; //书籍id
                 //抓取章节的内容详情
                 const title = chapter.title; //书本名称
-                const content = $(info.contentSelector).text().trim();
+                const content = $(info.contentSelector).text() || '';
                 const letterCount = content && content.length; //总字数
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
-                article = await this.saveChapterArticleData({
+                const save = {
                     articleId,
                     title,
-                    content,
-                    // content content ? content.replace(new RegExp(info.contentReplace,'g'),'') : content,
+                    content: content.trim(),
                     letterCount,
                     status,
                     bookId,
                     remark
-                });
+                };
+                if (info.contentReplace) { //内容忽略
+                    save.content = content.replace(new RegExp(info.contentReplace, 'g'), '').trim();
+                }
+                article = await this.saveChapterArticleData(save);
             }
             taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
         } catch (error) {

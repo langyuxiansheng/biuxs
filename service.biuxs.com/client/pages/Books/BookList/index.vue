@@ -41,8 +41,8 @@
                     <template v-if="data.row.image">
                         <el-image
                             fit="cover"
-                            :src="data.row.image"
-                            :preview-src-list="[data.row.image]"
+                            :src="$BASE_IMG_URL + data.row.image"
+                            :preview-src-list="[$BASE_IMG_URL + data.row.image]"
                         />
                     </template>
                     <template v-else>
