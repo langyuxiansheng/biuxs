@@ -39,6 +39,11 @@
                         {{ data.row.title }}
                     </reader>
                 </template>
+                <template v-else-if="data.col.key === 'url'">
+                    <a :href="data.row[data.col.key]" target="_blank" rel="noopener noreferrer">
+                        {{ data.row[data.col.key] }}
+                    </a>
+                </template>
                 <template v-else-if="['createdTime','updatedTime'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
                 </template>

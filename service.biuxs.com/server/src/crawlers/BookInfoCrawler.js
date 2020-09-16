@@ -298,21 +298,21 @@ module.exports = class BookBaseCrawler {
                 //抓取章节的内容详情
                 const title = chapter.title; //书本名称
                 const content = $(info.contentSelector).text() || '';
-                const letterCount = content && content.length; //总字数
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
                 const save = {
                     articleId,
                     title,
-                    content: content.trim(),
-                    letterCount,
+                    content: content.replace(/(\r)|(\n)|(\t)|(\[.*?\])|(\(.*?\).,?)/g, '').trim(),
+                    letterCount: 0,
                     status,
                     bookId,
                     remark
                 };
                 if (info.contentReplace) { //内容忽略
-                    save.content = content.replace(new RegExp(info.contentReplace, 'g'), '').trim();
+                    save.content = save.content.replace(new RegExp(`${info.contentReplace}`, 'g'), '').trim();
                 }
+                save.letterCount = save.content && save.content.length; //总字数
                 article = await this.saveChapterArticleData(save);
             }
             taskLog.info(`============================================抓取结束 ${chapter.title}-${chapter.url} END================================================`);
@@ -390,7 +390,7 @@ module.exports = class BookBaseCrawler {
         try {
             const res = await BookArticleModel.create(article);
             if (res && res.articleId) {
-                taskLog.info(`本次保存: ${article}-${article.content}`);
+                taskLog.info(`本次保存: ${article.title}-${article.content}`);
                 await BookChapterModel.update({ status: 1 }, { where: { chapterId: res.articleId } });
             }
             return res;
