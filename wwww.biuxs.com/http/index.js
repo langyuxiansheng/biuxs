@@ -37,6 +37,9 @@ export const {
     getCraWebSiteBase,
     addBlacklistCompanyByWeb,
     getCompanyBlacklist,
-    getBackgroundLibs
+    getBackgroundLibs,
+
+    //移动端首页
+    getHomeMobileData
 
 } = apis;

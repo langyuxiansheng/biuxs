@@ -45,7 +45,7 @@ module.exports = class {
                 const index = getRandomNum(0, anyRes[0].count - 1);
                 const book = anyRes[0].rows[index];
                 if (randomArray.length >= 10) break;
-                if (randomArray.indexOf(book) === -1) randomArray.push(book);
+                if (randomArray.indexOf(book) === -1 && book) randomArray.push(book);
             }
             const res = {
                 banner,
@@ -53,8 +53,8 @@ module.exports = class {
                 news: rows,
                 hots: anyRes[1].rows
             };
-            //首页数据10分钟更新一次
-            redis.setData(redis.key.GET_HOME_MOBILE_DATA, res, 60 * 10);
+            //首页数据60分钟更新一次
+            redis.setData(redis.key.GET_HOME_MOBILE_DATA, res, 60 * 60);
             return result.success(null, res);
         } catch (error) {
             logger.error(`获取移动端首页的数据出错:${new Error(error)}`);
