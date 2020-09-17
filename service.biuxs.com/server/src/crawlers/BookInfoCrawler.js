@@ -171,7 +171,7 @@ module.exports = class BookBaseCrawler {
                 const sourceUrl = task.url; //来源地址
                 const remark = `初次抓取${task.name}-${task.url}`;
                 book = {
-                    title: title && title.trim() || null,
+                    title: title && title.replace(new RegExp(`全文免费阅读`, 'g'), '').trim() || null,
                     author: author && author.replace(new RegExp(`作者：|(作者)`, 'g'), '').trim() || null,
                     brief: brief && brief.replace(new RegExp(`内容简介：`, 'g'), '').trim() || null,
                     sourceImage: image && image.indexOf('http') != -1 ? image : `${base.protocol}${base.host}${image}`,
@@ -303,7 +303,7 @@ module.exports = class BookBaseCrawler {
                 const save = {
                     articleId,
                     title,
-                    content: content.replace(/(\r)|(\n)|(\t)|(\[.*?\])|(\(.*?\).,?)/g, '').trim(),
+                    content: content.replace(/(\r)|(\n)|(\t)|(\\&nbsp;)|(\[.*?\])|(\(.*?\).,?)/g, '').trim(),
                     letterCount: 0,
                     status,
                     bookId,

@@ -234,11 +234,9 @@ export default {
                 center: true,
                 customClass: 'bg-warning'
             }).then(async () => {
-                const { code } = await this.$axios[refreshBookChapterByAdmin.method](refreshBookChapterByAdmin.url, {
-                    data: { bookId }
-                });
+                const { code, data } = await this.$axios[refreshBookChapterByAdmin.method](refreshBookChapterByAdmin.url, { bookId });
                 if (code == 200) {
-                    this.$message.success(this.$t('msg.operation_success'));
+                    this.$message.success(`${this.$t('msg.operation_success')},本次更新${data}章`);
                     this.init();
                 }
             }).catch(() => {});

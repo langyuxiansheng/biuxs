@@ -86,10 +86,9 @@ export default {
          */
         formatContent(text) {
             if (text) {
-                // eslint-disable-next-line no-irregular-whitespace
-                const arr = text.split(new RegExp(`　|' '`));
-                const reg = /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+.?/g;
-                const showTxt = Array.from(new Set(arr)).map((txt) => {
+                const arr = text.split(new RegExp(`\\s`, 'g'));
+                const reg = /|[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+.?/g;
+                const showTxt = Array.from(new Set(arr)).filter(item => item).map((txt) => {
                     return `<p>${txt.replace(reg, '')}</p>`;
                 }).join('');
                 return showTxt;
