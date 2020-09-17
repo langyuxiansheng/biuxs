@@ -33,6 +33,7 @@
             <template slot="column" slot-scope="{data}">
                 <template v-if="data.col.key === 'operation'">
                     <el-button-group>
+                        <el-button title="更新章节" type="primary" icon="el-icon-refresh" @click="handleUpdateBook(data.row)" />
                         <el-button title="编辑" type="warning" icon="el-icon-edit" @click="showDialog({type:'update',data:data.row})" />
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
@@ -76,7 +77,7 @@
     </card-container>
 </template>
 <script>
-import { getBookListByAdmin, delBookAdminByIds } from '@/http';
+import { getBookListByAdmin, refreshBookChapterByAdmin, delBookAdminByIds } from '@/http';
 import pager from '@/mixins/pager';
 // import TypeItemForm from './TypeItemForm';
 export default {
@@ -217,6 +218,27 @@ export default {
                 });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.deleted_success'));
+                    this.init();
+                }
+            }).catch(() => {});
+        },
+
+        /**
+         * 更新章节
+         */
+        handleUpdateBook ({ bookId }) {
+            this.$confirm(`此操作将会更新此书籍的章节,是否继续?`, '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning',
+                center: true,
+                customClass: 'bg-warning'
+            }).then(async () => {
+                const { code } = await this.$axios[refreshBookChapterByAdmin.method](refreshBookChapterByAdmin.url, {
+                    data: { bookId }
+                });
+                if (code == 200) {
+                    this.$message.success(this.$t('msg.operation_success'));
                     this.init();
                 }
             }).catch(() => {});

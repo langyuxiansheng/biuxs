@@ -61,6 +61,7 @@ export const {
     delBookChapterAdminByIds,
     updateBookChapterAdmin,
     getBookArticleByAdmin,
+    refreshBookChapterByAdmin,
     //配置项管理
     addConfig,
     getConfigList,

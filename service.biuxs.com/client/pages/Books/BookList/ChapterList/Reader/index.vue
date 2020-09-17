@@ -1,11 +1,15 @@
 <template>
     <el-button type="text" @click="init()">
-        <slot />
-        <dialog-container v-if="dialogConf.isShow && book" :dialog-conf="dialogConf">
-            <div class="container">
+        <slot>预览</slot>
+        <DialogContainer v-if="dialogConf.isShow" :dialog-conf="dialogConf">
+            <div v-if="book" class="reader-container">
+                <h4 class="reader-title">
+                    <span class="index">第{{ chapter.index }}章</span>
+                    <span class="title">{{ chapter.title }}</span>
+                </h4>
                 <div class="reader-content" v-html="formatContent(book.content)" />
             </div>
-        </dialog-container>
+        </DialogContainer>
     </el-button>
 </template>
 <script type="text/ecmascript-6">
@@ -13,13 +17,9 @@ import { getBookArticleByAdmin } from '@/http';
 export default {
     name: 'Reader',
     props: {
-        title: {
+        chapter: {
             required: true,
-            type: String
-        },
-        chapterId: {
-            required: true,
-            type: String
+            type: [Object]
         }
     },
     data () {
@@ -42,14 +42,14 @@ export default {
 		 */
         async init () {
             this.dialogConf.isShow = true;
-            this.dialogConf.title = this.title;
-            this.getContent(this.chapterId);
+            this.dialogConf.title = `第${this.chapter.index}章`;
+            this.getContent(this.chapter);
         },
 
         /**
          * 获取章节内容
          */
-        async getContent(chapterId) {
+        async getContent({ chapterId }) {
             try {
                 const { data } = await this.$axios[getBookArticleByAdmin.method](`${getBookArticleByAdmin.url}/${chapterId}`);
                 console.log(data);
@@ -80,17 +80,20 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.container{
+.reader-container{
+    background: #eadcc5;
     .reader-title{
         font-size: 1.25rem;
         padding: 1rem;
+        text-align: center;
     }
     .reader-content{
-        padding: 0 1.25rem;
+        padding: 0 .875rem;
         padding-bottom: 2.5rem;
-        line-height: 1.8;
+        line-height: 2;
         font-size: 1rem;
         text-indent: 1.95rem;
+        white-space: normal;
     }
 }
 </style>

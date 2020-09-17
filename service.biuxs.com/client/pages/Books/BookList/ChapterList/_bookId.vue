@@ -35,7 +35,7 @@
                     </el-button-group>
                 </template>
                 <template v-else-if="data.col.key == 'title'">
-                    <reader ref="Reader" :title="data.row.title" :chapter-id="data.row.chapterId">
+                    <reader ref="Reader" :chapter="data.row">
                         {{ data.row.title }}
                     </reader>
                 </template>
@@ -85,7 +85,8 @@ export default {
                 cols: [ //表格列配置
                     {
                         key: 'title',
-                        label: '章节名'
+                        label: '章节名',
+                        overflow: true
                     },
                     {
                         key: 'url',
