@@ -1,5 +1,4 @@
 const Koa2 = require('koa'); //koa
-const KoaCors = require('koa-cors'); //核心文件
 const KoaBody = require('koa-body'); //koa文件上传
 const koaJWT = require('koa-jwt'); //jwt生成解析
 const koaStatic = require('koa-static'); //静态文件
@@ -11,6 +10,7 @@ const config = require(':config/server.base.config'); //配置文件
 const nuxtConfig = require(':root/nuxt.config'); //nuxt配置文件
 const controllers = require(':controllers/index'); //路由入口
 const secureSignature = require(':middleware/secureSignature'); //请求签名验证
+const crossOrigin = require(':middleware/crossOrigin'); //跨域设置中间件
 const userAuthorities = require(':middleware/userAuthorities'); //用户身份验证
 const ErrorRoutesCatch = require(':middleware/ErrorRoutesCatch'); //全局错误捕获
 const visitLogs = require(':middleware/visitLogs'); //访问日志
@@ -36,7 +36,7 @@ module.exports = class Server {
         app.use(session(config.sessionConfig, app)); //有效期5分钟
         app.use(accessLogger());
         app.use(responseTime({ hrtime: true }));
-        app.use(KoaCors());
+        app.use(crossOrigin());
         app.use(ErrorRoutesCatch);
         app.use(koaStatic(config.staticPath));
         app.use(KoaBody({
