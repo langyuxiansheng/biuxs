@@ -7,6 +7,7 @@ const { logger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
 const { BiuDB, SOP } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
+const BannerBaseModel = BiuDB.import(`${MODELS_PATH}/common/BannerBaseModel`);
 module.exports = class {
     /**
      * 获取移动端首页的数据（无需token）
@@ -19,8 +20,13 @@ module.exports = class {
             const homeData = await redis.getData(redis.key.GET_HOME_MOBILE_DATA);
             if (homeData) return result.success(homeData);
             //轮播
-            const banner = [];
-            //用户的书架
+            const banner = BannerBaseModel.findAll({
+                where: { status: 1, isDelete: false },
+                order: [
+                    ['sort', 'ASC']
+                ],
+                attributes: ['title', 'image', 'link', 'type', 'status', 'expiration']
+            });
             const query = {
                 limit: 10,
                 offset: 0,
@@ -39,7 +45,7 @@ module.exports = class {
             query.order = [];
             query.limit = 100;
             const randoms = BookBaseModel.findAndCountAll(query);
-            const anyRes = await Promise.all([randoms, hots]);
+            const anyRes = await Promise.all([randoms, hots, banner]);
             let randomArray = [];
             for (let i = 0; i < count; i++) {
                 const index = getRandomNum(0, anyRes[0].count - 1);
@@ -48,11 +54,18 @@ module.exports = class {
                 if (randomArray.indexOf(book) === -1 && book) randomArray.push(book);
             }
             const res = {
-                banner,
+                banner: [],
                 randoms: randomArray,
                 news: rows,
                 hots: anyRes[1].rows
             };
+            //处理轮播图
+            if (anyRes[2] && anyRes[2].length) {
+                let time = Date.parse(new Date()) / 1000;
+                res.banner = anyRes[2].filter((item) => {
+                    return !item.expiration || (item.expiration - time > 0);
+                });
+            }
             //首页数据60分钟更新一次
             redis.setData(redis.key.GET_HOME_MOBILE_DATA, res, 60 * 60);
             return result.success(null, res);

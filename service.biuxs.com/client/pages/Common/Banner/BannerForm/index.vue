@@ -41,7 +41,7 @@
                             v-model="expirationTime"
                             class="select-block"
                             type="datetime"
-                            :value-format="$config.datePrickValueFormat"
+                            :value-format="$store.state.config.datePrickValueFormat"
                             placeholder="请选择有效期"
                             default-time="23:59:59"
                             align="center"
@@ -188,8 +188,8 @@ export default {
         /**
          * 有效时间
          */
-        handleExpirationTimeChange(v) {
-            this.sendData.expiration = Date.parse(new Date()) / 1000;
+        handleExpirationTimeChange(time) {
+            if (time) this.sendData.expiration = time / 1000;
         },
 
         /**
