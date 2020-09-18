@@ -14,7 +14,7 @@ module.exports = {
         signatureKey: 'DFEBAC47B8DD2D803FE2FFADC4990E13', //签名验证私钥key SIGNATUREKEY + saltMD5 加密
         maxAge: 60 * 5 //单位秒
     },
-    isNuxtRender: !true, //是否启用nuxt渲染 true启用管理后台界面,false 不使用管理后台,只是使用API服务器
+    isNuxtRender: true, //是否启用nuxt渲染 true启用管理后台界面,false 不使用管理后台,只是使用API服务器
     uploadDir: path.join(__dirname, `../public/uploads/tmp`), //上传文件缓存路径,相对于 server.base.config.js 的路径
     staticPath: path.join(__dirname, `../public`), //静态文件路径,相对于 server.base.config.js 的路径
     crawler: {

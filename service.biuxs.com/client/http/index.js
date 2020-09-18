@@ -3,6 +3,11 @@ export const {
     userLoginForSysAdmin,
     getImgValidate,
     uploadFile,
+    //公共管理
+    addBanner,
+    getBannerList,
+    updateBanner,
+    delBannerByIds,
     //系统设置
     getSysAdminList,
     addSysAdmin,
