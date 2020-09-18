@@ -18,7 +18,7 @@ module.exports = class {
     async getHomeMobileData(user) {
         try {
             const homeData = await redis.getData(redis.key.GET_HOME_MOBILE_DATA);
-            if (homeData) return result.success(homeData);
+            if (homeData) return result.success(null, homeData);
             //轮播
             const banner = BannerBaseModel.findAll({
                 where: { status: 1, isDelete: false },
@@ -51,7 +51,7 @@ module.exports = class {
                 const index = getRandomNum(0, anyRes[0].count - 1);
                 const book = anyRes[0].rows[index];
                 if (randomArray.length >= 10) break;
-                if (randomArray.indexOf(book) === -1 && book) randomArray.push(book);
+                if (randomArray.indexOf(book) === -1 && book && book.image) randomArray.push(book);
             }
             const res = {
                 banner: [],

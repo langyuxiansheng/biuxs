@@ -17,13 +17,14 @@ export default ({ $axios }) => {
     $axios.onResponse(response => {
         let data = {};
         if (response && response.data) {
+            console.log(response.data);
             const { code, msg } = response.data;
             if (code == 200) {
                 data = response.data;
             } else if (code == 401) {
                 AppMessage.error(msg);
                 util.clearCookie(conf.COOKIE_JWT_KEY);
-                if (window && window.localStorage) {
+                if (typeof window !== 'undefined' && window && window.localStorage) {
                     window.localStorage.removeItem(conf.USER_INFO_KEY);
                 }
             } else {

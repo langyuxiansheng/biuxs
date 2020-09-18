@@ -2,10 +2,10 @@
     <div class="app-m-container">
         <app-m-header />
         <div class="app-m-content">
-            <swiper ref="AppSwiperBanner" class="app-swiper-banner" :options="swiperOptions">
-                <template v-for="(img,index) in imgs">
+            <swiper v-if="banner && banner.length" ref="AppSwiperBanner" class="app-swiper-banner" :options="swiperOptions">
+                <template v-for="(img,index) in banner">
                     <swiper-slide :key="index">
-                        <div class="swiper-img" :style="{'background-image': `url(${img.url})`}" />
+                        <div class="swiper-img" :style="{'background-image': `url(${$IMAGE_PATH + img.image})`}" />
                     </swiper-slide>
                 </template>
                 <div slot="pagination" class="swiper-pagination" />
@@ -33,7 +33,7 @@
                     </template>
                 </ul>
             </div>
-            <div class="book-floor">
+            <div v-if="randoms && randoms.length" class="book-floor">
                 <h4 class="item-title app-flex app-flex-between">
                     <span class="name">猜你喜欢</span>
                     <span class="more" to="/">
@@ -42,11 +42,17 @@
                     </span>
                 </h4>
                 <ul class="book-list app-flex">
-                    <template v-for="item in 4">
-                        <li :key="item" class="book-item">
+                    <template v-for="item in randoms">
+                        <li :key="item.bookId" class="book-item">
                             <div class="b-image">
-                                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
-                                <span class="b-tags">10</span>
+                                <template v-if="item.image">
+                                    <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
+                                </template>
+                                <template v-else>
+                                    <img class="image" :src="$IMAGE_PATH + $DEFAULT_BOOK_IMAGE" alt="image">
+                                </template>
+                                {{ $IMAGE_PATH }}
+                                <span class="b-tags">{{ item.chapterCount }}</span>
                             </div>
                         </li>
                     </template>
@@ -110,9 +116,9 @@
     </div>
 </template>
 <script>
-// import { getSiteHomeData } from '@/http';
+import { getHomeMobileData } from '@/http';
 import { AppMHeader, AppMFooter } from '../components';
-import books from '../books.json';
+// import books from '../books.json';
 export default {
     name: 'MobileHome',
     components: { AppMHeader, AppMFooter },
@@ -135,16 +141,22 @@ export default {
             {
                 url: 'http://statics.zhuishushenqi.com/recommendPage/15313940968984'
             }],
-            books
+            books: []
         };
     },
     async asyncData({ req, $axios }) {
-        // try {
-        //     const { data: { navs, search } } = await $axios[getSiteHomeData.method](getSiteHomeData.url);
-        //     return { navs: navs || [], search: search || [] };
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        try {
+            const { data: { banner, randoms, news, hots } } = await $axios[getHomeMobileData.method](getHomeMobileData.url);
+            console.log(banner, randoms, news, hots);
+            return {
+                banner: banner || [],
+                randoms: randoms || [],
+                news: news || [],
+                hots: hots || []
+            };
+        } catch (error) {
+            console.error(error);
+        }
     }
 };
 </script>

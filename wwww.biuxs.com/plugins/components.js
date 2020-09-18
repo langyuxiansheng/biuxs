@@ -11,8 +11,6 @@ import config from '@/base/nav.config';
 //水波纹效果
 import waves from '@/directives/waves';
 
-const IMAGE_PATH = 'http://www.zykqxy.com/zykq';
-Vue.prototype.$IMAGE_PATH = IMAGE_PATH;
 Vue.use(filters);
 Vue.use(waves);
 Vue.use(config);
