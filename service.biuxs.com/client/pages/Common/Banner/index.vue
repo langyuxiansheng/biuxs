@@ -53,6 +53,14 @@
                         暂无封面
                     </template>
                 </template>
+                <template v-else-if="data.col.key == 'expiration'">
+                    <template v-if=" data.row[data.col.key]">
+                        {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
+                    </template>
+                    <template v-else>
+                        永久
+                    </template>
+                </template>
                 <template v-else-if="['createdTime','updatedTime','expiration'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
                 </template>

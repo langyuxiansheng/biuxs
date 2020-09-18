@@ -21,10 +21,10 @@
                             <el-input v-model="sendData.link" placeholder="请输入链接" />
                         </el-form-item>
                     </template>
-                    <el-form-item label="状态">
+                    <el-form-item label="状态" prop="status">
                         <StatusSelect v-model="sendData.status" placeholder="请选择状态" />
                     </el-form-item>
-                    <el-form-item label="封面图">
+                    <el-form-item label="封面图" prop="image">
                         <div class="image-upload">
                             <el-button type="primary" @click="showDialog ({ type:'upload' })">
                                 点击上传
@@ -101,9 +101,22 @@ export default {
                 remark: null
             },
             rules: {
-                name: [
-                    { required: true, message: '请输入搜索分类名', trigger: 'blur' },
-                    { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+                title: [
+                    { required: true, message: '请输入标题', trigger: 'blur' },
+                    { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+                ],
+                link: [
+                    { required: true, message: '请输入链接', trigger: 'blur' },
+                    { min: 1, max: 255, message: '长度在 1 到 255 个字符', trigger: 'blur' }
+                ],
+                image: [
+                    { required: true, message: '请上传封面图', trigger: 'change' }
+                ],
+                type: [
+                    { required: true, message: '请选择类型', trigger: 'change' }
+                ],
+                status: [
+                    { required: true, message: '请选择状态', trigger: 'change' }
                 ]
             },
             type: 'add',

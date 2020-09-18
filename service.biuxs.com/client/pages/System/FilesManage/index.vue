@@ -54,17 +54,6 @@
                     </template>
                 </template>
                 <template v-else-if="data.col.key === 'status'">
-                    <el-tag v-if="data.row[data.col.key] " type="warning">
-                        禁用
-                    </el-tag>
-                    <el-tag v-else-if="data.row.isDelete" type="danger">
-                        已删除
-                    </el-tag>
-                    <el-tag v-else type="success">
-                        正常
-                    </el-tag>
-                </template>
-                <template v-else-if="data.col.key === 'status'">
                     <el-tag :type="$appFilters.formatTagType(data.row[data.col.key])">
                         {{ data.row[data.col.key] | formatStatus }}
                     </el-tag>

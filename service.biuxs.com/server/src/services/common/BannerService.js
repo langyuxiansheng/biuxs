@@ -45,7 +45,7 @@ module.exports = class {
         let queryData = {
             where: { isDelete: false },
             order: [
-                ['createdTime', 'DESC']
+                ['sort', 'ASC']
             ],
             attributes: { exclude: ['isDelete'] }
         };
