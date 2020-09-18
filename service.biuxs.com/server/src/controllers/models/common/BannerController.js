@@ -7,12 +7,12 @@ const controller = new KoaRouter({ prefix: '/banner' });
 const service = new BannerService();
 
 //添加轮播图
-controller.post('/addConfig', async(ctx) => {
+controller.post('/addBanner', async(ctx) => {
     ctx.body = await service.addBanner(ctx.request.body, ctx.state.user);
 });
 
 //获取轮播图列表
-controller.get('/getConfigList', async(ctx) => {
+controller.get('/getBannerList', async(ctx) => {
     ctx.body = await service.getBannerList(ctx.request.query, ctx.state.user);
 });
 

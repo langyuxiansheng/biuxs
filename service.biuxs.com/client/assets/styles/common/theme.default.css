@@ -115,6 +115,7 @@ a {
 }
 .app-form .select-block {
   display: block;
+  width: 100%;
 }
 /**图片放大**/
 .vue-directive-image-previewer {

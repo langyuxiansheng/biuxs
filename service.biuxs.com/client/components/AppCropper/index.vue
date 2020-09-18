@@ -1,7 +1,7 @@
 <template>
-    <div class="app-cropper-container">
+    <div class="app-cropper-container" :style="{'min-height': option.height + 50 + 'px'}">
         <div class="app-cropper-warpper">
-            <div class="app-cropper">
+            <div class="app-cropper" :style="style">
                 <vue-cropper
                     ref="cropper"
                     :img="option.img"
@@ -67,6 +67,8 @@ export default {
             option: {
                 img: '',
                 size: 1,
+                width: 400,
+                height: 300,
                 outputType: 'png',
                 canMove: true,
                 fixedBox: true, //固定截图框大小 不允许改变
@@ -80,22 +82,37 @@ export default {
                 cropData: {},
                 enlarge: 1,
                 mode: 'contain',
-                maxImgSize: 2000
+                maxImgSize: 2000,
+                remark: '管理员上传网站logo图片' //上传备注
             },
             fileName: null,
             fileData: null //文件上传成功后的回调
         };
     },
-    created() {
-        if (this.options) {
-            for (const key in this.options) {
-                this.option[key] = this.options[key];
-            }
+
+    computed: {
+        style() {
+            return {
+                width: this.option.width + 'px',
+                height: this.option.height + 'px'
+            };
+        }
+    },
+    watch: {
+        options: {
+            handler(options) {
+                if (options) {
+                    for (const key in options) {
+                        this.option[key] = options[key];
+                    }
+                }
+            },
+            immediate: true,
+            deep: true
         }
     },
     methods: {
         down(type) {
-            // event.preventDefault()
             // 输出
             if (type === 'blob') {
                 this.$refs.cropper.getCropBlob(data => {
@@ -211,7 +228,7 @@ export default {
                     let file = new File([blob], this.fileName);
                     let fm = new FormData();
                     fm.append('file', file);
-                    fm.append('remark', '管理员上传网站logo图片');
+                    fm.append('remark', this.option.remark);
                     const { code, data } = await this.$axios[uploadFile.method](uploadFile.url, fm);
                     if (code == 200) {
                         this.$emit('success', data);

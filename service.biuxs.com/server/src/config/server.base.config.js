@@ -102,7 +102,8 @@ module.exports = {
         /^\/Website/, //系统设置
         /^\/Crawlers/, //爬虫系统
         /^\/Member/, //会员中心
-        /^\/Book/, //搜索配置
+        /^\/Book/, //书籍管理
+        /^\/Common/, //公共管理
         /^\/403/,
         //api部分
         /^\/v1\/api\/common\/utils\/getImgValidate/, //图片验证码

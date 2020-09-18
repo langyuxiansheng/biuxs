@@ -18,9 +18,9 @@ module.exports = class {
      */
     async addBanner(data, user) {
         if (!checkParams(data, {
-            name: 'string',
+            title: 'string',
             image: 'string',
-            type: 'string',
+            type: 'number',
             status: 'number'
         })) return result.paramsLack();
         try {
@@ -78,7 +78,7 @@ module.exports = class {
             bannerId: 'string'
         })) return result.paramsLack();
         try {
-            const update = { where: { configId: data.bannerId } };
+            const update = { where: { bannerId: data.bannerId } };
             await BannerBaseModel.update(data, update);
             return result.success();
         } catch (error) {
