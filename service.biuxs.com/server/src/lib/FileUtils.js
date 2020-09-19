@@ -50,50 +50,62 @@ const FileUtils = {
                         status: 1,
                         remark: '爬虫自动抓取图片'
                     };
-                    //读取文件流
-                    httpRequest.on('response', (res) => {
-                        data.type = res.headers['content-type'];
-                        data.size = res.headers['content-length'];
-                    });
-                    httpRequest.on('data', (chunk) => {
-                        data.fileMD5 = crypto.createHash('md5').update(chunk).digest('hex').toUpperCase(); //创建文件指纹读取对象
-                    });
-                    httpRequest.on('error', (err) => { //监听报错信息
-                        console.error(err);
-                        taskLog.info(`下载文件出错:`, new Error(err));
-                        this.deleteFile(fileSavePath);
-                        reject(new Error({ status: 400, msg: err }));
-                    });
-                    //写入文件到本地
-                    httpRequest.pipe(fs.createWriteStream(fileSavePath, {
-                        'encoding': encoding || 'utf8'
-                    })).on('close', async() => {
-                        try {
-                            data.fileId = getTimeStampUUID();
-                            const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
-                            if (file) {
-                                taskLog.info(`文件已存在:${file.path}`);
-                                //重新创建一个文件存储对象
-                                data.path = file.path;
-                                await this.deleteFile(fileSavePath);
-                                resolve(file);
-                            } else {
-                            //保存文件到数据库
-                                const res = await FilesBaseModel.create(data);
-                                taskLog.info(`已下载文件:${fileSavePath}`);
+
+                    //先获取文件的状态
+                    const download = new Promise((resolve, reject) => {
+                        httpRequest.on('response', (res) => {
+                            data.type = res.headers['content-type'];
+                            data.size = res.headers['content-length'];
+                            if (res.statusCode === 200) {
                                 resolve(res);
+                            } else {
+                                reject(res);
                             }
-                        } catch (error) {
+                        });
+                        httpRequest.on('error', (error) => { //监听报错信息
                             console.error(error);
-                            taskLog.info(`保存文件出错:${new Error(error)}`);
-                            reject(new Error({ status: 400, msg: error }));
-                        }
+                        });
+                    });
+
+                    download.then((res) => {
+                        //读取文件流
+                        httpRequest.on('data', (chunk) => {
+                            data.fileMD5 = crypto.createHash('md5').update(chunk).digest('hex').toUpperCase(); //创建文件指纹读取对象
+                        });
+                        //写入文件到本地
+                        httpRequest.pipe(fs.createWriteStream(fileSavePath, {
+                            'encoding': encoding || 'utf8'
+                        })).on('close', async() => {
+                            try {
+                                data.fileId = getTimeStampUUID();
+                                const file = await FilesBaseModel.findOne({ where: { fileMD5: data.fileMD5, isDelete: false } });
+                                if (file) {
+                                    taskLog.info(`文件已存在:${file.path}`);
+                                    //重新创建一个文件存储对象
+                                    data.path = file.path;
+                                    await this.deleteFile(fileSavePath);
+                                    resolve(file);
+                                } else {
+                                    //保存文件到数据库
+                                    const res = await FilesBaseModel.create(data);
+                                    taskLog.info(`已下载文件:${fileSavePath}`);
+                                    resolve(res);
+                                }
+                            } catch (error) {
+                                taskLog.info(`保存文件出错:${JSON.stringify(new Error(error))}`);
+                                this.deleteFile(fileSavePath);
+                                reject(new Error(error));
+                            }
+                        });
+                    }).catch((error) => {
+                        taskLog.info(`下载文件出错:${error.statusCode},${error.statusMessage}`);
+                        reject(new Error(error));
                     });
                 }
             } catch (error) {
                 console.error(error);
-                taskLog.info(`请求文件出错:${new Error(error)}`);
-                reject(new Error({ status: 400, msg: error }));
+                taskLog.info(`请求文件出错!`);
+                reject(new Error(error));
             }
         });
     },

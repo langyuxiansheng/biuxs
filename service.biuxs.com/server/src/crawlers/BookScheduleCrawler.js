@@ -11,6 +11,7 @@ const { MODELS_PATH } = require(':lib/Utils');
 const { BiuDB } = require(':lib/sequelize');
 const BookInfoCrawler = require('./BookInfoCrawler');
 const TasksModel = BiuDB.import(`${MODELS_PATH}/crawlers/TasksModel`);
+// const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
 module.exports = class BookBaseCrawler extends BookInfoCrawler {
     constructor(pathname, typeId) {
         super(pathname, typeId);
@@ -81,6 +82,19 @@ module.exports = class BookBaseCrawler extends BookInfoCrawler {
                 });
             } else {
                 taskLog.warn(`没有需要执行的任务列表:`, rows);
+
+                // const dels = await BookBaseModel.findAll({
+                //     where: {
+                //         isDelete: false,
+                //         image: { [SOP.like]: `%BIUXS_WEB_16979232C79D5E3C78D490F902E69AF2%` }
+                //     }
+                // });
+                // if (dels && dels.length) {
+                //     //批量软删除
+                //     const del = { where: { bookId: dels.map(item => item.bookId) } };
+                //     console.log(del);
+                //     await BookBaseModel.update({ image: null }, del);
+                // }
             }
         } catch (error) {
             taskLog.error(`任务执行出错:${new Error(error)}`);

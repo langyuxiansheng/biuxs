@@ -56,7 +56,12 @@ module.exports = class {
      * @param {*} imageUrl
      */
     async downloadImageToLocal({ imageUrl }) {
-        const res = await FileUtils.downloadImageToLocal({ imageUrl });
-        return res;
+        try {
+            const res = await FileUtils.downloadImageToLocal({ imageUrl });
+            return result.success(null, res);
+        } catch (error) {
+            console.error(error);
+            return result.failed('图片下载失败!');
+        }
     }
 };

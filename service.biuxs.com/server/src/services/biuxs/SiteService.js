@@ -51,7 +51,9 @@ module.exports = class {
                 const index = getRandomNum(0, anyRes[0].count - 1);
                 const book = anyRes[0].rows[index];
                 if (randomArray.length >= 10) break;
-                if (randomArray.indexOf(book) === -1 && book && book.image) randomArray.push(book);
+                if (randomArray.indexOf(book) === -1 && book && book.image && (book.image !== '/books/20200915/BIUXS_WEB_16979232C79D5E3C78D490F902E69AF2.jpg')) {
+                    randomArray.push(book);
+                }
             }
             const res = {
                 banner: [],
