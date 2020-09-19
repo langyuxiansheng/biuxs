@@ -43,7 +43,7 @@
                 </h4>
                 <ul class="book-list app-flex">
                     <template v-for="(item,index) in randoms">
-                        <li v-if="index < 4" :key="item.bookId" class="book-item">
+                        <li v-if="index < 4" :key="`randoms-${item.bookId}`" class="book-item">
                             <div class="b-image">
                                 <template v-if="item.image">
                                     <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
@@ -67,7 +67,7 @@
                 </h4>
                 <ul class="book-list app-flex">
                     <template v-for="item in hots">
-                        <li :key="item.bookId" class="book-item">
+                        <li :key="`hots-${item.bookId}`" class="book-item">
                             <div class="b-image">
                                 <template v-if="item.image">
                                     <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
@@ -107,7 +107,7 @@
                 </h4>
                 <ul class="book-list app-flex">
                     <template v-for="(item,index) in news">
-                        <li v-if="index < 4" :key="item" class="book-item">
+                        <li v-if="index < 4" :key="`news-${item.bookId}`" class="book-item">
                             <div class="b-image">
                                 <template v-if="item.image">
                                     <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
