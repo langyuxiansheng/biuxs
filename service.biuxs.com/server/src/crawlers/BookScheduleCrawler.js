@@ -86,7 +86,7 @@ module.exports = class BookBaseCrawler extends BookInfoCrawler {
                 // const dels = await BookBaseModel.findAll({
                 //     where: {
                 //         isDelete: false,
-                //         image: { [SOP.like]: `%BIUXS_WEB_16979232C79D5E3C78D490F902E69AF2%` }
+                //         image: ''
                 //     }
                 // });
                 // if (dels && dels.length) {

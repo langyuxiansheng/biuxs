@@ -21,7 +21,10 @@ module.exports = class {
             if (homeData) return result.success(null, homeData);
             //轮播
             const banner = BannerBaseModel.findAll({
-                where: { status: 1, isDelete: false },
+                where: {
+                    status: 1,
+                    isDelete: false
+                },
                 order: [
                     ['sort', 'ASC']
                 ],
@@ -30,7 +33,12 @@ module.exports = class {
             const query = {
                 limit: 10,
                 offset: 0,
-                where: { isDelete: false },
+                where: {
+                    isDelete: false,
+                    image: {
+                        [SOP.ne]: null
+                    }
+                },
                 order: [
                     ['createdTime', 'DESC']
                 ],
