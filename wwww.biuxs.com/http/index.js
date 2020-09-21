@@ -1,6 +1,5 @@
 import apis from './wrapper';
 export const {
-    getSiteHomeData,
     getWebpageBaseByMenu,
     getWebsiteTypes,
     getImgValidate,
@@ -40,6 +39,8 @@ export const {
     getBackgroundLibs,
 
     //移动端首页
-    getHomeMobileData
+    getHomeMobileData,
+    getBookDetailData,
+    getBookChapterListData
 
 } = apis;

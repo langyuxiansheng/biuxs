@@ -3,7 +3,12 @@
         <app-top-bar>{{ book.title }}</app-top-bar>
         <div class="app-book">
             <div class="book-img">
-                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
+                <template v-if="book.image">
+                    <img class="image" :src="$IMAGE_PATH + book.image" alt="image">
+                </template>
+                <template v-else>
+                    <img class="image" :src="$IMAGE_PATH + $DEFAULT_BOOK_IMAGE" alt="image">
+                </template>
             </div>
             <div class="book-info">
                 <h3 class="title">
@@ -98,52 +103,33 @@
         </div>
         <div class="app-pager app-flex">
             <span class="app-btn">上一页</span>
-            <sapn class="app-page-jump app-flex">
+            <span class="app-page-jump app-flex">
                 <font>第</font>
                 <input type="number" value="1">
                 <font>/3000页</font>
-            </sapn>
+            </span>
             <span class="app-btn">下一页</span>
         </div>
     </div>
 </template>
 <script>
-// import { getSiteHomeData } from '@/http';
+import { getBookDetailData } from '@/http';
 import { AppTopBar } from '../components';
 export default {
-    name: 'Category',
+    name: 'Book',
     components: { AppTopBar },
     data() {
         return {
-            book: {
-                'bookId': '8AFF15F9140C2377B926F11BDDF873A6',
-                'title': '我真不想被夺舍',
-                'brief': '秦缺很困惑，作为一个平平无奇的修行者，怎么就成了穿越者眼中的香饽饽？    一个个穿越者都想穿越成自己？穿越不就是另类的夺舍？这不就是馋我身子么？    “既然诸位都想成为我，那么反过来被我收割，也合情合理吧？”    “你看你，人穿越来就行了嘛，还带什么金手指。”',
-                'letterCount': 0,
-                'chapterCount': 0,
-                'author': '更从心',
-                'readCount': 0,
-                'type': '玄幻小说',
-                'pinyin': 'xuanhuanxiaoshuo',
-                'tags': '玄幻小说',
-                'sourceName': '全本小说网',
-                'sourceUrl': 'https://www.quanben.net/296/296576/',
-                'image': null,
-                'status': 2,
-                'configId': 'D655267DEA565CC63BB8A0EDD612B5A6',
-                'remark': '初次抓取抓取[全本小说网]-[玄幻小说]-[我真不想被夺舍]-https://www.quanben.net/296/296576/',
-                'createdTime': 1597393575,
-                'updatedTime': 1597393575
-            }
+            book: {}
         };
     },
-    async asyncData({ req, $axios }) {
-        // try {
-        //     const { data: { navs, search } } = await $axios[getSiteHomeData.method](getSiteHomeData.url);
-        //     return { navs: navs || [], search: search || [] };
-        // } catch (error) {
-        //     console.error(error);
-        // }
+    async asyncData({ req, $axios, params }) {
+        try {
+            const { data } = await $axios[getBookDetailData.method](getBookDetailData.url, { params });
+            return { book: data || {} };
+        } catch (error) {
+            console.error(error);
+        }
     }
 };
 </script>

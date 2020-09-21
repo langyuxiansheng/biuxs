@@ -140,19 +140,11 @@ export default {
                     el: '.swiper-pagination'
                 }
             },
-            imgs: [{
-                url: 'http://statics.zhuishushenqi.com/recommendPage/153139416791777'
-            },
-            {
-                url: 'http://statics.zhuishushenqi.com/recommendPage/153139401503529'
-            },
-            {
-                url: 'http://statics.zhuishushenqi.com/recommendPage/153139406636473'
-            },
-            {
-                url: 'http://statics.zhuishushenqi.com/recommendPage/15313940968984'
-            }],
-            books: []
+            books: [],
+            banner: [],
+            randoms: [],
+            news: [],
+            hots: []
         };
     },
     async asyncData({ req, $axios }) {
@@ -252,7 +244,8 @@ export default {
                         color: #535353;
                         font-weight: bold;
                         line-height: 1.3;
-                        height: 2.25rem;
+                        height: 1.875rem;
+                        .ellipsis-mult(2);
                     }
                 }
             }
@@ -275,7 +268,8 @@ export default {
                             margin-top: 0;
                             margin-bottom: .5rem;
                             height: auto;
-                            line-height: 1;
+                            line-height: initial;
+                            .ellipsis-mult(2);
                         }
                         .b-author{
                             font-size: .75rem;
@@ -291,6 +285,7 @@ export default {
                             margin: .625rem 0;
                             .ellipsis-mult(2);
                             line-height: 1.5;
+                            height: 2.25rem;
                         }
                         .b-other{
                             margin-top: .625rem;

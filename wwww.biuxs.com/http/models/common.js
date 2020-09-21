@@ -1,14 +1,6 @@
 import { API_SERVER } from './types';
 export default {
     /**
-     * 获取首页数据
-     */
-    getiteHomeData: {
-        url: `${API_SERVER}/biunav/site/getHomeData`,
-        method: 'get'
-    },
-
-    /**
      * 文件上传
      * @param {*} data
      */
