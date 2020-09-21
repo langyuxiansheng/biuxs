@@ -14,7 +14,7 @@
                 <i class="iconfont iconicon_search" />
                 <input type="search" placeholder="请输入作者名或者书名进行搜索" class="search-input">
             </div>
-            <div class="book-floor">
+            <div v-if="stars && stars.length" class="book-floor">
                 <h4 class="item-title app-flex app-flex-between">
                     <span class="name">我的收藏</span>
                     <nuxt-link class="more" to="/">
@@ -140,6 +140,7 @@ export default {
                     el: '.swiper-pagination'
                 }
             },
+            stars: [], //用户收藏
             books: [],
             banner: [],
             randoms: [],
