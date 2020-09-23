@@ -67,7 +67,7 @@
                 {{ book.brief }}
             </div>
         </div>
-        <div class="book-chapter">
+        <!-- <div class="book-chapter">
             <h4 class="chapter-title">
                 <span class="name">
                     最新章节预览
@@ -83,44 +83,52 @@
                     </li>
                 </template>
             </ul>
-        </div>
+        </div> -->
         <div class="book-chapter">
             <h4 class="chapter-title">
                 <span class="name">
                     最新章节列表
                 </span>
             </h4>
-            <ul class="chapter-list">
-                <template v-for="index in 10">
-                    <li :key="index" class="item">
-                        <nuxt-link v-waves class="item-link" to="/article">
-                            <span class="chapter-index">第{{ index }}章</span>
-                            <span class="chapter-name">远古魔法——风神的审判</span>
+            <ul v-if="list && list.length" class="chapter-list">
+                <template v-for="item in list">
+                    <li :key="item.chapterId" class="item">
+                        <nuxt-link v-waves class="item-link" :to="`/m/reader/${item.chapterId}`">
+                            <span class="chapter-index">第{{ item.index }}章:</span>
+                            <span class="chapter-name">{{ item.title }}</span>
                         </nuxt-link>
                     </li>
                 </template>
             </ul>
         </div>
         <div class="app-pager app-flex">
-            <span class="app-btn">上一页</span>
+            <span class="app-btn" @click="handlePage(params.page > 1 ? --params.page : 1)">上一页</span>
             <span class="app-page-jump app-flex">
                 <font>第</font>
-                <input type="number" value="1">
-                <font>/3000页</font>
+                <input v-model="params.page" type="number" @blur="handlePage(params.page <= total ? params.page : 1)">
+                <font>/{{ total }}页</font>
             </span>
-            <span class="app-btn">下一页</span>
+            <span class="app-btn" @click="handlePage(params.page < total ? ++params.page : total)">下一页</span>
         </div>
     </div>
 </template>
 <script>
-import { getBookDetailData } from '@/http';
+import { getBookDetailData, getBookChapterListData } from '@/http';
 import { AppTopBar } from '../components';
 export default {
     name: 'Book',
     components: { AppTopBar },
     data() {
+        const { bookId } = this.$route.params;
         return {
-            book: {}
+            book: {},
+            list: [],
+            total: 0,
+            params: {
+                bookId,
+                page: 1,
+                limit: 10
+            }
         };
     },
     async asyncData({ req, $axios, params }) {
@@ -129,6 +137,31 @@ export default {
             return { book: data || {} };
         } catch (error) {
             console.error(error);
+        }
+    },
+    created() {
+        this.init();
+    },
+    methods: {
+        async init() {
+            try {
+                const { data: { list, total } } = await this.$axios[getBookChapterListData.method](getBookChapterListData.url, {
+                    params: this.params
+                });
+                this.list = list;
+                this.total = total ? Math.ceil(total / this.params.limit) : 0;
+                console.log(list, total);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        /**
+         * 分页回调
+         */
+        handlePage(page) {
+            this.params.page = page;
+            this.init();
         }
     }
 };

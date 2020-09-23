@@ -14,6 +14,14 @@ export default {
     getBookChapterListData: {
         url: `${API_SERVER}/biuxs/book/getBookChapterListData`,
         method: 'get'
+    },
+
+    /**
+     * 获取书籍章节内容（无需token）
+     */
+    getBookChapterArticleData: {
+        url: `${API_SERVER}/biuxs/book/getBookChapterArticleData`,
+        method: 'get'
     }
 
 };

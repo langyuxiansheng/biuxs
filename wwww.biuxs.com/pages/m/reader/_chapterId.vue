@@ -13,10 +13,12 @@
 </template>
 <script>
 import vuescroll from 'vuescroll';
+import { getBookChapterArticleData } from '@/http';
 export default {
     name: 'Reader',
     components: { vuescroll },
     data() {
+        const { chapterId } = this.$route.params;
         return {
             ops: {
                 rail: {
@@ -54,10 +56,36 @@ export default {
                 'status': 1,
                 'bookId': 'F5AAD129D269D7153283C5D821F5370B',
                 'remark': '初次抓取楔子 源起-https://www.biqugexx.com/131_131248/43278252.html'
+            },
+            params: {
+                chapterId
             }
         };
     },
+
+    async asyncData({ req, $axios, params }) {
+        try {
+            const { data } = await $axios[getBookChapterArticleData.method](getBookChapterArticleData.url, { params });
+            return { book: data || {} };
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    created() {
+        this.init();
+    },
+
     methods: {
+        async init() {
+            try {
+                const { data } = await this.$axios[getBookChapterArticleData.method](getBookChapterArticleData.url, {
+                    params: this.params
+                });
+                console.log(data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
 
         /**
          * 上拉加载开始
