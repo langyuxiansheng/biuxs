@@ -5,8 +5,8 @@
             <template v-if="books && books.length && list && list.length">
                 <div v-for="book in books" :key="book.bookId" class="scroll-content">
                     <h4 v-if="list && list.length" class="reader-title">
-                        <span class="index">第{{ chapter && chapter.index }}章</span>
-                        <span class="title">{{ chapter && chapter.title }}</span>
+                        <span class="index">第{{ book.index }}章</span>
+                        <span class="title">{{ book.title }}</span>
                     </h4>
                     <div class="reader-content" v-html="formatContent(book.content)" />
                 </div>
