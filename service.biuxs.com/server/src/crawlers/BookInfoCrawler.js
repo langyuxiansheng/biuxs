@@ -297,11 +297,13 @@ module.exports = class BookBaseCrawler {
                 const bookId = chapter.bookId; //书籍id
                 //抓取章节的内容详情
                 const title = chapter.title; //书本名称
+                const index = chapter.index; //章节索引
                 const content = $(info.contentSelector).text() || '';
                 const status = 1; //状态 1正常(默认都为)
                 const remark = `初次抓取${title}-${chapter.url}`;
                 const save = {
                     articleId,
+                    index,
                     title,
                     content: content.replace(/(\r)|(\n)|(\t)|(\\&nbsp;)|(\[.*?\])|(\(.*?\).,?)/g, '').trim(),
                     letterCount: 0,

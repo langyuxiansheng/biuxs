@@ -93,7 +93,7 @@
             <ul v-if="list && list.length" class="chapter-list">
                 <template v-for="item in list">
                     <li :key="item.chapterId" class="item">
-                        <nuxt-link v-waves class="item-link" :to="`/m/reader/${item.chapterId}`">
+                        <nuxt-link v-waves class="item-link" :to="`/m/reader/${item.chapterId}?bookId=${params.bookId}`">
                             <span class="chapter-index">第{{ item.index }}章:</span>
                             <span class="chapter-name">{{ item.title }}</span>
                         </nuxt-link>
@@ -115,6 +115,7 @@
 <script>
 import { getBookDetailData, getBookChapterListData } from '@/http';
 import { AppTopBar } from '../components';
+import util from '@/lib/util';
 export default {
     name: 'Book',
     components: { AppTopBar },
@@ -140,6 +141,8 @@ export default {
         }
     },
     created() {
+        const cache = util.getCache(this.$biuxs.BOOK_CHAPTER_LIST + this.params.bookId);
+        if (cache && cache.params) this.params = cache.params;
         this.init();
     },
     methods: {
@@ -150,9 +153,25 @@ export default {
                 });
                 this.list = list;
                 this.total = total ? Math.ceil(total / this.params.limit) : 0;
-                console.log(list, total);
+                this.bookCache();
             } catch (error) {
                 console.error(error);
+            }
+        },
+
+        /**
+         * 设置缓存
+         */
+        bookCache() {
+            try {
+                util.setCache(this.$biuxs.BOOK_CHAPTER_LIST + this.params.bookId, {
+                    params: this.params,
+                    list: this.list,
+                    total: this.total,
+                    book: this.book
+                });
+            } catch (error) {
+                console.error(`设置缓存出错`, error);
             }
         },
 
