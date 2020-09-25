@@ -129,7 +129,6 @@
 <script>
 import { getHomeMobileData } from '@/http';
 import { AppMHeader, AppMFooter } from '../components';
-// import books from '../books.json';
 export default {
     name: 'MobileHome',
     components: { AppMHeader, AppMFooter },
