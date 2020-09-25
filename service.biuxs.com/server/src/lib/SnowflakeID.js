@@ -4,7 +4,7 @@
  * Version: 1.0.0
  * A function for converting hex <-> dec w/o loss of precision.
  * By Dan Vanderkam http://www.danvk.org/hex2dec.html
- * @description 最大长度不超过16位,否则会出现精度丢失的问题
+ * @description js Number最大长度不超过17位,否则会出现精度丢失的问题
  */
 class SnowflakeID {
     constructor(options) {
@@ -18,14 +18,11 @@ class SnowflakeID {
     generate() {
         const time = Date.now();
         const bTime = (time - this.offset).toString(2);
-
         // get the sequence number
         if (this.lastTime == time) {
             this.seq++;
-
             if (this.seq > 4095) {
                 this.seq = 0;
-
                 // make system wait till time is been shifted by one millisecond
                 while (Date.now() <= time) {}
             }
@@ -45,7 +42,6 @@ class SnowflakeID {
 
         const bid = bTime + bMid + bSeq;
         let id = '';
-
         for (let i = bid.length; i > 0; i -= 4) {
             id = parseInt(bid.substring(i - 4, i), 2).toString(16) + id;
         }
@@ -114,7 +110,7 @@ class SnowflakeID {
      * @param {*} fromBase
      * @param {*} toBase
      */
-    convertBase(str, fromBase, toBase) {
+    convertBase(str, fromBase, toBase, legnth) {
         let digits = this.parseToDigitsArray(str, fromBase);
         if (digits === null) return null;
         let outArray = [];
@@ -131,6 +127,7 @@ class SnowflakeID {
             power = this.multiplyByNumber(fromBase, power, toBase);
         }
         let out = '';
+        //设置了这里-3会返回16位的字符
         for (let i = outArray.length - 1; i >= 0; i--) {
             out += outArray[i].toString(toBase);
         }
@@ -148,4 +145,17 @@ class SnowflakeID {
     }
 }
 
+const snid = new SnowflakeID({
+    mid: +new Date()
+});
+let id = snid.generate();
+console.log(id, id.length);
+let arr = [];
+for (let index = 0; index < 1000; index++) {
+    id = snid.generate();
+    console.log('snid.generate()', id);
+    arr.push(snid.generate(), +new Date());
+}
+
+// console.log(arr, arr.length, Array.from(new Set(arr)).length);
 module.exports = SnowflakeID;

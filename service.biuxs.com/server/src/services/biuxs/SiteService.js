@@ -3,11 +3,13 @@
  */
 const result = require(':lib/Result');
 const redis = require(':lib/redis'); //redis
+const SnowflakeID = require(':lib/SnowflakeID'); //redis
 const { logger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
 const { BiuDB, SOP } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
 const BannerBaseModel = BiuDB.import(`${MODELS_PATH}/common/BannerBaseModel`);
+const snid = new SnowflakeID({ mid: 13134646 });
 module.exports = class {
     /**
      * 获取移动端首页的数据（无需token）
@@ -17,8 +19,17 @@ module.exports = class {
      */
     async getHomeMobileData(user) {
         try {
+            let test = {};
+            for (let index = 0; index < 500; index++) {
+                let id = snid.generate();
+                test[index] = id;
+                test[`n${index}`] = Number(id);
+            }
             const homeData = await redis.getData(redis.key.GET_HOME_MOBILE_DATA);
-            if (homeData) return result.success(null, homeData);
+            if (homeData) {
+                homeData.test = test;
+                return result.success(null, homeData);
+            }
             //轮播
             const banner = BannerBaseModel.findAll({
                 where: {
