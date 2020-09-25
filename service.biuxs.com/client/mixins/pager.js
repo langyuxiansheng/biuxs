@@ -19,8 +19,8 @@ export default (callbackName = 'init') => {
              * 分页大小
              */
             handleSizeChange(size) {
-                if (this.table && this.table.params && this.table.params.size) {
-                    this.table.params.size = size;
+                if (this.table && this.table.params && this.table.params.limit) {
+                    this.table.params.limit = size;
                     this[callbackName]();
                 }
             }

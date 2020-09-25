@@ -17,6 +17,11 @@ controller.get('/getBookTypeData', async(ctx) => {
     ctx.body = await service.getBookTypeData(ctx.state.user);
 });
 
+//搜索书籍
+controller.get('/searchBook', async(ctx) => {
+    ctx.body = await service.searchBook(ctx.request.query, ctx.state.user);
+});
+
 //用户留言（无需token）
 controller.post('/addOptionMsg', async(ctx) => {
     ctx.body = await service.addOptionMsg(ctx.request.body, ctx.request.headers);

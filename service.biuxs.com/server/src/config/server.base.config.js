@@ -14,7 +14,7 @@ module.exports = {
         signatureKey: 'DFEBAC47B8DD2D803FE2FFADC4990E13', //签名验证私钥key SIGNATUREKEY + saltMD5 加密
         maxAge: 60 * 5 //单位秒
     },
-    isNuxtRender: !true, //是否启用nuxt渲染 true启用管理后台界面,false 不使用管理后台,只是使用API服务器
+    isNuxtRender: true, //是否启用nuxt渲染 true启用管理后台界面,false 不使用管理后台,只是使用API服务器
     uploadDir: path.join(__dirname, `../public/uploads/tmp`), //上传文件缓存路径,相对于 server.base.config.js 的路径
     staticPath: path.join(__dirname, `../public`), //静态文件路径,相对于 server.base.config.js 的路径
     crawler: {
@@ -102,7 +102,8 @@ module.exports = {
         /^\/Website/, //系统设置
         /^\/Crawlers/, //爬虫系统
         /^\/Member/, //会员中心
-        /^\/Book/, //搜索配置
+        /^\/Book/, //书籍管理
+        /^\/Common/, //公共管理
         /^\/403/,
         //api部分
         /^\/v1\/api\/common\/utils\/getImgValidate/, //图片验证码
@@ -114,7 +115,8 @@ module.exports = {
         // /^\/v1\/api\/member\/userLogin/, //用户登录接口
         // /^\/v1\/api\/member\/userResetPwd/, //重置密码接口
         // /^\/v1\/api\/member\/sendUserResetPwdEmailCode/, //重置密码发送邮件验证码接口
-        /^\/v1\/api\/biuxs\/site/ //site接口面认证
+        /^\/v1\/api\/biuxs\/site/, //site接口面认证
+        /^\/v1\/api\/biuxs\/book/ //前端书籍接口面认证
     ],
     signUnlessPath: [ //免签名url白名单 如果不设置会返回{code:400,mag:"签名无需"}
         /^\/public/, //公共资源

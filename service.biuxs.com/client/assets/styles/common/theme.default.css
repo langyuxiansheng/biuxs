@@ -65,6 +65,9 @@ body {
   color: #606266;
   background-color: #f4f5ff;
 }
+a {
+  color: #409EFF;
+}
 #__nuxt,
 #__layout {
   width: 100%;
@@ -112,6 +115,7 @@ body {
 }
 .app-form .select-block {
   display: block;
+  width: 100%;
 }
 /**图片放大**/
 .vue-directive-image-previewer {

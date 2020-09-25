@@ -42,8 +42,8 @@ controller.get('/getBookArticleByAdmin/:chapterId', async(ctx) => {
 });
 
 //管理员更新书籍章节
-controller.get('/refreshBookChapterByAdmin/:bookId', async(ctx) => {
-    ctx.body = await service.refreshBookChapterByAdmin(ctx.params, ctx.state.user);
+controller.post('/refreshBookChapterByAdmin', async(ctx) => {
+    ctx.body = await service.refreshBookChapterByAdmin(ctx.request.body, ctx.state.user);
 });
 
 module.exports = controller;

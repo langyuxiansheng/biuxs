@@ -3,6 +3,11 @@ export const {
     userLoginForSysAdmin,
     getImgValidate,
     uploadFile,
+    //公共管理
+    addBanner,
+    getBannerList,
+    updateBanner,
+    delBannerByIds,
     //系统设置
     getSysAdminList,
     addSysAdmin,
@@ -60,10 +65,17 @@ export const {
     getBookChapterListByAdmin,
     delBookChapterAdminByIds,
     updateBookChapterAdmin,
+    getBookArticleByAdmin,
+    refreshBookChapterByAdmin,
     //配置项管理
     addConfig,
     getConfigList,
     getConfigByCode,
     updateConfig,
-    delConfigByIds
+    delConfigByIds,
+    runTaskByConfigId,
+    //任务管理
+    getTaskList,
+    delTaskByIds,
+    runTaskById
 } = apis;

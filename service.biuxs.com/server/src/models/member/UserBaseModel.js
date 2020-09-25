@@ -149,6 +149,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        tableName: 'biu_user_base'
+        tableName: 'biu_user_base',
+        indexs: [
+            {
+                unique: true,
+                fields: [ 'userId' ]
+            }
+        ]
     });
 };

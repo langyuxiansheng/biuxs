@@ -33,14 +33,32 @@
             <template slot="column" slot-scope="{data}">
                 <template v-if="data.col.key === 'operation'">
                     <el-button-group>
+                        <el-button title="更新章节" type="primary" icon="el-icon-refresh" @click="handleUpdateBook(data.row)" />
                         <el-button title="编辑" type="warning" icon="el-icon-edit" @click="showDialog({type:'update',data:data.row})" />
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
+                </template>
+                <template v-else-if="data.col.key == 'image'">
+                    <template v-if="data.row.image">
+                        <el-image
+                            fit="cover"
+                            :src="$BASE_IMG_URL + data.row.image"
+                            :preview-src-list="[$BASE_IMG_URL + data.row.image]"
+                        />
+                    </template>
+                    <template v-else>
+                        暂无封面
+                    </template>
                 </template>
                 <template v-else-if="data.col.key == 'title'">
                     <nuxt-link class="app-link-btn" :to="`/Books/BookList/ChapterList/${data.row.bookId}`">
                         {{ data.row[data.col.key] }}
                     </nuxt-link>
+                </template>
+                <template v-else-if="data.col.key === 'sourceUrl'">
+                    <a :href="data.row[data.col.key]" target="_blank" rel="noopener noreferrer">
+                        {{ data.row[data.col.key] }}
+                    </a>
                 </template>
                 <template v-else-if="['createdTime','updatedTime'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
@@ -59,7 +77,7 @@
     </card-container>
 </template>
 <script>
-import { getBookListByAdmin, delBookAdminByIds } from '@/http';
+import { getBookListByAdmin, refreshBookChapterByAdmin, delBookAdminByIds } from '@/http';
 import pager from '@/mixins/pager';
 // import TypeItemForm from './TypeItemForm';
 export default {
@@ -103,11 +121,11 @@ export default {
                     // },
                     {
                         key: 'chapterCount',
-                        label: '总章节数'
+                        label: '章节数'
                     },
                     {
                         key: 'readCount',
-                        label: '阅读总数'
+                        label: '阅读数'
                     },
                     {
                         key: 'type',
@@ -141,10 +159,10 @@ export default {
                         key: 'updatedTime',
                         label: '修改时间'
                     },
-                    {
-                        key: 'remark',
-                        label: '备注'
-                    },
+                    // {
+                    //     key: 'remark',
+                    //     label: '备注'
+                    // },
                     {
                         key: 'operation',
                         width: '180px',
@@ -200,6 +218,25 @@ export default {
                 });
                 if (code == 200) {
                     this.$message.success(this.$t('msg.deleted_success'));
+                    this.init();
+                }
+            }).catch(() => {});
+        },
+
+        /**
+         * 更新章节
+         */
+        handleUpdateBook ({ bookId }) {
+            this.$confirm(`此操作将会更新此书籍的章节,是否继续?`, '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning',
+                center: true,
+                customClass: 'bg-warning'
+            }).then(async () => {
+                const { code, data } = await this.$axios[refreshBookChapterByAdmin.method](refreshBookChapterByAdmin.url, { bookId });
+                if (code == 200) {
+                    this.$message.success(`${this.$t('msg.operation_success')},本次更新${data}章`);
                     this.init();
                 }
             }).catch(() => {});

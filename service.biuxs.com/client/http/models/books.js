@@ -53,6 +53,24 @@ export default {
     updateBookChapterAdmin: {
         url: `${API_SERVER}/books/book/updateBookChapterAdmin`,
         method: 'put'
+    },
+
+    /**
+     * 管理员获取书籍章节内容
+     * @param {*} data
+     */
+    getBookArticleByAdmin: {
+        url: `${API_SERVER}/books/book/getBookArticleByAdmin`,
+        method: 'get'
+    },
+
+    /**
+     * 管理员获取书籍章节内容
+     * @param {*} data
+     */
+    refreshBookChapterByAdmin: {
+        url: `${API_SERVER}/books/book/refreshBookChapterByAdmin`,
+        method: 'post'
     }
 
 };

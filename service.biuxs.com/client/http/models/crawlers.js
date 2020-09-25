@@ -42,7 +42,44 @@ export default {
      * @param {*} data
      */
     delConfigByIds: {
-        url: `${API_SERVER}/books/book/delConfigByIds`,
+        url: `${API_SERVER}/common/config/delConfigByIds`,
         method: 'delete'
+    },
+
+    /**
+     * 运行配置项的任务
+     * @param {*} data
+     */
+    runTaskByConfigId: {
+        url: `${API_SERVER}/common/config/runTaskByConfigId`,
+        method: 'post'
+    },
+
+    /**
+     * 获取爬虫系统任务列表
+     * @param {*} params
+     */
+    getTaskList: {
+        url: `${API_SERVER}/crawlers/tasks/getTaskList`,
+        method: 'get'
+    },
+
+    /**
+     * 删除爬虫系统任务
+     * @param {*} params
+     */
+    delTaskByIds: {
+        url: `${API_SERVER}/crawlers/tasks/delTaskByIds`,
+        method: 'delete'
+    },
+
+    /**
+     * 运行爬虫系统任务
+     * @param {*} params
+     */
+    runTaskById: {
+        url: `${API_SERVER}/crawlers/tasks/runTaskById`,
+        method: 'post'
     }
+
 };

@@ -131,6 +131,44 @@ export default {
     },
 
     /**
+     * 格式化任务类型
+     * @param {*} value
+     */
+    formatTaskType(value) {
+        switch (Number(value)) {
+        case 1:
+            return '分类';
+        case 2:
+            return '书籍';
+        case 3:
+            return '章节';
+        case 4:
+            return '内容';
+        default:
+            return '-';
+        }
+    },
+
+    /**
+     * 格式化任务状态
+     * @param {*} value
+     */
+    formatTaskStatus(value) {
+        switch (Number(value)) {
+        case 1:
+            return '未开始';
+        case 2:
+            return '进行中';
+        case 3:
+            return '未完成';
+        case 4:
+            return '已完成';
+        default:
+            return '-';
+        }
+    },
+
+    /**
      * 格式化文件大小
      * @param {*} value
      */

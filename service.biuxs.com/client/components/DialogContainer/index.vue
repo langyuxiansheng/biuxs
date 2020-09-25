@@ -7,14 +7,10 @@
         :visible.sync="dialogConf.isShow"
         :append-to-body="dialogConf.appendToBody || false"
     >
-        <span slot="title">
+        <span v-if="dialogConf.title" slot="title">
             {{ dialogConf.title }}
         </span>
-        <el-row>
-            <el-col :span="24">
-                <slot />
-            </el-col>
-        </el-row>
+        <slot />
     </el-dialog>
 </template>
 <script type="text/ecmascript-6">

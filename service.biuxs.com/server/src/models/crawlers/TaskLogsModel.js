@@ -7,7 +7,7 @@
  */
 const { getTimeStampUUID } = require(':lib/Utils');
 module.exports = (sequelize, dataTypes) => {
-    return sequelize.define('IPBase', {
+    return sequelize.define('TaskLogs', {
 
         logId: {
             type: dataTypes.STRING(),
@@ -77,8 +77,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '修改时间'
         }
     }, {
-        freezeTableName: true,
-        tableName: 'biu_book_type_tasks',
-        timestamps: false //是否需要增加createdAt、updatedAt、deletedAt字段
+        tableName: 'biu_task_logs',
+        indexes: [
+            {
+                unique: true,
+                fields: [ 'logId' ]
+            }
+        ]
     });
 };

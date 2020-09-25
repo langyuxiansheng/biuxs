@@ -7,11 +7,14 @@
                         <el-input v-model="sendData.name" placeholder="请输入配置项名" />
                     </el-form-item>
                     <el-form-item label="配置项类型" prop="type">
-                        <el-select v-model="sendData.status" class="select-block" placeholder="请选择配置项类型" @change="handleStatusChange">
+                        <el-select v-model="sendData.type" class="select-block" placeholder="请选择配置项类型" @change="handleStatusChange">
                             <el-option label="书籍爬虫配置" :value="1" />
                             <el-option label="IP代理爬虫配置" :value="2" />
                             <el-option label="用户阅读器配置" :value="3" />
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="唯一标识符" prop="code">
+                        <el-input v-model="sendData.code" placeholder="请输唯一标识符" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -63,12 +66,33 @@
                         <el-form-item label="分类列表项" prop="conf.base.itemSelector">
                             <el-input v-model="sendData.conf.base.itemSelector" placeholder="请输入分类列表项选择器(例:.li) CSS选择器" />
                         </el-form-item>
-                        <el-form-item label="分类名称" prop="conf.base.name">
-                            <el-input v-model="sendData.conf.base.name" placeholder="请输入分类名称选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
+                        <el-form-item label="分类列表书籍名称" prop="conf.base.name">
+                            <el-input v-model="sendData.conf.base.name" placeholder="请输入分类列表书籍名称选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
                         </el-form-item>
-                        <el-form-item label="分类链接" prop="conf.base.href">
-                            <el-input v-model="sendData.conf.base.href" placeholder="请输入分类链接选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
+                        <el-form-item label="分类列表书籍链接" prop="conf.base.href">
+                            <el-input v-model="sendData.conf.base.href" placeholder="请输入分类列表书籍链接选择器(例:.s2 > a:nth-child(1)) CSS选择器" />
                         </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-divider content-position="left">
+                            <el-tag>
+                                基本任务信息模型
+                            </el-tag>
+                        </el-divider>
+                        <div class="config-model">
+                            <p class="line-model">
+                                $(<span class="select-name">`{{ sendData.conf.base.listSelector || '分类列表选择器' }}`</span>).find(<span class="select-name">`{{ sendData.conf.base.itemSelector || '分类列表项选择器' }}`</span>).each((index, el) => {
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const url = $(el).find(<span class="select-name">`{{ sendData.conf.base.href || '分类列表书籍链接选择器' }}`</span>).attr('href').trim();
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const name = $(el).find(<span class="select-name">`{{ sendData.conf.base.name || '分类列表书籍名称选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                });
+                            </p>
+                        </div>
                     </el-col>
                     <el-col :span="24">
                         <el-divider content-position="left">
@@ -80,19 +104,32 @@
                     <el-col :span="24">
                         <template v-for="(item,k) in sendData.conf.types">
                             <el-row :key="k" :gutter="20">
-                                <el-col :span="6">
-                                    <el-form-item label="分类名" :prop="'conf.types.' + k + '.title'" :rules="{required: true, message: '分类名不能为空', trigger: 'blur'}">
-                                        <el-input v-model="item.title" placeholder="请输入分类名(例:玄幻小说)" />
+                                <el-col :span="4">
+                                    <el-form-item :label="`分类名:${item.title || ''}`" :prop="'conf.types.' + k + '.title'" :rules="{required: true, message: '分类名不能为空', trigger: 'blur'}">
+                                        <el-select v-model="item.title" class="select-block" placeholder="请选择分类">
+                                            <el-option
+                                                v-for="(cate,cindex) in cates"
+                                                :key="cindex"
+                                                :label="cate.type"
+                                                :value="cate.type"
+                                                :disabled="sendData.conf.types.map(i => i.title).includes(cate.type)"
+                                            />
+                                        </el-select>
                                     </el-form-item>
                                 </el-col>
-                                <el-col :span="12">
+                                <el-col :span="11">
                                     <el-form-item label="分类参数链接" :prop="'conf.types.' + k + '.params'" :rules="{required: true, message: '分类参数链接不能为空', trigger: 'blur'}">
                                         <el-input v-model="item.params" placeholder="请输入分类参数链接(例:#/list/1_[page].html) [page]代表分页参数" />
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
                                     <el-form-item label="起始页" :prop="'conf.types.' + k + '.page'" :rules="{required: true, message: '分类列表起始页不能为空', trigger: 'blur'}">
-                                        <el-input v-model="item.page" placeholder="请输入分类列表起始页(例:1) 默认为1" />
+                                        <el-input v-model="item.page" placeholder="默认为1" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="3">
+                                    <el-form-item label="最大页">
+                                        <el-input v-model="item.max" placeholder="默认为100" />
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
@@ -105,7 +142,7 @@
                             </el-row>
                         </template>
                     </el-col>
-                    <el-col :span="24">
+                    <el-col v-if="sendData.conf.types.length < cates.length" :span="24">
                         <el-form-item>
                             <el-button type="primary" plain @click="handleAddtype()">
                                 添加分类
@@ -153,6 +190,54 @@
                         <el-form-item label="章节名称" prop="conf.info.chapterNameSelector">
                             <el-input v-model="sendData.conf.info.chapterNameSelector" placeholder="请输入章节名称选择器(例: a ) CSS选择器" />
                         </el-form-item>
+                        <el-form-item label="章节忽略内容">
+                            <el-input v-model="sendData.conf.info.contentReplace" type="textarea" :rows="5" :cols="10" placeholder="请输入章节内容忽略多个用|隔开" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-divider content-position="left">
+                            <el-tag>
+                                书籍信息数据采集模型
+                            </el-tag>
+                        </el-divider>
+                        <div class="config-model">
+                            //基本信息
+                            <p class="line-model">
+                                const title = $(<span class="select-name">`{{ sendData.conf.info.titleSelector || '书籍标题选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                const author = $(<span class="select-name">`{{ sendData.conf.info.authorSelector || '书籍作者选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                const brief = $(<span class="select-name">`{{ sendData.conf.info.briefSelector || '内容简介选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model">
+                                const image = $(<span class="select-name">`{{ sendData.conf.info.imageSelector || '书籍封面图选择器' }}`</span>).attr('src');
+                            </p>
+                            //章节列表配置
+                            <p class="line-model">
+                                $(<span class="select-name">`{{ sendData.conf.info.chapterListSelector || '分类列表选择器' }}`</span>).find(<span class="select-name">`{{ sendData.conf.info.itemSelector || '章节列表项选择器' }}`</span>).each((index, el) => {
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const title = $(el).find(<span class="select-name">`{{ sendData.conf.info.chapterNameSelector || '章节标题选择器' }}`</span>).text().trim();
+                            </p>
+                            <p class="line-model pd-left-20">
+                                const url = $(el).find(<span class="select-name">`{{ sendData.conf.info.contentUrlSelector || '章节内容采集地址选择器' }}`</span>).attr('href').trim();
+                            </p>
+                            <p class="line-model">
+                                });
+                            </p>
+                            //章节内容
+                            <p class="line-model">
+                                const content = $(el).find(<span class="select-name">`{{ sendData.conf.info.contentSelector || '章节内容选择器' }}`</span>).text().trim();
+                            </p>
+                            <template v-if="sendData.conf.info.contentReplace ">
+                                //章节忽略内容
+                                <p class="line-model">
+                                    content.replace(new RegExp(<span class="select-name">`{{ sendData.conf.info.contentReplace }}`</span>, 'g'), '')
+                                </p>
+                            </template>
+                        </div>
                     </el-col>
                 </template>
                 <el-col :span="24">
@@ -177,10 +262,10 @@ import { addConfig, updateConfig } from '@/http';
 export default {
     name: 'ConfigForm',
     data () {
-        const { dialogFormWidth } = this.$store.state.config;
+        const { dialogDetailWidth } = this.$store.state.config;
         return {
             dialogConf: {
-                width: dialogFormWidth,
+                width: dialogDetailWidth,
                 isShow: false,
                 center: true,
                 title: null
@@ -218,7 +303,8 @@ export default {
                         'itemSelector': null,
                         'chapterNameSelector': null,
                         'contentUrlSelector': null,
-                        'contentSelector': null
+                        'contentSelector': null,
+                        'contentReplace': null
                     }
                 },
                 status: 1, //排序
@@ -258,10 +344,10 @@ export default {
                     { required: true, message: '请输入分类列表项选择器(例:.li)', trigger: 'blur' }
                 ],
                 'conf.base.name': [
-                    { required: true, message: '请输入分类名称选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
+                    { required: true, message: '请输入分类列表书籍名称选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
                 ],
                 'conf.base.href': [
-                    { required: true, message: '请输入分类链接选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
+                    { required: true, message: '请输分类列表书籍链接选择器(例:.s2 > a:nth-child(1))', trigger: 'blur' }
                 ],
                 'conf.info.titleSelector': [
                     { required: true, message: '请输入书籍标题选择器(例:#container .bookinfo .btitle h1)', trigger: 'blur' }
@@ -304,6 +390,63 @@ export default {
                 {
                     value: 4,
                     label: '禁用'
+                }
+            ],
+            cates: [
+                {
+                    type: '武侠修真',
+                    icon: 'iconwuxia',
+                    img: 'wuxiaxiuzhen.png'
+                },
+                {
+                    type: '玄幻魔法',
+                    icon: 'iconxuanhuan',
+                    img: 'xuanhuanmofa.png'
+                },
+                {
+                    type: '都市言情',
+                    icon: 'iconxuanhuan',
+                    img: 'xuanhuanmofa.png'
+                },
+                {
+                    type: '科幻未来',
+                    icon: 'iconkehuan',
+                    img: 'kehuanweilai.png'
+                },
+                {
+                    type: '灵异穿越',
+                    icon: 'iconlingyi',
+                    img: 'lingyichuanyue.png'
+                },
+                {
+                    type: '历史军事',
+                    icon: 'iconjunshi',
+                    img: 'lishijunshi.png'
+                },
+                {
+                    type: '悬疑推理',
+                    icon: 'icontuilinengli',
+                    img: 'xuanyituili.png'
+                },
+                {
+                    type: '网游动漫',
+                    icon: 'icontuilinengli',
+                    img: 'xuanyituili.png'
+                },
+                {
+                    type: '散文诗词',
+                    icon: 'icontuilinengli',
+                    img: 'xuanyituili.png'
+                },
+                {
+                    type: '女生专区',
+                    icon: 'iconnvsheng',
+                    img: 'nvshengzhuanqu.png'
+                },
+                {
+                    type: '男生专区',
+                    icon: 'iconnansheng',
+                    img: 'nanshengzhuanqu.png'
                 }
             ]
         };
@@ -419,3 +562,21 @@ export default {
     }
 };
 </script>
+<style lang="less" scope>
+.config-model{
+    line-height: 1.6;
+    background: #333;
+    padding: 20px;
+    border-radius: 4px;
+    .line-model{
+        color: #6ebb6e;
+        font-weight: bold;
+        .select-name{
+            color: #ff3737;
+        }
+    }
+    .pd-left-20{
+        padding-left: 32px;
+    }
+}
+</style>

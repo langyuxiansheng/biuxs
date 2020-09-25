@@ -15,7 +15,8 @@ import ReadFileDialog from './ReadFileDialog';
 import UploadFile from './UploadFile';
 import WebsiteTypesSelect from './WebsiteTypesSelect'; //网站分类选择
 import AppVueEditor from './AppVueEditor'; //富文本编辑器
-import AppCropper from './AppCropper'; //富文本编辑器
+import AppCropper from './AppCropper'; //图片裁剪
+import StatusSelect from './StatusSelect'; //书籍状态
 export default {
     CardContainer,
     ImgDialog,
@@ -27,5 +28,6 @@ export default {
     UploadFile,
     WebsiteTypesSelect,
     AppVueEditor,
-    AppCropper
+    AppCropper,
+    StatusSelect
 };

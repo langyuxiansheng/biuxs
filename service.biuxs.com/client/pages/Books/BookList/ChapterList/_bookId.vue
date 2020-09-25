@@ -34,6 +34,16 @@
                         <el-button title="删除" type="danger" icon="el-icon-delete" @click="handleDel(data.row)" />
                     </el-button-group>
                 </template>
+                <template v-else-if="data.col.key == 'title'">
+                    <reader ref="Reader" :chapter="data.row">
+                        {{ data.row.title }}
+                    </reader>
+                </template>
+                <template v-else-if="data.col.key === 'url'">
+                    <a :href="data.row[data.col.key]" target="_blank" rel="noopener noreferrer">
+                        {{ data.row[data.col.key] }}
+                    </a>
+                </template>
                 <template v-else-if="['createdTime','updatedTime'].includes(data.col.key)">
                     {{ data.row[data.col.key] | formatDateYearMonthDayAndHms }}
                 </template>
@@ -47,20 +57,19 @@
                 </template>
             </template>
         </app-table>
-        <!-- <type-item-form ref="TypeItemForm" @refresh="init()" /> -->
     </card-container>
 </template>
 <script>
 import { getBookChapterListByAdmin, delBookChapterAdminByIds } from '@/http';
 import pager from '@/mixins/pager';
-// import TypeItemForm from './TypeItemForm';
+import Reader from './Reader';
 export default {
     name: 'Books',
+    components: { Reader },
     mixins: [pager()],
     head: {
         title: '搜索分类'
     },
-    // components: { TypeItemForm },
     data () {
         const { bookId } = this.$route.params;
         return {
@@ -76,7 +85,8 @@ export default {
                 cols: [ //表格列配置
                     {
                         key: 'title',
-                        label: '章节名'
+                        label: '章节名',
+                        overflow: true
                     },
                     {
                         key: 'url',

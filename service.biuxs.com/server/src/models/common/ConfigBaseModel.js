@@ -101,6 +101,12 @@ module.exports = (sequelize, dataTypes) => {
             }
         }
     }, {
-        tableName: 'biu_config_base'
+        tableName: 'biu_config_base',
+        indexs: [
+            {
+                unique: true,
+                fields: [ 'configId' ]
+            }
+        ]
     });
 };

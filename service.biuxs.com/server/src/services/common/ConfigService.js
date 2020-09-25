@@ -6,6 +6,8 @@ const redis = require(':lib/redis'); //redis
 const { MODELS_PATH, checkParams, isSuperAdmin } = require(':lib/Utils');
 const { BiuDB, SOP } = require(':lib/sequelize');
 const ConfigBaseModel = BiuDB.import(`${MODELS_PATH}/common/ConfigBaseModel`);
+const BookBaseCrawler = require(':crawlers/BookBaseCrawler');
+const bbc = new BookBaseCrawler();
 module.exports = class {
     constructor() {
         ConfigBaseModel.sync().then((res) => {
@@ -166,6 +168,21 @@ module.exports = class {
                 }
             }
             return result.success();
+        } catch (error) {
+            console.error(error);
+            return result.failed(error);
+        }
+    }
+
+    /**
+     * 运行配置项的任务
+     * @param {*} data
+     */
+    async runTaskByConfigId(data, user) {
+        if (!data.configId && !isSuperAdmin(user)) return result.paramsLack();
+        try {
+            const res = await bbc.runTaskByConfigId(data);
+            return res;
         } catch (error) {
             console.error(error);
             return result.failed(error);

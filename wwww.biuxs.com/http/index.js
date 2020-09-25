@@ -1,6 +1,5 @@
 import apis from './wrapper';
 export const {
-    getSiteHomeData,
     getWebpageBaseByMenu,
     getWebsiteTypes,
     getImgValidate,
@@ -37,6 +36,12 @@ export const {
     getCraWebSiteBase,
     addBlacklistCompanyByWeb,
     getCompanyBlacklist,
-    getBackgroundLibs
+    getBackgroundLibs,
+
+    //移动端首页
+    getHomeMobileData,
+    getBookDetailData,
+    getBookChapterListData,
+    getBookChapterArticleData
 
 } = apis;

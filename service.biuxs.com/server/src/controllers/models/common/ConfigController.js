@@ -31,4 +31,9 @@ controller.delete('/delConfigByIds', async(ctx) => {
     ctx.body = await service.delConfigByIds(ctx.request.body, ctx.state.user);
 });
 
+//运行配置项的任务
+controller.post('/runTaskByConfigId', async(ctx) => {
+    ctx.body = await service.runTaskByConfigId(ctx.request.body, ctx.state.user);
+});
+
 module.exports = controller;

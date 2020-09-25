@@ -26,5 +26,41 @@ export default {
     uploadFile: {
         url: `${API_SERVER}/common/files/uploadFile`,
         method: 'post'
+    },
+
+    /**
+     * 添加轮播图
+     * @param {*} data
+     */
+    addBanner: {
+        url: `${API_SERVER}/common/banner/addBanner`,
+        method: 'post'
+    },
+
+    /**
+     * 获取轮播图列表
+     * @param {*} data
+     */
+    getBannerList: {
+        url: `${API_SERVER}/common/banner/getBannerList`,
+        method: 'get'
+    },
+
+    /**
+     * 编辑轮播图
+     * @param {*} data
+     */
+    updateBanner: {
+        url: `${API_SERVER}/common/banner/updateBanner`,
+        method: 'put'
+    },
+
+    /**
+     * 删除轮播图
+     * @param {*} data
+     */
+    delBannerByIds: {
+        url: `${API_SERVER}/common/banner/delBannerByIds`,
+        method: 'delete'
     }
 };
