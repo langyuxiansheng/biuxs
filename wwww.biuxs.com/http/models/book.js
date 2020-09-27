@@ -22,6 +22,21 @@ export default {
     getBookChapterArticleData: {
         url: `${API_SERVER}/biuxs/book/getBookChapterArticleData`,
         method: 'get'
-    }
+    },
 
+    /**
+     * 获取书籍分类（无需token）
+     */
+    getBookTypeData: {
+        url: `${API_SERVER}/biuxs/site/getBookTypeData`,
+        method: 'get'
+    },
+
+    /**
+     * 搜索书籍（无需token）
+     */
+    searchBook: {
+        url: `${API_SERVER}/biuxs/site/searchBook`,
+        method: 'get'
+    }
 };

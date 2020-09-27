@@ -42,6 +42,9 @@ export const {
     getHomeMobileData,
     getBookDetailData,
     getBookChapterListData,
-    getBookChapterArticleData
+    getBookChapterArticleData,
+    //分类页
+    getBookTypeData,
+    searchBook
 
 } = apis;
