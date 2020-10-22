@@ -11,19 +11,6 @@
             <div class="app-category" :class="{'app-fixed-top': isFixedTop}">
                 <div class="cate-item app-flex">
                     <span class="cate-label">
-                        频道
-                    </span>
-                    <ul class="cates app-flex">
-                        <li class="cate">
-                            男生专区
-                        </li>
-                        <li class="cate cate-active">
-                            女生专区
-                        </li>
-                    </ul>
-                </div>
-                <div class="cate-item app-flex">
-                    <span class="cate-label">
                         分类
                     </span>
                     <ul class="cates app-flex">
@@ -34,7 +21,7 @@
                         </template>
                     </ul>
                 </div>
-                <div class="cate-item app-flex">
+                <!-- <div class="cate-item app-flex">
                     <span class="cate-label">
                         状态
                     </span>
@@ -49,7 +36,7 @@
                             已完结
                         </li>
                     </ul>
-                </div>
+                </div> -->
             </div>
             <div class="app-cate-hr" />
             <div class="book-floor hot-books" :class="{'book-floor-fixed': isFixedTop}">
@@ -89,9 +76,8 @@
     </div>
 </template>
 <script>
-// import { getSiteHomeData } from '@/http';
+import { getBookTypeData, searchBook } from '@/http';
 import { AppMHeader, AppMFooter } from '../components';
-import books from '../books.json';
 import isFixedTop from '@/mixins/isFixedTop';
 export default {
     name: 'Category',
@@ -99,58 +85,32 @@ export default {
     mixins: [isFixedTop(64, '#app-cate-content')],
     data() {
         return {
-            books,
-            cates: [
-                {
-                    type: '武侠修真',
-                    icon: 'iconwuxia',
-                    img: 'wuxiaxiuzhen.png'
-                },
-                {
-                    type: '玄幻魔法',
-                    icon: 'iconxuanhuan',
-                    img: 'xuanhuanmofa.png'
-                },
-                {
-                    type: '科幻未来',
-                    icon: 'iconkehuan',
-                    img: 'kehuanweilai.png'
-                },
-                {
-                    type: '灵异穿越',
-                    icon: 'iconlingyi',
-                    img: 'lingyichuanyue.png'
-                },
-                {
-                    type: '历史军事',
-                    icon: 'iconjunshi',
-                    img: 'lishijunshi.png'
-                },
-                {
-                    type: '悬疑推理',
-                    icon: 'icontuilinengli',
-                    img: 'xuanyituili.png'
-                },
-                {
-                    type: '女生专区',
-                    icon: 'iconnvsheng',
-                    img: 'nvshengzhuanqu.png'
-                },
-                {
-                    type: '男生专区',
-                    icon: 'iconnansheng',
-                    img: 'nanshengzhuanqu.png'
-                }
-            ]
+            books: [],
+            cates: []
         };
     },
     async asyncData({ req, $axios }) {
-        // try {
-        //     const { data: { navs, search } } = await $axios[getSiteHomeData.method](getSiteHomeData.url);
-        //     return { navs: navs || [], search: search || [] };
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        try {
+            const { data } = await $axios[getBookTypeData.method](getBookTypeData.url);
+            return { cates: data || [] };
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    methods: {
+
+        async init() {
+            try {
+                const { data: { list, total } } = await this.$axios[searchBook.method](searchBook.url, {
+                    params: this.params
+                });
+                this.list = list;
+                this.total = total ? Math.ceil(total / this.params.limit) : 0;
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 };
 </script>

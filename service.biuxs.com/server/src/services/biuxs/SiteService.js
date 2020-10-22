@@ -3,11 +3,13 @@
  */
 const result = require(':lib/Result');
 const redis = require(':lib/redis'); //redis
+const SnowflakeID = require(':lib/SnowflakeID'); //redis
 const { logger } = require(':lib/logger4'); //日志系统
 const { MODELS_PATH, getRandomNum } = require(':lib/Utils');
 const { BiuDB, SOP } = require(':lib/sequelize');
 const BookBaseModel = BiuDB.import(`${MODELS_PATH}/books/BookBaseModel`);
 const BannerBaseModel = BiuDB.import(`${MODELS_PATH}/common/BannerBaseModel`);
+const snid = new SnowflakeID({ mid: 13134646 });
 module.exports = class {
     /**
      * 获取移动端首页的数据（无需token）
@@ -17,11 +19,23 @@ module.exports = class {
      */
     async getHomeMobileData(user) {
         try {
+            let test = {};
+            for (let index = 0; index < 500; index++) {
+                let id = snid.generate();
+                test[index] = id;
+                test[`n${index}`] = Number(id);
+            }
             const homeData = await redis.getData(redis.key.GET_HOME_MOBILE_DATA);
-            if (homeData) return result.success(null, homeData);
+            if (homeData) {
+                homeData.test = test;
+                return result.success(null, homeData);
+            }
             //轮播
             const banner = BannerBaseModel.findAll({
-                where: { status: 1, isDelete: false },
+                where: {
+                    status: 1,
+                    isDelete: false
+                },
                 order: [
                     ['sort', 'ASC']
                 ],
@@ -30,7 +44,12 @@ module.exports = class {
             const query = {
                 limit: 10,
                 offset: 0,
-                where: { isDelete: false },
+                where: {
+                    isDelete: false,
+                    image: {
+                        [SOP.ne]: null
+                    }
+                },
                 order: [
                     ['createdTime', 'DESC']
                 ],
@@ -51,7 +70,9 @@ module.exports = class {
                 const index = getRandomNum(0, anyRes[0].count - 1);
                 const book = anyRes[0].rows[index];
                 if (randomArray.length >= 10) break;
-                if (randomArray.indexOf(book) === -1 && book && book.image) randomArray.push(book);
+                if (randomArray.indexOf(book) === -1 && book && book.image && (book.image !== '/books/20200915/BIUXS_WEB_16979232C79D5E3C78D490F902E69AF2.jpg')) {
+                    randomArray.push(book);
+                }
             }
             const res = {
                 banner: [],

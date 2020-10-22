@@ -12,5 +12,6 @@ export default {
     DIALOG_CONFIRM_TITLE: ` <div class="tips">
         <i class="iconfont iconicon_warn"></i>
         <span>提示</span>
-    </div>`//提示框的标题
+    </div>`, //提示框的标题
+    BOOK_CHAPTER_LIST: 'BOOK_CHAPTER_LIST_' //书籍章节列表
 };

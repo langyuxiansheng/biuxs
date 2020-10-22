@@ -14,6 +14,12 @@ module.exports = (sequelize, dataTypes) => {
             comment: '文章ID => 同章节id'
         },
 
+        index: {
+            type: dataTypes.INTEGER(),
+            allowNull: true,
+            comment: '章节索引'
+        },
+
         title: {
             type: dataTypes.STRING(),
             allowNull: true,

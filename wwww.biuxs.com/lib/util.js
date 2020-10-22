@@ -46,11 +46,11 @@ const util = {
      */
     setCache(key, val, store = 'L') {
         if (!key) throw new Error('key undefined');
-        if (window) {
+        if (typeof window === 'object') {
             const value = JSON.stringify(val);
             store === 'L' ? window.localStorage.setItem(key, value) : window.sessionStorage.setItem(key, value);
         } else {
-            throw new Error('window undefined');
+            console.error('window undefined');
         }
     },
 
@@ -61,11 +61,11 @@ const util = {
      */
     getCache(key, store = 'L') {
         if (!key) throw new Error('key undefined');
-        if (window) {
+        if (typeof window === 'object') {
             const res = store === 'L' ? window.localStorage.getItem(key) : window.sessionStorage.getItem(key);
             return res ? JSON.parse(res) : res;
         } else {
-            throw new Error('window undefined');
+            console.error('window undefined');
         }
     },
 
@@ -76,10 +76,10 @@ const util = {
      */
     delCache(key, store = 'L') {
         if (!key) throw new Error('key undefined');
-        if (window) {
+        if (typeof window === 'object') {
             store === 'L' ? window.localStorage.removeItem(key) : window.sessionStorage.removeItem(key);
         } else {
-            throw new Error('window undefined');
+            console.error('window undefined');
         }
     },
 
@@ -88,7 +88,7 @@ const util = {
      * @param key
      */
     clearCache() {
-        if (window) {
+        if (typeof window === 'object') {
             window.localStorage.clear();
             window.sessionStorage.clear();
         } else {

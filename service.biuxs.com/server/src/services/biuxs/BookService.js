@@ -74,7 +74,7 @@ module.exports = class {
         if (!chapterId) return result.paramsLack();
         let queryData = {
             where: { articleId: chapterId, isDelete: false },
-            attributes: ['articleId', 'title', 'content', 'letterCount']
+            attributes: ['articleId', 'index', 'title', 'content', 'letterCount']
         };
         try {
             let article = await redis.getData(`${redis.key.GET_BOOK_CHAPTER_ARTICLE_DATA}${chapterId}`);
@@ -88,6 +88,7 @@ module.exports = class {
                     if (bicArticle) { //过滤一次
                         article = {
                             articleId: bicArticle.articleId,
+                            index: bicArticle.index,
                             title: bicArticle.title,
                             content: bicArticle.content,
                             letterCount: bicArticle.letterCount

@@ -1,12 +1,10 @@
 import common from './common';
-import website from './website';
 import member from './member';
-import crawlers from './crawlers';
-import homeM from './home.m';
+import home from './home';
+import book from './book';
 export default {
     ...common,
-    ...website,
     ...member,
-    ...crawlers,
-    ...homeM
+    ...home,
+    ...book
 };

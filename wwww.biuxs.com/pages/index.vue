@@ -31,7 +31,7 @@
     </div>
 </template>
 <script>
-import { getSiteHomeData } from '@/http';
+// import { getSiteHomeData } from '@/http';
 // import UserBookmarks from '@/pages/member/user/UserBookmarks';
 export default {
     // components: { UserBookmarks },
@@ -52,8 +52,8 @@ export default {
     },
     async asyncData({ req, $axios }) {
         try {
-            const { data: { navs, search } } = await $axios[getSiteHomeData.method](getSiteHomeData.url);
-            return { navs: navs || [], search: search || [] };
+            // const { data: { navs, search } } = await $axios[getSiteHomeData.method](getSiteHomeData.url);
+            // return { navs: navs || [], search: search || [] };
         } catch (error) {
             console.error(error);
         }

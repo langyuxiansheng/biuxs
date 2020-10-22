@@ -14,7 +14,7 @@
                 <i class="iconfont iconicon_search" />
                 <input type="search" placeholder="请输入作者名或者书名进行搜索" class="search-input">
             </div>
-            <div class="book-floor">
+            <div v-if="stars && stars.length" class="book-floor">
                 <h4 class="item-title app-flex app-flex-between">
                     <span class="name">我的收藏</span>
                     <nuxt-link class="more" to="/">
@@ -42,8 +42,8 @@
                     </span>
                 </h4>
                 <ul class="book-list app-flex">
-                    <template v-for="item in randoms">
-                        <li :key="item.bookId" class="book-item">
+                    <template v-for="(item,index) in randoms">
+                        <li v-if="index < 4" :key="`randoms-${item.bookId}`" class="book-item">
                             <div class="b-image">
                                 <template v-if="item.image">
                                     <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
@@ -51,9 +51,9 @@
                                 <template v-else>
                                     <img class="image" :src="$IMAGE_PATH + $DEFAULT_BOOK_IMAGE" alt="image">
                                 </template>
-                                {{ $IMAGE_PATH }}
                                 <span class="b-tags">{{ item.chapterCount }}</span>
                             </div>
+                            <span class="b-title">{{ item.title }}</span>
                         </li>
                     </template>
                 </ul>
@@ -66,10 +66,15 @@
                     </nuxt-link>
                 </h4>
                 <ul class="book-list app-flex">
-                    <template v-for="item in books">
-                        <li :key="item.bookId" class="book-item">
+                    <template v-for="item in hots">
+                        <li :key="`hots-${item.bookId}`" class="book-item">
                             <div class="b-image">
-                                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
+                                <template v-if="item.image">
+                                    <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
+                                </template>
+                                <template v-else>
+                                    <img class="image" :src="$IMAGE_PATH + $DEFAULT_BOOK_IMAGE" alt="image">
+                                </template>
                             </div>
                             <nuxt-link class="b-info" :to="`/m/book/${item.bookId}`">
                                 <h5 class="b-title">
@@ -101,12 +106,18 @@
                     </nuxt-link>
                 </h4>
                 <ul class="book-list app-flex">
-                    <template v-for="item in 4">
-                        <li :key="item" class="book-item">
+                    <template v-for="(item,index) in news">
+                        <li v-if="index < 4" :key="`news-${item.bookId}`" class="book-item">
                             <div class="b-image">
-                                <img class="image" src="http://img.1391.com/api/v1/bookcenter/cover/1/683354/683354_731ddfbb9c06418a904b39b6dffdaca7.jpg" alt="image">
-                                <span class="b-tags">10</span>
+                                <template v-if="item.image">
+                                    <img class="image" :src="$IMAGE_PATH + item.image" alt="image">
+                                </template>
+                                <template v-else>
+                                    <img class="image" :src="$IMAGE_PATH + $DEFAULT_BOOK_IMAGE" alt="image">
+                                </template>
+                                <span class="b-tags">{{ item.chapterCount }}</span>
                             </div>
+                            <span class="b-title">{{ item.title }}</span>
                         </li>
                     </template>
                 </ul>
@@ -118,7 +129,6 @@
 <script>
 import { getHomeMobileData } from '@/http';
 import { AppMHeader, AppMFooter } from '../components';
-// import books from '../books.json';
 export default {
     name: 'MobileHome',
     components: { AppMHeader, AppMFooter },
@@ -129,19 +139,12 @@ export default {
                     el: '.swiper-pagination'
                 }
             },
-            imgs: [{
-                url: 'http://statics.zhuishushenqi.com/recommendPage/153139416791777'
-            },
-            {
-                url: 'http://statics.zhuishushenqi.com/recommendPage/153139401503529'
-            },
-            {
-                url: 'http://statics.zhuishushenqi.com/recommendPage/153139406636473'
-            },
-            {
-                url: 'http://statics.zhuishushenqi.com/recommendPage/15313940968984'
-            }],
-            books: []
+            stars: [], //用户收藏
+            books: [],
+            banner: [],
+            randoms: [],
+            news: [],
+            hots: []
         };
     },
     async asyncData({ req, $axios }) {
@@ -240,6 +243,9 @@ export default {
                         display: inline-block;
                         color: #535353;
                         font-weight: bold;
+                        line-height: 1.3;
+                        height: 1.875rem;
+                        .ellipsis-mult(2);
                     }
                 }
             }
@@ -261,6 +267,9 @@ export default {
                             font-size: .875rem;
                             margin-top: 0;
                             margin-bottom: .5rem;
+                            height: auto;
+                            line-height: initial;
+                            .ellipsis-mult(2);
                         }
                         .b-author{
                             font-size: .75rem;
@@ -276,6 +285,7 @@ export default {
                             margin: .625rem 0;
                             .ellipsis-mult(2);
                             line-height: 1.5;
+                            height: 2.25rem;
                         }
                         .b-other{
                             margin-top: .625rem;
