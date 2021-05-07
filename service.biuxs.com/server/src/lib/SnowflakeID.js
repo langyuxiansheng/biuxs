@@ -128,7 +128,7 @@ class SnowflakeID {
         }
         let out = '';
         //设置了这里-3会返回16位的字符
-        for (let i = outArray.length - 1; i >= 0; i--) {
+        for (let i = outArray.length - 3; i >= 0; i--) {
             out += outArray[i].toString(toBase);
         }
         return out;
@@ -151,9 +151,9 @@ const snid = new SnowflakeID({
 let id = snid.generate();
 console.log(id, id.length);
 let arr = [];
-for (let index = 0; index < 1000; index++) {
+for (let index = 0; index < 10; index++) {
     id = snid.generate();
-    console.log('snid.generate()', id);
+    console.log('snid.generate()', id,id.length);
     arr.push(snid.generate(), +new Date());
 }
 

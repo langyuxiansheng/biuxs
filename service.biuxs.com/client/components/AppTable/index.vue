@@ -200,6 +200,13 @@ export default {
         },
 
         /**
+         * 获取表格组件实例
+         */
+        getAppTable() {
+            return this.$refs.DefaultTable;
+        },
+
+        /**
         * 序号
         */
         indexMethod(index) {
