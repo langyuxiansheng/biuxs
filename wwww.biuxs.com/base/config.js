@@ -3,8 +3,8 @@
  * 公共插件功能配置文件
  */
 export default {
-    DEV_URL: 'HTTP://192.168.0.59:8000', //开发环境地址
-    PRODUCTION_URL: 'HTTP://192.168.0.59:8000', //生产环境地址
+    // HTTP_URL: 'http://127.0.0.1:3010', //请求地址
+    HTTP_URL: 'http://175.152.149.97:3010', //请求地址
     VERSION: 'V1.0.0', //版本
     MD5_SALT: '_SERVICE.BIUNAV.COM', //MD5盐
     COOKIE_JWT_KEY: 'C39F787D8B14EABB15F18ADEF36C71D6', //cookiekey
