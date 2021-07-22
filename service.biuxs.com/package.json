@@ -59,7 +59,7 @@
     "vue-i18n": "^8.10.0",
     "vuex-persist": "^2.2.0",
     "wangeditor": "^3.1.1",
-    "xlsx": "^0.16.5"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
